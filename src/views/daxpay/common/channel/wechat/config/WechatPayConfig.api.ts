@@ -32,6 +32,8 @@ export interface WechatPayConfig extends MchEntity {
   wxMchId?: string
   // 是否启用
   enable: boolean
+  // 授权认证地址
+  authUrl?: string
   // 支付限额
   limitAmount?: number
   // API 版本

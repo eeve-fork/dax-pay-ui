@@ -38,6 +38,20 @@
             placeholder="用于获取接口调用凭证时使用, 如OpenId/AccessToken等"
           />
         </a-form-item>
+        <a-form-item name="authUrl">
+          <template #label>
+            <basic-title
+              helpMessage="OAuth2认证服务地址, 需要将该地址映射转发到网关服务地址（置空将使用系统配置的网关服务地址进行拼接）"
+            >
+              OAuth2认证地址
+            </basic-title>
+          </template>
+          <a-input
+            v-model:value="form.authUrl"
+            :disabled="showable"
+            placeholder="请输入OAuth2认证地址"
+          />
+        </a-form-item>
         <a-form-item label="是否启用" name="enable">
           <a-switch
             checked-children="启用"

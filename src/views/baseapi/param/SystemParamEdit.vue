@@ -29,7 +29,7 @@
       </a-form-item>
       <a-form-item label="参数Key" name="key">
         <a-input
-          v-model:value="form.key"
+          v-model:value="form.paramKey"
           :disabled="showable || form.internal"
           placeholder="请输入参数键名"
         />
@@ -112,14 +112,14 @@
     formEditType,
   } = useFormEdit()
   const { existsByServer } = useValidate()
-  const { dictDropDownNumber } = useDict()
+  const { dictDropDown } = useDict()
 
   // 表单
   const formRef = ref<FormInstance>()
   let form = ref<SystemParam>({
     id: null,
     name: '',
-    key: '',
+    paramKey: '',
     value: '',
     enable: true,
     type: undefined,
@@ -145,7 +145,7 @@
     initFormEditType(editType)
     resetForm()
     getInfo(id, editType)
-    dictDropDownNumber('ParamType').then((res) => (paramTypeList.value = res))
+    dictDropDown('ParamType').then((res) => (paramTypeList.value = res))
   }
   // 获取信息
   function getInfo(id, editType: FormEditType) {
@@ -181,8 +181,15 @@
   }
   // 校验key值
   async function validateKey() {
-    const { key, id } = form.value
-    return existsByServer(key, id, formEditType.value, existsByKey, existsByKeyNotId, '该Key已存在')
+    const { paramKey, id } = form.value
+    return existsByServer(
+      paramKey,
+      id,
+      formEditType.value,
+      existsByKey,
+      existsByKeyNotId,
+      '该Key已存在',
+    )
   }
   defineExpose({
     init,

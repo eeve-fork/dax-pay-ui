@@ -28,7 +28,7 @@
         >
           <vxe-column type="seq" :min-width="60" />
           <vxe-column field="name" title="参数名称" :min-width="200" />
-          <vxe-column field="key" title="参数Key" :min-width="150" />
+          <vxe-column field="paramKey" title="参数Key" :min-width="150" />
           <vxe-column field="value" title="参数值" :min-width="200" />
           <vxe-column field="type" title="参数类型" :min-width="80">
             <template #default="{ row }">

@@ -83,7 +83,7 @@ export interface SystemParam extends BaseEntity {
   // 参数名称
   name?: string
   // 参数键名
-  key?: string
+  paramKey?: string
   // 参数值
   value?: string
   // 参数类型

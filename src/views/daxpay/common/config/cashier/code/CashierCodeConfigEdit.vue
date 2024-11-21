@@ -20,56 +20,17 @@
       <a-form-item label="主键" name="id" :hidden="true">
         <a-input v-model:value="form.id" :disabled="showable" />
       </a-form-item>
-      <a-form-item label="收银台类型" validate-first name="cashierType">
-        <a-select
-          style="width: 300px"
-          v-model:value="form.cashierType"
-          :disabled="showable"
-          :options="cashierTypeList"
-          allow-clear
-          placeholder="请选择收银台类型"
-        />
+      <a-form-item label="码牌编码" name="code" v-show="form.code">
+        <a-input v-model:value="form.code" disabled />
       </a-form-item>
-      <a-form-item label="收银台名称" name="cashierName">
-        <a-input
-          v-model:value="form.cashierName"
-          :disabled="showable"
-          placeholder="请输入收银台名称"
-        />
+      <a-form-item label="码牌名称" name="name">
+        <a-input v-model:value="form.name" :disabled="showable" placeholder="请输入码牌名称" />
       </a-form-item>
-      <a-form-item label="支付通道" name="channel">
-        <a-select
-          style="width: 300px"
-          v-model:value="form.channel"
-          :disabled="showable"
-          :options="channelList"
-          allow-clear
-          placeholder="请选择支付通道"
-        />
-      </a-form-item>
-      <a-form-item label="支付方式" name="payMethod">
-        <a-select
-          style="width: 300px"
-          v-model:value="form.payMethod"
-          :disabled="showable"
-          :options="methodList"
-          allow-clear
-          placeholder="请选择支付方式"
-        />
-      </a-form-item>
-      <a-form-item label="是否开启分账" name="allocation">
+      <a-form-item label="是否启用" name="enable">
         <a-switch
           checked-children="启用"
           un-checked-children="停用"
-          v-model:checked="form.allocation"
-          :disabled="showable"
-        />
-      </a-form-item>
-      <a-form-item label="自动分账" name="autoAllocation">
-        <a-switch
-          checked-children="启用"
-          un-checked-children="停用"
-          v-model:checked="form.autoAllocation"
+          v-model:checked="form.enable"
           :disabled="showable"
         />
       </a-form-item>
@@ -100,16 +61,8 @@
   import { FormEditType } from '@/enums/formTypeEnum'
   import { BasicModal } from '@/components/Modal'
   import { LabeledValue } from 'ant-design-vue/lib/select'
-  import {
-    get,
-    add,
-    update,
-    existsByType,
-    existsByTypeNotId,
-    ChannelCashierConfig,
-  } from './ChannelCashierConfig.api'
+  import { findById, save, update, CashierCodeConfig } from './CashierCodeConfig.api'
   import { useDict } from '@/hooks/bootx/useDict'
-  import { MchApp } from '@/views/daxpay/common/merchant/app/MchApp.api'
 
   const {
     initFormEditType,
@@ -133,18 +86,14 @@
   const channelList = ref<LabeledValue[]>([])
   const methodList = ref<LabeledValue[]>([])
 
-  let form = ref<ChannelCashierConfig>({
-    allocation: false,
-    autoAllocation: false,
+  let form = ref<CashierCodeConfig>({
+    enable: true,
   })
   // 校验
   const rules = reactive({
-    cashierType: [
-      { required: true, message: '请选择收银台类型' },
-      { validator: validateCode, trigger: 'blur' },
-    ],
-    cashierName: [{ required: true, message: '请输入收银台名称' }],
-    name: [{ required: true, message: '请输入字典项名称' }],
+    code: [{ required: true, message: '' }],
+    name: [{ required: true, message: '请输入码牌名称' }],
+    enable: [{ required: true, message: '是否启用' }],
   } as Record<string, Rule[]>)
 
   // 事件
@@ -166,10 +115,10 @@
   /**
    * 入口
    */
-  function init(id, editType: FormEditType, mchApp: MchApp) {
+  function init(id, editType: FormEditType, appId: string) {
     initFormEditType(editType)
     resetForm()
-    form.value.appId = unref(mchApp.appId)
+    form.value.appId = unref(appId)
     getInfo(id, editType)
   }
   /**
@@ -178,7 +127,7 @@
   function getInfo(id, editType: FormEditType) {
     if ([FormEditType.Edit, FormEditType.Show].includes(editType)) {
       confirmLoading.value = true
-      get(id).then(({ data }) => {
+      findById(id).then(({ data }) => {
         form.value = data
         confirmLoading.value = false
       })
@@ -193,27 +142,13 @@
     formRef.value?.validate().then(async () => {
       confirmLoading.value = true
       if (formEditType.value === FormEditType.Add) {
-        await add(form.value).finally(() => (confirmLoading.value = false))
+        await save(form.value).finally(() => (confirmLoading.value = false))
       } else if (formEditType.value === FormEditType.Edit) {
         await update(form.value).finally(() => (confirmLoading.value = false))
       }
       handleCancel()
       emits('ok')
     })
-  }
-
-  /**
-   * 校验编码重复
-   */
-  async function validateCode() {
-    const { cashierType, appId, id } = form.value
-    if (id) {
-      const res = await existsByTypeNotId(appId, cashierType, id)
-      return res.data ? Promise.reject('该收银台类型已存在') : Promise.resolve()
-    } else {
-      const res = await existsByType(appId, cashierType)
-      return res.data ? Promise.reject('该收银台类型已存在') : Promise.resolve()
-    }
   }
 
   // 重置表单的校验

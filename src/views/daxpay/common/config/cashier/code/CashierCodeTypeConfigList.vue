@@ -3,7 +3,7 @@
     showFooter
     v-bind="$attrs"
     width="70%"
-    title="收银配置"
+    title="码牌类型配置"
     :mask-closable="true"
     :open="visible"
     @close="handleCancel"
@@ -17,32 +17,25 @@
     </vxe-toolbar>
     <vxe-table ey-field="id" ref="xTable" :data="records" :loading="loading">
       <vxe-column type="seq" width="60" />
-      <vxe-column field="cashierType" title="收银台类型" :min-width="150">
+      <vxe-column field="type" title="码牌类型" :min-width="150">
         <template #default="{ row }">
-          <a-tag color="green">{{ dictConvert('cashier_type', row.cashierType) }}</a-tag>
+          {{ dictConvert('cashier_code_type', row.type) }}
         </template>
       </vxe-column>
-      <vxe-column field="cashierName" title="收银台名称" :min-width="150" />
-      <vxe-column field="channel" title="关联通道" :min-width="150">
+      <vxe-column field="channel" title="支付通道" :min-width="150">
         <template #default="{ row }">
-          <a-tag color="green">{{ dictConvert('channel', row.channel) }}</a-tag>
+          {{ dictConvert('channel', row.channel) }}
         </template>
       </vxe-column>
-      <vxe-column field="channel" title="关联支付方式" :min-width="150">
+      <vxe-column field="payMethod" title="支付方式" :min-width="150">
         <template #default="{ row }">
-          <a-tag color="green">{{ dictConvert('pay_method', row.payMethod) }}</a-tag>
+          {{ dictConvert('pay_method', row.payMethod) }}
         </template>
       </vxe-column>
       <vxe-column field="allocation" title="开启分账" :min-width="150">
         <template #default="{ row }">
-          <a-tag v-if="row.allocation" color="green">开启</a-tag>
-          <a-tag v-else color="red">关闭</a-tag>
-        </template>
-      </vxe-column>
-      <vxe-column field="autoAllocation" title="自动分账" :min-width="150">
-        <template #default="{ row }">
-          <a-tag v-if="row.autoAllocation" color="green">开启</a-tag>
-          <a-tag v-else color="red">关闭</a-tag>
+          <a-tag color="green" v-if="row.allocation">开启</a-tag>
+          <a-tag v-else>关闭</a-tag>
         </template>
       </vxe-column>
       <vxe-column field="remark" title="备注" :min-width="170" />
@@ -57,36 +50,39 @@
         </template>
       </vxe-column>
     </vxe-table>
-    <ChannelCashierConfigEdit ref="channelCashierConfigEdit" @ok="queryPage" />
+    <CashierCodeTypeConfigEdit ref="cashierCodeTypeConfigEdit" @ok="queryPage" />
   </basic-drawer>
 </template>
 <script setup lang="ts">
   import { BasicDrawer } from '@/components/Drawer'
   import { ref } from 'vue'
-  import { findAll, remove, ChannelCashierConfig } from './ChannelCashierConfig.api'
-  import ChannelCashierConfigEdit from './ChannelCashierConfigEdit.vue'
+  import {
+    deleteType,
+    findTypeByCodeId,
+    CashierCodeConfig,
+    CashierCodeTypeConfig,
+  } from './CashierCodeConfig.api'
+  import CashierCodeTypeConfigEdit from './CashierCodeTypeConfigEdit.vue'
   import { FormEditType } from '@/enums/formTypeEnum'
   import { useMessage } from '@/hooks/web/useMessage'
   import { useDict } from '@/hooks/bootx/useDict'
-  import { MchApp } from '@/views/daxpay/common/merchant/app/MchApp.api'
 
   const { createConfirm, createMessage } = useMessage()
   const { dictConvert } = useDict()
 
-  const currentApp = ref<MchApp>({})
-
   const loading = ref(false)
   const visible = ref(false)
-  const records = ref<ChannelCashierConfig[]>([])
+  const records = ref<CashierCodeTypeConfig[]>([])
+  const codeConfig = ref<CashierCodeConfig>({})
 
-  const channelCashierConfigEdit = ref<any>()
+  const cashierCodeTypeConfigEdit = ref<any>()
   /**
    * 初始化并展示
    */
-  async function init(mchApp: MchApp) {
+  async function init(config: CashierCodeConfig) {
     visible.value = true
     loading.value = false
-    currentApp.value = mchApp
+    codeConfig.value = config
     queryPage()
   }
 
@@ -96,7 +92,7 @@
   function queryPage() {
     // 列表信息
     loading.value = true
-    findAll(currentApp.value.appId).then(({ data }) => {
+    findTypeByCodeId(codeConfig.value.id).then(({ data }) => {
       records.value = data
       loading.value = false
     })
@@ -113,19 +109,19 @@
    * 新增
    */
   function add() {
-    channelCashierConfigEdit.value.init(null, FormEditType.Add, currentApp.value)
+    cashierCodeTypeConfigEdit.value.init(null, FormEditType.Add, codeConfig.value.id)
   }
   /**
    * 编辑
    */
   function edit(record) {
-    channelCashierConfigEdit.value.init(record.id, FormEditType.Edit, currentApp.value)
+    cashierCodeTypeConfigEdit.value.init(record.id, FormEditType.Edit, codeConfig.value.id)
   }
   /**
    * 查看
    */
   function show(record) {
-    channelCashierConfigEdit.value.init(record.id, FormEditType.Show, currentApp.value)
+    cashierCodeTypeConfigEdit.value.init(record.id, FormEditType.Show, codeConfig.value.id)
   }
 
   /**
@@ -138,7 +134,7 @@
       content: '是否删除该数据',
       onOk: () => {
         loading.value = true
-        remove(record.id).then(() => {
+        deleteType(record.id).then(() => {
           createMessage.success('删除成功')
           queryPage()
         })

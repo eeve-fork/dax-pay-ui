@@ -53,17 +53,19 @@
               <a-link @click="showChannelSetup(row)">通道配置</a-link>
               <a-divider type="vertical" />
               <a-dropdown>
-                <a style="color:red"> 其他配置 <Icon icon="ant-design:down-outlined" :size="12" /> </a>
+                <a style="color: red">
+                  其他配置 <Icon icon="ant-design:down-outlined" :size="12" />
+                </a>
                 <template #overlay>
                   <a-menu>
                     <a-menu-item>
                       <a-link @click="showNotifyConfig(row)">订阅配置</a-link>
                     </a-menu-item>
                     <a-menu-item>
-                      <a-link @click="showCashierConfig(row)">收银配置</a-link>
+                      <a-link @click="showCheckoutConfig(row)">收银台配置</a-link>
                     </a-menu-item>
                     <a-menu-item>
-                      <a-link @click="showCashierQrCOde(row)">收银码牌</a-link>
+                      <a-link @click="showCashierCode(row)">码牌配置</a-link>
                     </a-menu-item>
                     <a-menu-item>
                       <a-link @click="showAllocConfig(row)">分账配置</a-link>
@@ -94,9 +96,8 @@
       />
       <mch-app-edit ref="mchApp" @ok="queryPage" />
       <channel-config-list ref="channelSetup" />
-      <ChannelCashierConfigList ref="channelCashierConfigList" />
-      <ChannelCashierQrCode ref="channelCashierQrCode" />
       <MerchantNotifyConfigList ref="merchantNotifyConfigList" />
+      <CashierCodeConfigList ref="cashierCodeConfigList" />
       <AllocationReceiverList ref="allocationReceiverList" />
       <AllocationGroupList ref="allocationGroupList" />
     </div>
@@ -118,10 +119,9 @@
   import ChannelConfigList from '@/views/daxpay/common/merchant/channel/ChannelConfigList.vue'
   import MerchantNotifyConfigList from '@/views/daxpay/common/merchant/notify/MerchantNotifyConfigList.vue'
   import Icon from '@/components/Icon/Icon.vue'
-  import ChannelCashierConfigList from '@/views/daxpay/common/merchant/cashier/ChannelCashierConfigList.vue'
-  import ChannelCashierQrCode from '@/views/daxpay/common/merchant/cashier/ChannelCashierQrCode.vue'
   import AllocationReceiverList from '@/views/daxpay/common/allocation/receiver/AllocationReceiverList.vue'
   import AllocationGroupList from '@/views/daxpay/common/allocation/group/AllocationGroupList.vue'
+  import CashierCodeConfigList from '@/views/daxpay/common/config/cashier/code/CashierCodeConfigList.vue'
 
   // 使用hooks
   const {
@@ -148,8 +148,7 @@
   const mchApp = ref<any>()
   const channelSetup = ref<any>()
   const merchantNotifyConfigList = ref<any>()
-  const channelCashierConfigList = ref<any>()
-  const channelCashierQrCode = ref<any>()
+  const cashierCodeConfigList = ref<any>()
   const allocationReceiverList = ref<any>()
   const allocationGroupList = ref<any>()
 
@@ -205,16 +204,16 @@
     merchantNotifyConfigList.value.init(record.appId)
   }
   /**
-   * 收银配置
+   * 收银台配置
    */
-  function showCashierConfig(record) {
-    channelCashierConfigList.value.init(record)
+  function showCheckoutConfig(record) {
   }
   /**
-   * 收银码牌
+   * 收银码牌配置
    */
-  function showCashierQrCOde(record) {
-    channelCashierQrCode.value.init(record.appId)
+  function showCashierCode(record) {
+    cashierCodeConfigList.value.init(record.appId)
+
   }
   /**
    * 分账配置

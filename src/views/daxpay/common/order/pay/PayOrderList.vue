@@ -137,7 +137,7 @@
 <script lang="ts" setup>
   import { computed, onMounted, ref, watch } from 'vue'
   import {
-    allocationByOrderNo,
+    allocByOrderNo,
     close,
     getTotalAmount,
     page,
@@ -356,7 +356,7 @@
       title: '警告',
       content: '是否触发该订单的分账操作',
       onOk: () => {
-        allocationByOrderNo(record.orderNo).then(() => {
+        allocByOrderNo(record.orderNo).then(() => {
           createMessage.success('分账请求已发送')
           queryPage()
         })

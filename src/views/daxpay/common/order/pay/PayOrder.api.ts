@@ -70,7 +70,7 @@ export function cancel(id) {
 /**
  * 触发分账
  */
-export function allocationByOrderNo(orderNo) {
+export function allocByOrderNo(orderNo) {
   return defHttp.post<Result<void>>({
     url: '/order/pay/allocation',
     params: { orderNo },

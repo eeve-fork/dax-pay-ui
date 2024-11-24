@@ -27,6 +27,12 @@
               <a-tag v-else color="red">停用</a-tag>
             </template>
           </vxe-column>
+          <vxe-column field="enable" title="支持分账">
+            <template #default="{ row }">
+              <a-tag v-if="row.enable" color="green">支持</a-tag>
+              <a-tag v-else color="red">不支持</a-tag>
+            </template>
+          </vxe-column>
           <vxe-column field="remark" title="备注" />
         </vxe-table>
       </div>

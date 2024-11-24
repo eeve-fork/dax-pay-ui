@@ -41,7 +41,7 @@
             <a-link @click="show(row)">{{ row.receiverNo }}</a-link>
           </template>
         </vxe-column>
-        <vxe-column field="channel" title="所属通道" :min-width="120" align="center">
+        <vxe-column field="channel" title="所属通道" :min-width="150" align="center">
           <template #default="{ row }">
             <a-tag>{{ dictConvert('channel', row.channel) }}</a-tag>
           </template>
@@ -75,7 +75,7 @@
         @page-change="handleTableChange"
       />
     </div>
-    <allocation-receiver-edit ref="allocationReceiverEdit" @ok="queryPage" />
+    <AllocationReceiverEdit ref="allocationReceiverEdit" @ok="queryPage" />
   </basic-drawer>
 </template>
 
@@ -127,21 +127,21 @@
         type: LIST,
         name: '分账通道',
         placeholder: '请选择分账通道',
-        selectList: payChannelList,
+        selectList: payChannelList.value,
       },
       {
         field: 'allocReceiverType',
         type: LIST,
         name: '接收方类型',
         placeholder: '请选择接收方类型',
-        selectList: receiverTypeList,
+        selectList: receiverTypeList.value,
       },
       {
         field: 'relationType',
         type: LIST,
         name: '分账关系',
         placeholder: '请选择分账关系',
-        selectList: relationTypeList,
+        selectList: relationTypeList.value,
       },
     ] as QueryField[]
   })

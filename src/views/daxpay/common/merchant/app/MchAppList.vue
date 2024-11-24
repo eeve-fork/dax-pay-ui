@@ -67,9 +67,9 @@
                     <a-menu-item>
                       <a-link @click="showCashierCode(row)">码牌配置</a-link>
                     </a-menu-item>
-                    <a-menu-item>
-                      <a-link @click="showAllocConfig(row)">分账配置</a-link>
-                    </a-menu-item>
+<!--                    <a-menu-item>-->
+<!--                      <a-link @click="showAllocConfig(row)">分账配置</a-link>-->
+<!--                    </a-menu-item>-->
                     <a-menu-item>
                       <a-link @click="showAllocReceiver(row)">分账接收方</a-link>
                     </a-menu-item>

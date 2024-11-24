@@ -107,7 +107,7 @@
 <script setup lang="ts">
   import useFormEdit from '@/hooks/bootx/useFormEdit'
   import { useMessage } from '@/hooks/web/useMessage'
-  import { computed, nextTick, ref } from 'vue'
+  import { computed, nextTick, ref, unref } from "vue";
   import { FormInstance, Rule } from 'ant-design-vue/lib/form'
   import {
     add,
@@ -124,6 +124,7 @@
   import { LabeledValue } from 'ant-design-vue/lib/select'
   import { Icon } from '@/components/Icon'
   import OpenIdQrCode from './OpenIdQrCode.vue'
+  import XEUtils from 'xe-utils'
 
   const {
     initFormEditType,
@@ -177,7 +178,7 @@
   function init(record, editType: FormEditType, appId) {
     initFormEditType(editType)
     resetForm()
-    form.value.appId = appId
+    form.value.appId = unref(appId)
     initData()
     getInfo(record, editType)
   }
@@ -226,6 +227,7 @@
     formRef.value?.validate().then(async () => {
       confirmLoading.value = true
       try {
+        form.value.reqTime = XEUtils.toDateString(new Date(), 'yyyy-MM-dd HH:mm:ss')
         if (formEditType.value === FormEditType.Add) {
           await add(form.value)
         } else if (formEditType.value === FormEditType.Edit) {

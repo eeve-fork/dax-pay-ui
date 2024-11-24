@@ -99,7 +99,7 @@
                         PayStatusEnum.SUCCESS === row.status
                       "
                     >
-                      <a-link @click="allocation(row)">分账</a-link>
+                      <a-link @click="allocationOrder(row)">分账</a-link>
                     </a-menu-item>
                     <a-menu-item
                       v-if="
@@ -135,9 +135,9 @@
 </template>
 
 <script lang="ts" setup>
-  import { computed, onMounted, ref, watch } from 'vue'
+  import { computed, onMounted, ref } from 'vue'
   import {
-    allocByOrderNo,
+    allocation,
     close,
     getTotalAmount,
     page,
@@ -341,27 +341,26 @@
     })
   }
   /**
-   * 退款
-   */
-  function refund(record) {
-    refundModel.value.init(record.id)
-  }
-
-  /**
    * 触发分账
    */
-  function allocation(record) {
+  function allocationOrder(record) {
     createConfirm({
       iconType: 'warning',
       title: '警告',
       content: '是否触发该订单的分账操作',
       onOk: () => {
-        allocByOrderNo(record.orderNo).then(() => {
+        allocation(record.id).then(() => {
           createMessage.success('分账请求已发送')
           queryPage()
         })
       },
     })
+  }
+  /**
+   * 退款
+   */
+  function refund(record) {
+    refundModel.value.init(record.id)
   }
 </script>
 

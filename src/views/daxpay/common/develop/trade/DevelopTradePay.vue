@@ -55,6 +55,13 @@
             placeholder="请选择支付方式"
           />
         </a-form-item>
+        <a-form-item label="是否分账" name="allocation">
+          <a-switch
+            checked-children="是"
+            un-checked-children="否"
+            v-model:checked="form.allocation"
+          />
+        </a-form-item>
         <a-form-item label="支付描述" name="description">
           <a-input v-model:value="form.description" placeholder="请输入支付描述" />
         </a-form-item>
@@ -150,6 +157,7 @@
       title: [{ required: true, message: '支付标题不可为空' }],
       amount: [{ required: true, message: '支付金额不可为空' }],
       method: [{ required: true, message: '支付方式不可为空' }],
+      allocation: [{ required: true, message: '分账不可为空' }],
       clientIp: [{ required: true, message: '终端IP不可为空' }],
       nonceStr: [{ required: true, message: '随机数不可为空' }],
       reqTime: [{ required: true, message: '请求时间不可为空' }],

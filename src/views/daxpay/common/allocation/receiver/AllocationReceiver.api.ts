@@ -100,4 +100,6 @@ export interface AllocReceiver extends MchEntity {
   relationType?: string
   // 关系名称
   relationName?: string
+  // 请求时间
+  reqTime?: string
 }

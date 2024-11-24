@@ -184,7 +184,7 @@
    * 新建
    */
   function add() {
-    allocationGroupEdit.value.init(null, FormEditType.Add, appId)
+    allocationGroupEdit.value.init(null, FormEditType.Add, appId.value)
   }
 
   /**

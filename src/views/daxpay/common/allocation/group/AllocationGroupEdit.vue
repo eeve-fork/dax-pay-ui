@@ -67,7 +67,7 @@
 
 <script setup lang="ts">
   import useFormEdit from '@/hooks/bootx/useFormEdit'
-  import { computed, nextTick, ref } from 'vue'
+  import { computed, nextTick, ref, unref } from "vue";
   import { FormInstance, Rule } from 'ant-design-vue/lib/form'
   import { get, add, update, AllocGroup, existsByNo } from './AllocationGroup.api'
   import { FormEditType } from '@/enums/formTypeEnum'
@@ -114,7 +114,7 @@
     initFormEditType(editType)
     resetForm()
     initData()
-    form.value.appId = appId
+    form.value.appId = unref(appId)
     getInfo(record, editType)
   }
 
@@ -161,6 +161,9 @@
    */
   async function validateCode() {
     const { groupNo, appId } = form.value
+    if (!addable.value) {
+      return Promise.resolve()
+    }
     const res = await existsByNo(groupNo, appId)
     return res.data ? Promise.reject('该分账组编号已经存在') : Promise.resolve()
   }

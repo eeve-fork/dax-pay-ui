@@ -20,7 +20,7 @@
       <a-form-item label="主键" name="id" :hidden="true">
         <a-input v-model:value="form.id" :disabled="showable" />
       </a-form-item>
-      <a-form-item label="码牌编码" name="code" v-show="form.code">
+      <a-form-item label="码牌编码" name="code" v-if="form.code">
         <a-input v-model:value="form.code" disabled />
       </a-form-item>
       <a-form-item label="码牌名称" name="name">

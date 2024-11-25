@@ -1,6 +1,5 @@
 <template>
   <basic-drawer
-    showFooter
     v-bind="$attrs"
     width="70%"
     title="码牌类型配置"

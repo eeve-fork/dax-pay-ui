@@ -20,19 +20,20 @@
       <a-form-item label="主键" name="id" :hidden="true">
         <a-input v-model:value="form.id" :disabled="showable" />
       </a-form-item>
-      <a-form-item label="码牌类型" validate-first name="type">
+      <a-form-item label="名称" name="name">
+        <a-input v-model:value="form.name" :disabled="showable" placeholder="请输入配置项名称" />
+      </a-form-item>
+      <a-form-item label="调用方式" validate-first name="callType">
         <a-select
-          style="width: 300px"
-          v-model:value="form.type"
+          v-model:value="form.callType"
           :disabled="showable"
-          :options="cashierTypeList"
+          :options="callTypeTypeList"
           allow-clear
           placeholder="请选择收银台类型"
         />
       </a-form-item>
       <a-form-item label="支付通道" name="channel">
         <a-select
-          style="width: 300px"
           v-model:value="form.channel"
           :disabled="showable"
           :options="channelList"
@@ -42,7 +43,6 @@
       </a-form-item>
       <a-form-item label="支付方式" name="payMethod">
         <a-select
-          style="width: 300px"
           v-model:value="form.payMethod"
           :disabled="showable"
           :options="methodList"
@@ -50,16 +50,8 @@
           placeholder="请选择支付方式"
         />
       </a-form-item>
-      <a-form-item label="是否开启分账" name="allocation">
-        <a-switch
-          checked-children="启用"
-          un-checked-children="停用"
-          v-model:checked="form.allocation"
-          :disabled="showable"
-        />
-      </a-form-item>
-      <a-form-item label="备注" name="remark">
-        <a-textarea v-model:value="form.remark" :disabled="showable" placeholder="请输入备注" />
+      <a-form-item label="排序" name="sort">
+        <a-input-number v-model:value="form.sortNo" :disabled="showable" placeholder="请输入排序" />
       </a-form-item>
     </a-form>
     <template #footer>
@@ -86,13 +78,11 @@
   import { BasicModal } from '@/components/Modal'
   import { LabeledValue } from 'ant-design-vue/lib/select'
   import {
-    findTypeById,
-    saveType,
-    updateType,
-    existsByType,
-    existsByTypeNotId,
-    CashierCodeTypeConfig,
-  } from './CashierCodeConfig.api'
+    getItemConfig,
+    saveItemConfig,
+    updateItemConfig,
+    CheckoutItemConfig,
+  } from './CheckoutConfig.api'
   import { useDict } from '@/hooks/bootx/useDict'
 
   const {
@@ -113,23 +103,17 @@
   // 表单
   const formRef = ref<FormInstance>()
 
-  const cashierTypeList = ref<LabeledValue[]>([])
+  const callTypeTypeList = ref<LabeledValue[]>([])
   const channelList = ref<LabeledValue[]>([])
   const methodList = ref<LabeledValue[]>([])
 
-  let form = ref<CashierCodeTypeConfig>({
-    allocation: false,
-    autoAllocation: false,
-  })
+  let form = ref<CheckoutItemConfig>({})
   // 校验
   const rules = reactive({
-    type: [
-      { required: true, message: '请选择收银台类型' },
-      { validator: validateCode, trigger: 'blur' },
-    ],
+    name: [{ required: true, message: '请输入配置项名称' }],
+    callType: [{ required: true, message: '请选择支付通道' }],
     channel: [{ required: true, message: '请选择支付通道' }],
     payMethod: [{ required: true, message: '请选择支付方式' }],
-    allocation: [{ required: true, message: '' }],
   } as Record<string, Rule[]>)
 
   // 事件
@@ -143,7 +127,7 @@
    * 初始化数据
    */
   async function initData() {
-    cashierTypeList.value = await dictDropDown('cashier_code_type')
+    callTypeTypeList.value = await dictDropDown('checkout_call_type')
     channelList.value = await dictDropDown('channel')
     methodList.value = await dictDropDown('pay_method')
   }
@@ -151,10 +135,10 @@
   /**
    * 入口
    */
-  function init(id, editType: FormEditType, configId: string) {
+  function init(id, editType: FormEditType, groupId: string) {
     initFormEditType(editType)
     resetForm()
-    form.value.cashierCodeId = unref(configId)
+    form.value.groupId = unref(groupId)
     getInfo(id, editType)
   }
 
@@ -164,7 +148,7 @@
   function getInfo(id, editType: FormEditType) {
     if ([FormEditType.Edit, FormEditType.Show].includes(editType)) {
       confirmLoading.value = true
-      findTypeById(id).then(({ data }) => {
+      getItemConfig(id).then(({ data }) => {
         form.value = data
         confirmLoading.value = false
       })
@@ -179,27 +163,13 @@
     formRef.value?.validate().then(async () => {
       confirmLoading.value = true
       if (formEditType.value === FormEditType.Add) {
-        await saveType(form.value).finally(() => (confirmLoading.value = false))
+        await saveItemConfig(form.value).finally(() => (confirmLoading.value = false))
       } else if (formEditType.value === FormEditType.Edit) {
-        await updateType(form.value).finally(() => (confirmLoading.value = false))
+        await updateItemConfig(form.value).finally(() => (confirmLoading.value = false))
       }
       handleCancel()
       emits('ok')
     })
-  }
-
-  /**
-   * 校验编码重复
-   */
-  async function validateCode() {
-    const { type, cashierCodeId, id } = form.value
-    if (id) {
-      const res = await existsByTypeNotId(type, cashierCodeId, id)
-      return res.data ? Promise.reject('该码牌类型已存在') : Promise.resolve()
-    } else {
-      const res = await existsByType(type, cashierCodeId)
-      return res.data ? Promise.reject('该码牌类型已存在') : Promise.resolve()
-    }
   }
 
   // 重置表单的校验

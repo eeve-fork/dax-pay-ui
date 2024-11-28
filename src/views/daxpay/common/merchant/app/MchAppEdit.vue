@@ -117,7 +117,6 @@
   const {
     initFormEditType,
     handleCancel,
-    search,
     labelCol,
     wrapperCol,
     title,

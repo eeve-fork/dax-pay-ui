@@ -1,9 +1,9 @@
 <template>
   <basic-modal
+    title="收银台分组配置"
     v-bind="$attrs"
     :loading="confirmLoading"
-    :width="modalWidth"
-    :title="title"
+    :width="750"
     :open="visible"
     :mask-closable="showable"
     @cancel="handleCancel"
@@ -21,22 +21,19 @@
         <a-form-item label="主键" name="id" :hidden="true">
           <a-input v-model:value="form.id" :disabled="showable" />
         </a-form-item>
-        <a-form-item label="码牌编码" name="code" v-if="form.code">
-          <a-input v-model:value="form.code" disabled />
-        </a-form-item>
-        <a-form-item label="码牌名称" name="name">
-          <a-input v-model:value="form.name" :disabled="showable" placeholder="请输入码牌名称" />
-        </a-form-item>
-        <a-form-item label="是否启用" name="enable">
-          <a-switch
-            checked-children="启用"
-            un-checked-children="停用"
-            v-model:checked="form.enable"
+        <a-form-item label="分类名称" name="name">
+          <a-input
+            v-model:value="form.name"
             :disabled="showable"
+            placeholder="请输入分类配置名称"
           />
         </a-form-item>
-        <a-form-item label="备注" name="remark">
-          <a-textarea v-model:value="form.remark" :disabled="showable" placeholder="请输入备注" />
+        <a-form-item label="排序" name="sort">
+          <a-input-number
+            v-model:value="form.sortNo"
+            :disabled="showable"
+            placeholder="请输入排序"
+          />
         </a-form-item>
       </a-form>
     </a-spin>
@@ -56,80 +53,64 @@
   </basic-modal>
 </template>
 
-<script lang="ts" setup>
-  import { nextTick, onMounted, reactive, ref, unref } from 'vue'
-  import useFormEdit from '@/hooks/bootx/useFormEdit'
-  import { FormInstance, Rule } from 'ant-design-vue/lib/form'
-  import { FormEditType } from '@/enums/formTypeEnum'
+<script setup lang="ts">
   import { BasicModal } from '@/components/Modal'
-  import { LabeledValue } from 'ant-design-vue/lib/select'
-  import { findById, save, update, CashierCodeConfig } from './CashierCodeConfig.api'
-  import { useDict } from '@/hooks/bootx/useDict'
+  import useFormEdit from '@/hooks/bootx/useFormEdit'
+  import { FormEditType } from '@/enums/formTypeEnum'
+  import {
+    saveGroupConfig,
+    updateGroupConfig,
+    CheckoutGroupConfig,
+    getGroupConfig,
+  } from './CheckoutConfig.api'
+  import { nextTick, ref, unref } from 'vue'
+  import { FormInstance, Rule } from 'ant-design-vue/lib/form'
+
+  const props = defineProps({
+    appId: String,
+    type: String,
+  })
 
   const {
-    initFormEditType,
     handleCancel,
-    labelCol,
-    wrapperCol,
-    modalWidth,
-    title,
+    initFormEditType,
+    formEditType,
     confirmLoading,
     visible,
     showable,
-    formEditType,
+    labelCol,
+    wrapperCol,
   } = useFormEdit()
 
-  const { dictDropDown } = useDict()
-
-  // 表单
   const formRef = ref<FormInstance>()
 
-  const cashierTypeList = ref<LabeledValue[]>([])
-  const channelList = ref<LabeledValue[]>([])
-  const methodList = ref<LabeledValue[]>([])
-
-  let form = ref<CashierCodeConfig>({
-    enable: true,
+  let form = ref<CheckoutGroupConfig>({
+    sortNo: 0,
   })
   // 校验
-  const rules = reactive({
+  const rules = {
     code: [{ required: true, message: '' }],
     name: [{ required: true, message: '请输入码牌名称' }],
     enable: [{ required: true, message: '是否启用' }],
-  } as Record<string, Rule[]>)
+  } as Record<string, Rule[]>
 
   // 事件
   const emits = defineEmits(['ok'])
 
-  onMounted(() => {
-    initData()
-  })
-
-  /**
-   * 初始化数据
-   */
-  async function initData() {
-    cashierTypeList.value = await dictDropDown('cashier_type')
-    channelList.value = await dictDropDown('channel')
-    methodList.value = await dictDropDown('pay_method')
-  }
-
   /**
    * 入口
    */
-  function init(id, editType: FormEditType, appId: string) {
+  function init(id, editType: FormEditType) {
     initFormEditType(editType)
     resetForm()
-    form.value.appId = unref(appId)
     getInfo(id, editType)
   }
-  /**
-   * 获取信息
-   */
+
+  // 获取信息
   function getInfo(id, editType: FormEditType) {
     if ([FormEditType.Edit, FormEditType.Show].includes(editType)) {
       confirmLoading.value = true
-      findById(id).then(({ data }) => {
+      getGroupConfig(id).then(({ data }) => {
         form.value = data
         confirmLoading.value = false
       })
@@ -137,31 +118,31 @@
       confirmLoading.value = false
     }
   }
+
   /**
    * 保存
    */
   function handleOk() {
     formRef.value?.validate().then(async () => {
       confirmLoading.value = true
+      form.value.appId = props.appId
+      form.value.type = props.type
       if (formEditType.value === FormEditType.Add) {
-        await save(form.value).finally(() => (confirmLoading.value = false))
+        await saveGroupConfig(unref(form)).finally(() => (confirmLoading.value = false))
       } else if (formEditType.value === FormEditType.Edit) {
-        await update(form.value).finally(() => (confirmLoading.value = false))
+        await updateGroupConfig(unref(form)).finally(() => (confirmLoading.value = false))
       }
       handleCancel()
       emits('ok')
     })
   }
-
   // 重置表单的校验
   function resetForm() {
     nextTick(() => {
       formRef.value?.resetFields()
     })
   }
-  defineExpose({
-    init,
-  })
+  defineExpose({ init })
 </script>
 
-<style lang="less" scoped></style>
+<style scoped lang="less"></style>

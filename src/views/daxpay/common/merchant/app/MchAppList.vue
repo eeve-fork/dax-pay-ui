@@ -67,9 +67,9 @@
                     <a-menu-item>
                       <a-link @click="showCashierCode(row)">码牌配置</a-link>
                     </a-menu-item>
-<!--                    <a-menu-item>-->
-<!--                      <a-link @click="showAllocConfig(row)">分账配置</a-link>-->
-<!--                    </a-menu-item>-->
+                    <!--                    <a-menu-item>-->
+                    <!--                      <a-link @click="showAllocConfig(row)">分账配置</a-link>-->
+                    <!--                    </a-menu-item>-->
                     <a-menu-item>
                       <a-link @click="showAllocReceiver(row)">分账接收方</a-link>
                     </a-menu-item>
@@ -98,6 +98,7 @@
       <channel-config-list ref="channelSetup" />
       <MerchantNotifyConfigList ref="merchantNotifyConfigList" />
       <CashierCodeConfigList ref="cashierCodeConfigList" />
+      <CheckoutConfigModel ref="checkoutConfigModel" />
       <AllocationReceiverList ref="allocationReceiverList" />
       <AllocationGroupList ref="allocationGroupList" />
     </div>
@@ -122,6 +123,7 @@
   import AllocationReceiverList from '@/views/daxpay/common/allocation/receiver/AllocationReceiverList.vue'
   import AllocationGroupList from '@/views/daxpay/common/allocation/group/AllocationGroupList.vue'
   import CashierCodeConfigList from '@/views/daxpay/common/config/cashier/code/CashierCodeConfigList.vue'
+  import CheckoutConfigModel from '@/views/daxpay/common/config/checkout/CheckoutConfigModel.vue'
 
   // 使用hooks
   const {
@@ -149,6 +151,7 @@
   const channelSetup = ref<any>()
   const merchantNotifyConfigList = ref<any>()
   const cashierCodeConfigList = ref<any>()
+  const checkoutConfigModel = ref<any>()
   const allocationReceiverList = ref<any>()
   const allocationGroupList = ref<any>()
 
@@ -207,13 +210,13 @@
    * 收银台配置
    */
   function showCheckoutConfig(record) {
+    checkoutConfigModel.value.init(record.appId)
   }
   /**
    * 收银码牌配置
    */
   function showCashierCode(record) {
     cashierCodeConfigList.value.init(record.appId)
-
   }
   /**
    * 分账配置

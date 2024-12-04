@@ -54,7 +54,7 @@
   import { BasicDrawer } from '@/components/Drawer'
   import { ref } from 'vue'
   import { findAll, ChannelConfig } from './ChannelConfig.api'
-  import { DaxpayEnum } from '@/enums/daxpay/daxpayEnum'
+  import { ChannelEnum } from '@/enums/daxpay/channelEnum'
   import alipay from '@/assets/daxpay/alipay.svg'
   import wechat from '@/assets/daxpay/wechat.svg'
   import unionPay from '@/assets/daxpay/unionPay.svg'
@@ -112,11 +112,11 @@
    */
   function getIcon(type: string) {
     switch (type) {
-      case DaxpayEnum.ALI:
+      case ChannelEnum.ALI:
         return alipay
-      case DaxpayEnum.WECHAT:
+      case ChannelEnum.WECHAT:
         return wechat
-      case DaxpayEnum.UNION_PAY:
+      case ChannelEnum.UNION_PAY:
         return unionPay
       default:
         return ''

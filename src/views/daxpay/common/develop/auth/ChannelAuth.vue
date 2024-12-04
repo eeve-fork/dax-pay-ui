@@ -83,7 +83,7 @@
   import useFormEdit from '@/hooks/bootx/useFormEdit'
   import { mchAppDropdown } from '@/views/daxpay/common/merchant/app/MchApp.api'
   import { useDict } from '@/hooks/bootx/useDict'
-  import { ChannelAuthStatusEnum } from '@/enums/daxpay/daxpayEnum'
+  import { ChannelAuthStatusEnum } from '@/enums/daxpay/channelEnum'
 
   const { createMessage } = useMessage()
   const { dictDropDown } = useDict()

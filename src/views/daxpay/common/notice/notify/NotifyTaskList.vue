@@ -88,7 +88,7 @@
   import PayOrderInfo from '@/views/daxpay/common/order/pay/PayOrderInfo.vue'
   import TransferOrderInfo from '@/views/daxpay/common/order/transfer/TransferOrderInfo.vue'
   import NotifyRecordList from './NotifyRecordList.vue'
-  import { NotifyContentTypeEnum } from '@/enums/daxpay/daxpayEnum'
+  import { NotifyContentTypeEnum } from '@/enums/daxpay/channelEnum'
   import RefundOrderInfo from '@/views/daxpay/common/order/refund/RefundOrderInfo.vue'
   import { mchAppDropdown } from '@/views/daxpay/common/merchant/app/MchApp.api'
 

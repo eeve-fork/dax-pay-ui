@@ -1,10 +1,22 @@
 /**
  * 支付通道
  */
-export enum DaxpayEnum {
+export enum ChannelEnum {
   ALI = 'ali_pay',
   WECHAT = 'wechat_pay',
   UNION_PAY = 'union_pay',
+}
+
+/**
+ * 支付方式
+ */
+export enum PayMethodEnum {
+  WAP = 'wap',
+  APP = 'app',
+  WEB = 'web',
+  QRCODE = 'qrcode',
+  BARCODE = 'barcode',
+  JSAPI = 'jsapi',
 }
 
 /**
@@ -51,10 +63,36 @@ export enum ChannelAuthStatusEnum {
   NOT_EXIST = 'not_exist',
 }
 
+
 /**
  * 收银台类型
  */
-export enum CashierTypeEnum {
-  WECHAT_PAY = 'wechat_pay',
-  ALIPAY = 'alipay',
+export enum CheckoutTypeEnum {
+  H5 = 'h5',
+  PC = 'pc',
+  MINI_APP = 'mini_app',
+  AGGREGATE = 'aggregate',
 }
+
+/**
+ * 支付调起类型
+ */
+export enum CheckoutCallTypeEnum {
+
+  /** 扫码支付 */
+  QR_CODE = 'qr_code',
+  /** 条码支付 */
+  BAR_CODE = 'bar_code',
+  /** 跳转链接 */
+  LINK = 'link',
+  /** 小程序 */
+  MINI_APP = 'mini_app',
+  /** APP支付 */
+  APP = 'app',
+  /** JSAPI */
+  JSAPI = 'jsapi',
+  /** 表单方式 */
+  FROM = 'from',
+
+}
+

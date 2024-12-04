@@ -118,7 +118,7 @@
   import BQuery from '/@/components/Bootx/Query/BQuery.vue'
   import { LabeledValue } from 'ant-design-vue/lib/select'
   import { useDict } from '@/hooks/bootx/useDict'
-  import { TradeTypeEnum } from '@/enums/daxpay/daxpayEnum'
+  import { TradeTypeEnum } from '@/enums/daxpay/channelEnum'
   import ReconcileDiscrepancyInfo from './ReconcileDiscrepancyInfo.vue'
   import ReconcileStatementInfo from '../statement/ReconcileStatementInfo.vue'
   import PayOrderInfo from '@/views/daxpay/common/order/pay/PayOrderInfo.vue'

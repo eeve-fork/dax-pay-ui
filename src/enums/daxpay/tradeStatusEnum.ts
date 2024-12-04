@@ -3,6 +3,10 @@
  */
 export enum PayStatusEnum {
   /**
+   * 待支付
+   */
+  WAIT = 'wait',
+  /**
    * 支付中
    */
   PROGRESS = 'progress',

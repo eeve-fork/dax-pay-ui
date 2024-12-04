@@ -44,6 +44,20 @@ export function tradeTransfer(params) {
 }
 
 /**
+ * 创建收银台链接签名
+ */
+export function checkoutSign(param: CheckoutCreatParam) {
+  return defHttp.post<Result<string>>({ url: '/develop/trade/sign/checkout', data: param })
+}
+
+/**
+ * 创建收银台链接
+ */
+export function checkoutUrl(params) {
+  return defHttp.post<Result<CheckoutUrlResult>>({ url: '/develop/trade/checkoutUrl', data: params })
+}
+
+/**
  * 支付请求参数
  */
 export interface PayParam {
@@ -212,4 +226,58 @@ export interface TransferResult {
   nonceStr?: string
   /** 签名 */
   sign?: string
+}
+
+/**
+ * 收银台创建参数
+ */
+export interface CheckoutCreatParam {
+  /** 收银台类型 */
+  checkoutType?: string
+  /** 商户订单号 */
+  bizOrderNo?: string
+  /** 支付标题 */
+  title?: string
+  /** 支付描述 */
+  description?: string
+  /** 是否开启分账 */
+  allocation?: boolean
+  /** 自动分账 */
+  autoAllocation?: boolean
+  /** 过期时间 */
+  expiredTime?: string
+  /** 支付通道编码 */
+  channel?: string
+  /** 支付方式编码 */
+  method?: string
+  /** 支付金额 */
+  amount?: number
+  /** 支付扩展参数 */
+  extraParam?: string
+  /** 商户扩展参数 */
+  attach?: string
+  /** 同步跳转地址 */
+  returnUrl?: string
+  /** 用户付款中途退出返回商户网站的地址 */
+  quitUrl?: string
+  /** 异步通知地址 */
+  notifyUrl?: string
+  /** 终端IP */
+  clientIp?: string
+  /** 应用号 */
+  appId?: string
+  /** 随机数 */
+  nonceStr?: string
+  /** 签名 */
+  sign?: string
+  /** 请求时间 */
+  reqTime?: string
+}
+
+/**
+ * 收银台响应参数
+ */
+export interface CheckoutUrlResult {
+  /** 收银台链接 */
+  url?: string
 }

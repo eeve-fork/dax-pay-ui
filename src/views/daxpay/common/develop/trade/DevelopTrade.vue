@@ -11,6 +11,7 @@
         <develop-trade-pay v-if="tradeType === TradeTypeEnum.PAY" />
         <develop-trade-refund v-if="tradeType === TradeTypeEnum.REFUND" />
         <develop-trade-transfer v-if="tradeType === TradeTypeEnum.TRANSFER" />
+        <develop-trade-check v-if="tradeType === 'checkout'" />
       </div>
     </div>
   </div>
@@ -24,6 +25,7 @@
   import DevelopTradePay from './DevelopTradePay.vue'
   import DevelopTradeRefund from './DevelopTradeRefund.vue'
   import DevelopTradeTransfer from './DevelopTradeTransfer.vue'
+  import DevelopTradeCheck from './DevelopTradeCheck.vue'
 
   const { dictDropDown } = useDict()
 
@@ -37,6 +39,7 @@
    */
   async function initData() {
     tradeTypes.value = await dictDropDown('trade_type')
+    tradeTypes.value.push({ label: '收银台', value: 'checkout' })
   }
 </script>
 

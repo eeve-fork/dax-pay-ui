@@ -148,6 +148,7 @@
     title: '测试支付',
     clientIp: '127.0.0.1',
     amount: 0.01,
+    allocation: false,
   })
   const rules = computed(() => {
     return {

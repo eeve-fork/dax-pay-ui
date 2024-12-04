@@ -85,6 +85,9 @@
   } from './CheckoutConfig.api'
   import { useDict } from '@/hooks/bootx/useDict'
 
+  const props = defineProps({
+    appId: String,
+  })
   const {
     initFormEditType,
     handleCancel,
@@ -136,6 +139,7 @@
    * 入口
    */
   function init(id, editType: FormEditType, groupId: string) {
+    console.log(props.appId)
     initFormEditType(editType)
     resetForm()
     form.value.groupId = unref(groupId)
@@ -162,6 +166,7 @@
   function handleOk() {
     formRef.value?.validate().then(async () => {
       confirmLoading.value = true
+      form.value.appId = props.appId
       if (formEditType.value === FormEditType.Add) {
         await saveItemConfig(form.value).finally(() => (confirmLoading.value = false))
       } else if (formEditType.value === FormEditType.Edit) {

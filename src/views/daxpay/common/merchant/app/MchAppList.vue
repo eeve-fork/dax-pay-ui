@@ -67,14 +67,8 @@
                     <a-menu-item>
                       <a-link @click="showCashierCode(row)">码牌配置</a-link>
                     </a-menu-item>
-                    <!--                    <a-menu-item>-->
-                    <!--                      <a-link @click="showAllocConfig(row)">分账配置</a-link>-->
-                    <!--                    </a-menu-item>-->
                     <a-menu-item>
-                      <a-link @click="showAllocReceiver(row)">分账接收方</a-link>
-                    </a-menu-item>
-                    <a-menu-item>
-                      <a-link @click="showAllocGroup(row)">分账组</a-link>
+                      <a-link @click="showAllocConfig(row)">分账配置</a-link>
                     </a-menu-item>
                     <a-menu-item>
                       <a-link danger @click="remove(row)">删除应用</a-link>
@@ -99,8 +93,7 @@
       <MerchantNotifyConfigList ref="merchantNotifyConfigList" />
       <CashierCodeConfigList ref="cashierCodeConfigList" />
       <CheckoutConfigModel ref="checkoutConfigModel" />
-      <AllocationReceiverList ref="allocationReceiverList" />
-      <AllocationGroupList ref="allocationGroupList" />
+      <AllocationConfigModel ref="allocationConfigModel" />
     </div>
   </div>
 </template>
@@ -120,10 +113,9 @@
   import ChannelConfigList from '@/views/daxpay/common/merchant/channel/ChannelConfigList.vue'
   import MerchantNotifyConfigList from '@/views/daxpay/common/merchant/notify/MerchantNotifyConfigList.vue'
   import Icon from '@/components/Icon/Icon.vue'
-  import AllocationReceiverList from '@/views/daxpay/common/allocation/receiver/AllocationReceiverList.vue'
-  import AllocationGroupList from '@/views/daxpay/common/allocation/group/AllocationGroupList.vue'
   import CashierCodeConfigList from '@/views/daxpay/common/config/cashier/code/CashierCodeConfigList.vue'
   import CheckoutConfigModel from '@/views/daxpay/common/config/checkout/CheckoutConfigModel.vue'
+  import AllocationConfigModel from '@/views/daxpay/common/allocation/AllocationConfigModel.vue'
 
   // 使用hooks
   const {
@@ -152,8 +144,7 @@
   const merchantNotifyConfigList = ref<any>()
   const cashierCodeConfigList = ref<any>()
   const checkoutConfigModel = ref<any>()
-  const allocationReceiverList = ref<any>()
-  const allocationGroupList = ref<any>()
+  const allocationConfigModel = ref<any>()
 
   onMounted(() => {
     vxeBind()
@@ -222,19 +213,7 @@
    * 分账配置
    */
   function showAllocConfig(record) {
-    createMessage.warn('暂未开放')
-  }
-  /**
-   * 分账接收方
-   */
-  function showAllocReceiver(record) {
-    allocationReceiverList.value.init(record.appId)
-  }
-  /**
-   * 分账组
-   */
-  function showAllocGroup(record) {
-    allocationGroupList.value.init(record.appId)
+    allocationConfigModel.value.init(record.appId)
   }
   /**
    * 删除

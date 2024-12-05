@@ -1,14 +1,6 @@
 <template>
-  <basic-drawer
-    showFooter
-    v-bind="$attrs"
-    width="70%"
-    title="接收方配置"
-    :mask-closable="true"
-    :open="visible"
-    @close="visible = false"
-  >
-    <div class="m-3 p-3 pt-5 bg-white">
+  <div>
+    <div class="p-3">
       <b-query
         :query-params="model.queryParam"
         :fields="fields"
@@ -27,45 +19,48 @@
           </a-space>
         </template>
       </vxe-toolbar>
-      <vxe-table
-        key-field="id"
-        ref="xTable"
-        :data="pagination.records"
-        :loading="loading"
-        :sort-config="{ remote: true, trigger: 'cell' }"
-        @sort-change="sortChange"
-      >
-        <vxe-column type="seq" title="序号" width="60" />
-        <vxe-column field="receiverNo" title="接收方编号" :min-width="180">
-          <template #default="{ row }">
-            <a-link @click="show(row)">{{ row.receiverNo }}</a-link>
-          </template>
-        </vxe-column>
-        <vxe-column field="channel" title="所属通道" :min-width="150" align="center">
-          <template #default="{ row }">
-            <a-tag>{{ dictConvert('channel', row.channel) }}</a-tag>
-          </template>
-        </vxe-column>
-        <vxe-column field="receiverType" title="接收方类型" :min-width="100" align="center">
-          <template #default="{ row }">
-            <a-tag>{{ dictConvert('alloc_receiver_type', row.receiverType) }}</a-tag>
-          </template>
-        </vxe-column>
-        <vxe-column field="receiverAccount" title="接收方账号" :min-width="230" />
-        <vxe-column field="receiverName" title="接收方姓名" :min-width="160" />
-        <vxe-column field="relationType" title="分账关系" :min-width="100" align="center">
-          <template #default="{ row }">
-            <a-tag>{{ dictConvert('alloc_relation_type', row.relationType) }}</a-tag>
-          </template>
-        </vxe-column>
-        <vxe-column fixed="right" min-width="100" :showOverflow="false" title="操作">
-          <template #default="{ row }">
-            <a-link @click="show(row)">查看</a-link>
-            <a-divider type="vertical" />
-            <a-link @click="remove(row)">删除</a-link>
-          </template>
-        </vxe-column>
-      </vxe-table>
+      <div class="h-60vh">
+        <vxe-table
+          height="auto"
+          key-field="id"
+          ref="xTable"
+          :data="pagination.records"
+          :loading="loading"
+          :sort-config="{ remote: true, trigger: 'cell' }"
+          @sort-change="sortChange"
+        >
+          <vxe-column type="seq" title="序号" width="60" />
+          <vxe-column field="receiverNo" title="接收方编号" :min-width="180">
+            <template #default="{ row }">
+              <a-link @click="show(row)">{{ row.receiverNo }}</a-link>
+            </template>
+          </vxe-column>
+          <vxe-column field="channel" title="所属通道" :min-width="150" align="center">
+            <template #default="{ row }">
+              <a-tag>{{ dictConvert('channel', row.channel) }}</a-tag>
+            </template>
+          </vxe-column>
+          <vxe-column field="receiverType" title="接收方类型" :min-width="100" align="center">
+            <template #default="{ row }">
+              <a-tag>{{ dictConvert('alloc_receiver_type', row.receiverType) }}</a-tag>
+            </template>
+          </vxe-column>
+          <vxe-column field="receiverAccount" title="接收方账号" :min-width="230" />
+          <vxe-column field="receiverName" title="接收方姓名" :min-width="160" />
+          <vxe-column field="relationType" title="分账关系" :min-width="100" align="center">
+            <template #default="{ row }">
+              <a-tag>{{ dictConvert('alloc_relation_type', row.relationType) }}</a-tag>
+            </template>
+          </vxe-column>
+          <vxe-column fixed="right" min-width="100" :showOverflow="false" title="操作">
+            <template #default="{ row }">
+              <a-link @click="show(row)">查看</a-link>
+              <a-divider type="vertical" />
+              <a-link @click="remove(row)">删除</a-link>
+            </template>
+          </vxe-column>
+        </vxe-table>
+      </div>
       <vxe-pager
         size="medium"
         :loading="loading"
@@ -76,7 +71,7 @@
       />
     </div>
     <AllocationReceiverEdit ref="allocationReceiverEdit" @ok="queryPage" />
-  </basic-drawer>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -92,7 +87,10 @@
   import { LabeledValue } from 'ant-design-vue/lib/select'
   import AllocationReceiverEdit from './AllocationReceiverEdit.vue'
   import { FormEditType } from '@/enums/formTypeEnum'
-  import { BasicDrawer } from '@/components/Drawer'
+
+  const props = defineProps({
+    appId: String,
+  })
 
   // 使用hooks
   const {
@@ -109,8 +107,6 @@
   const { createMessage, createConfirm } = useMessage()
   const { dictConvert, dictDropDown } = useDict()
 
-  const appId = ref('')
-  const visible = ref(false)
   const allocationReceiverEdit = ref<any>()
   const xTable = ref<VxeTableInstance>()
   const xToolbar = ref<VxeToolbarInstance>()
@@ -148,13 +144,8 @@
   onMounted(() => {
     vxeBind()
     initData()
-  })
-
-  function init(mchAppId: string) {
-    visible.value = true
-    appId.value = mchAppId
     queryPage()
-  }
+  })
 
   /**
    * 绑定
@@ -176,7 +167,7 @@
    * 新建
    */
   function add() {
-    allocationReceiverEdit.value.init(null, FormEditType.Add, appId)
+    allocationReceiverEdit.value.init(null, FormEditType.Add, props.appId)
   }
 
   /**
@@ -193,7 +184,7 @@
     loading.value = true
     page({
       ...model.queryParam,
-      appId: appId.value,
+      appId: props.appId,
       ...pages,
       ...sortParam,
     }).then(({ data }) => {
@@ -219,7 +210,6 @@
       },
     })
   }
-  defineExpose({ init })
 </script>
 
 <style scoped lang="less"></style>

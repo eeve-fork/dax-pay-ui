@@ -1,14 +1,6 @@
 <template>
-  <basic-drawer
-    showFooter
-    v-bind="$attrs"
-    width="70%"
-    title="分账组配置"
-    :mask-closable="true"
-    :open="visible"
-    @close="visible = false"
-  >
-    <div class="m-3 p-3 pt-5 bg-white">
+  <div>
+    <div class="p-3">
       <b-query
         :query-params="model.queryParam"
         :fields="fields"
@@ -27,62 +19,65 @@
           </a-space>
         </template>
       </vxe-toolbar>
-      <vxe-table
-        key-field="id"
-        ref="xTable"
-        :data="pagination.records"
-        :loading="loading"
-        :sort-config="{ remote: true, trigger: 'cell' }"
-        @sort-change="sortChange"
-      >
-        <vxe-column type="seq" title="序号" width="60" />
-        <vxe-column field="groupNo" title="分组编号" :min-width="160">
-          <template #default="{ row }">
-            <a-link @click="show(row)">{{ row.groupNo }}</a-link>
-          </template>
-        </vxe-column>
-        <vxe-column field="name" title="分组名称" :min-width="160" />
-        <vxe-column field="channel" title="所属通道" :min-width="120" align="center">
-          <template #default="{ row }">
-            <a-tag>{{ dictConvert('channel', row.channel) }}</a-tag>
-          </template>
-        </vxe-column>
-        <vxe-column field="totalRate" title="分账比例" align="center" :min-width="100">
-          <template #default="{ row }"> {{ row.totalRate }}% </template>
-        </vxe-column>
-        <vxe-column field="defaultGroup" title="默认分账组" align="center" :min-width="100">
-          <template #default="{ row }">
-            <a-tag color="green" v-if="row.defaultGroup">是</a-tag>
-            <a-tag v-else>否</a-tag>
-          </template>
-        </vxe-column>
-        <vxe-column field="remark" title="备注" :min-width="160" />
-        <vxe-column fixed="right" :min-width="160" :showOverflow="false" title="操作">
-          <template #default="{ row }">
-            <a-link danger @click="config(row)">接收方配置</a-link>
-            <a-divider type="vertical" />
-            <a-dropdown>
-              <a> 更多 <icon icon="ant-design:down-outlined" :size="12" /> </a>
-              <template #overlay>
-                <a-menu>
-                  <a-menu-item v-if="!row.defaultGroup">
-                    <a-link @click="setUpDefault(row)">设为默认</a-link>
-                  </a-menu-item>
-                  <a-menu-item v-if="row.defaultGroup">
-                    <a-link @click="clearDefault(row)">取消默认</a-link>
-                  </a-menu-item>
-                  <a-menu-item>
-                    <a-link @click="edit(row)">编辑</a-link>
-                  </a-menu-item>
-                  <a-menu-item>
-                    <a-link danger :disabled="row.defaultGroup" @click="remove(row)">删除</a-link>
-                  </a-menu-item>
-                </a-menu>
-              </template>
-            </a-dropdown>
-          </template>
-        </vxe-column>
-      </vxe-table>
+      <div class="h-60vh">
+        <vxe-table
+          height="auto"
+          key-field="id"
+          ref="xTable"
+          :data="pagination.records"
+          :loading="loading"
+          :sort-config="{ remote: true, trigger: 'cell' }"
+          @sort-change="sortChange"
+        >
+          <vxe-column type="seq" title="序号" width="60" />
+          <vxe-column field="groupNo" title="分组编号" :min-width="160">
+            <template #default="{ row }">
+              <a-link @click="show(row)">{{ row.groupNo }}</a-link>
+            </template>
+          </vxe-column>
+          <vxe-column field="name" title="分组名称" :min-width="160" />
+          <vxe-column field="channel" title="所属通道" :min-width="120" align="center">
+            <template #default="{ row }">
+              <a-tag>{{ dictConvert('channel', row.channel) }}</a-tag>
+            </template>
+          </vxe-column>
+          <vxe-column field="totalRate" title="分账比例" align="center" :min-width="100">
+            <template #default="{ row }"> {{ row.totalRate }}% </template>
+          </vxe-column>
+          <vxe-column field="defaultGroup" title="默认分账组" align="center" :min-width="100">
+            <template #default="{ row }">
+              <a-tag color="green" v-if="row.defaultGroup">是</a-tag>
+              <a-tag v-else>否</a-tag>
+            </template>
+          </vxe-column>
+          <vxe-column field="remark" title="备注" :min-width="160" />
+          <vxe-column fixed="right" :min-width="160" :showOverflow="false" title="操作">
+            <template #default="{ row }">
+              <a-link danger @click="config(row)">接收方配置</a-link>
+              <a-divider type="vertical" />
+              <a-dropdown>
+                <a> 更多 <icon icon="ant-design:down-outlined" :size="12" /> </a>
+                <template #overlay>
+                  <a-menu>
+                    <a-menu-item v-if="!row.defaultGroup">
+                      <a-link @click="setUpDefault(row)">设为默认</a-link>
+                    </a-menu-item>
+                    <a-menu-item v-if="row.defaultGroup">
+                      <a-link @click="clearDefault(row)">取消默认</a-link>
+                    </a-menu-item>
+                    <a-menu-item>
+                      <a-link @click="edit(row)">编辑</a-link>
+                    </a-menu-item>
+                    <a-menu-item>
+                      <a-link danger :disabled="row.defaultGroup" @click="remove(row)">删除</a-link>
+                    </a-menu-item>
+                  </a-menu>
+                </template>
+              </a-dropdown>
+            </template>
+          </vxe-column>
+        </vxe-table>
+      </div>
       <vxe-pager
         size="medium"
         :loading="loading"
@@ -94,7 +89,7 @@
     </div>
     <AllocationGroupEdit ref="allocationGroupEdit" @ok="queryPage" />
     <AllocationGroupConfig ref="allocationGroupConfig" />
-  </basic-drawer>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -113,8 +108,10 @@
   import AllocationGroupConfig from './AllocationGroupConfig.vue'
   import { FormEditType } from '@/enums/formTypeEnum'
   import { findChannels } from '../receiver/AllocationReceiver.api'
-  import { BasicDrawer } from '@/components/Drawer'
 
+  const props = defineProps({
+    appId: String,
+  })
   // 使用hooks
   const {
     handleTableChange,
@@ -130,13 +127,11 @@
   const { createMessage, createConfirm } = useMessage()
   const { dictConvert } = useDict()
 
-  const appId = ref('')
   const allocationGroupEdit = ref<any>()
   const allocationGroupConfig = ref<any>()
   const xTable = ref<VxeTableInstance>()
   const xToolbar = ref<VxeToolbarInstance>()
 
-  const visible = ref(false)
   let payChannelList = ref<LabeledValue[]>([])
 
   const fields = computed(() => {
@@ -155,6 +150,7 @@
   onMounted(() => {
     vxeBind()
     initData()
+    queryPage()
   })
 
   /**
@@ -162,15 +158,6 @@
    */
   function vxeBind() {
     xTable.value?.connect(xToolbar.value as VxeToolbarInstance)
-  }
-
-  /**
-   * 入口
-   */
-  function init(mchAppId) {
-    appId.value = mchAppId
-    visible.value = true
-    queryPage()
   }
 
   /**
@@ -184,7 +171,7 @@
    * 新建
    */
   function add() {
-    allocationGroupEdit.value.init(null, FormEditType.Add, appId.value)
+    allocationGroupEdit.value.init(null, FormEditType.Add, props.appId)
   }
 
   /**
@@ -215,7 +202,7 @@
     loading.value = true
     page({
       ...model.queryParam,
-      appId: appId.value,
+      appId: props.appId,
       ...pages,
       ...sortParam,
     }).then(({ data }) => {
@@ -277,7 +264,6 @@
       },
     })
   }
-  defineExpose({ init })
 </script>
 
 <style scoped lang="less"></style>

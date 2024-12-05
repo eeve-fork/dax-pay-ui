@@ -36,6 +36,22 @@ export const LoginRoute: AppRouteRecordRaw = {
   },
 }
 
-// Basic routing without permission
+/**
+ * 外部页面, 不需要登陆
+ */
+export const OUTSIDE: AppRouteModule = {
+  path: '/not/login/outside/',
+  name: 'NOT_LOGIN_OUTSIDE',
+  meta: { title: '' },
+  children: [
+    {
+      path: '/checkout/:orderNo',
+      name: 'CheckoutPay',
+      component: () => import('@/views/daxpay/outside/checkout/CheckoutPay.vue'),
+      meta: { title: '收银台', ignoreAuth: true },
+    },
+  ],
+}
+
 // 未经许可的基本路由
-export const basicRoutes = [LoginRoute, RootRoute, REDIRECT_ROUTE, PAGE_NOT_FOUND_ROUTE]
+export const basicRoutes = [LoginRoute, RootRoute, REDIRECT_ROUTE, PAGE_NOT_FOUND_ROUTE,OUTSIDE]

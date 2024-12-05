@@ -29,20 +29,13 @@ export const INTERNAL: AppRouteModule = {
 }
 
 /**
- * 位于主框架外的页面
+ * 位于主框架外的页面 也需要登陆
  */
 export const OUTSIDE: AppRouteModule = {
   path: '/outside',
   name: 'PROJECT_OUTSIDE',
   meta: { title: '' },
-  children: [
-    {
-      path: '/checkout/:orderNo',
-      name: 'CheckoutPay',
-      component: () => import('@/views/daxpay/outside/checkout/CheckoutPay.vue'),
-      meta: { title: '收银台', ignoreAuth: true },
-    },
-  ],
+  children: [],
 }
 
 /**

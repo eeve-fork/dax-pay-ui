@@ -1,6 +1,6 @@
 import { defHttp } from '@/utils/http/axios'
 import { Result } from '#/axios'
-import {PayResult} from "@/views/daxpay/common/develop/trade/DevelopTrade.api";
+import { PayResult } from '@/views/daxpay/common/develop/trade/DevelopTrade.api'
 
 /**
  * 获取收银台订单和配置信息
@@ -17,10 +17,10 @@ export function getOrderAndConfig(orderNo, checkoutType) {
 /**
  * 发起普通支付
  */
-export function getCheckoutUrl(orderNo,checkoutType) {
+export function getCheckoutUrl(orderNo, checkoutType) {
   return defHttp.get<Result<string>>({
     url: '/unipay/checkout/getCheckoutUrl',
-    params: {orderNo,checkoutType},
+    params: { orderNo, checkoutType },
   })
 }
 /**
@@ -33,7 +33,25 @@ export function checkoutPay(param: CheckoutPayParam) {
   })
 }
 
+/**
+ * 聚合条码支付
+ */
+export function aggregateBarPay(param: AggregateBarPayParam) {
+  return defHttp.post<Result<PayResult>>({
+    url: '/unipay/checkout/aggregateBarPay',
+    data: param,
+  })
+}
 
+/**
+ * 查询订单状态
+ */
+export function findStatusByOrderNo(orderNo) {
+  return defHttp.get<Result<boolean>>({
+    url: '/unipay/checkout/findStatusByOrderNo',
+    params: { orderNo },
+  })
+}
 
 /**
  * 收银台支付参数
@@ -50,6 +68,15 @@ export interface CheckoutPayParam {
 }
 
 /**
+ * 聚合条码支付参数
+ */
+export interface AggregateBarPayParam {
+  /** 订单号 */
+  orderNo?: string
+  /** 付款码 */
+  barCode?: string
+}
+/**
  * 收银台配置
  */
 export interface CheckoutOrderAndConfigResult {
@@ -59,18 +86,6 @@ export interface CheckoutOrderAndConfigResult {
   config: CheckoutConfigResult
   /** 收银台分类配置信息 */
   groupConfigs: CheckoutGroupConfigResult[]
-}
-
-/**
- * 收银台聚合支付配置
- */
-export interface AggregateOrderAndConfigResult {
-  /** 订单信息 */
-  order: CheckoutOrderResult
-  /** 收银台配置信息 */
-  config: CheckoutConfigResult
-  /** 收银台聚合配置信息 */
-  aggregateConfig: AggregateConfigResult
 }
 
 /**
@@ -87,7 +102,6 @@ export interface CheckoutOrderResult {
   description?: string
   /** 金额(元) */
   amount?: string
-
 }
 /**
  * 收银台配置信息
@@ -129,18 +143,4 @@ export interface CheckoutItemConfigResult {
   channel?: string
   /** 支付方式 */
   payMethod?: string
-}
-
-/**
- * 收银台聚合配置信息
- */
-export interface AggregateConfigResult {
-  /** 支付类型 */
-  type?: string
-  /** 通道 */
-  channel?: string
-  /** 支付方式 */
-  payMethod?: string
-  /** 自动拉起支付 */
-  autoLaunch?: boolean
 }

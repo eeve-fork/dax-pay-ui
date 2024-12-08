@@ -78,7 +78,7 @@
             >
           </a-radio-group>
         </a-form-item>
-        <a-form-item label="通知地址" name="notifyUrl" v-if="form.notifyType !== 'none'">
+        <a-form-item label="通知地址" name="notifyUrl" v-show="form.notifyType !== 'none'">
           <a-input
             v-model:value="form.notifyUrl"
             :disabled="showable"
@@ -135,6 +135,7 @@
     signType: 'hmac_sha256',
     limitAmount: 200.0,
     orderTimeout: 30,
+    signSecret: '',
     reqSign: true,
   })
   const signTypes = ref<LabeledValue[]>([])
@@ -156,10 +157,10 @@
   /**
    * 入口
    */
-  function init(id, editType: FormEditType) {
+  async function init(id, editType: FormEditType) {
     initData()
     initFormEditType(editType)
-    resetForm()
+    await resetForm()
     getInfo(id, editType)
   }
 
@@ -210,13 +211,18 @@
    * 生成秘钥
    */
   function genSignSecret() {
+    console.log(form.value.signSecret)
     form.value.signSecret = buildUUID() + buildUUID()
+    console.log(form.value.signSecret)
   }
   /**
    * 重置表单的校验
    */
-  function resetForm() {
-    nextTick(() => formRef.value?.resetFields())
+  async function resetForm() {
+    await nextTick(() => {
+      formRef.value?.resetFields()
+      console.log(form.value)
+    })
   }
   defineExpose({
     init,

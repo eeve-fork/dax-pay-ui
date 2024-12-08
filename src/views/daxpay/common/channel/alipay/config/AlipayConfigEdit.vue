@@ -34,7 +34,7 @@
         <a-form-item name="limitAmount">
           <template #label>
             <basic-title
-              helpMessage="每次发起支付的金额不能超过该值，如果同时配置了全局支付限额，则以额度低的为准"
+              helpMessage="每次发起支付的金额不能超过该值，如果同时配置了应用支付限额，则以额度低的为准"
             >
               支付限额(元)
             </basic-title>

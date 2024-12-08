@@ -62,7 +62,7 @@
         <a-form-item name="limitAmount">
           <template #label>
             <basic-title
-              helpMessage="每次发起支付的金额不能超过该值，如果同时配置了全局支付限额，则以额度低的为准"
+              helpMessage="每次发起支付的金额不能超过该值，如果同时配置了应用支付限额，则以额度低的为准"
             >
               支付限额(元)
             </basic-title>
@@ -73,9 +73,6 @@
             v-model:value="form.limitAmount"
             placeholder="请输入支付限额(元)"
           />
-        </a-form-item>
-        <a-form-item label="沙箱环境" name="sandbox">
-          <a-switch checked-children="是" un-checked-children="否" v-model:checked="form.sandbox" />
         </a-form-item>
         <a-form-item label="API版本" name="apiVersion">
           <a-radio-group v-model:value="form.apiVersion" button-style="solid">
@@ -99,7 +96,12 @@
             placeholder="请输入APIv3密钥"
           />
         </a-form-item>
-        <a-form-item label="证书序列号" name="certSerialNo">
+        <a-form-item name="certSerialNo">
+          <template #label>
+            <basic-title helpMessage="登录微信支付平台进入到账户中心 – API安全 – 查看证书, 查看证书序列号">
+              证书序列号
+            </basic-title>
+          </template>
           <a-input
             :disabled="showable"
             v-model:value="form.certSerialNo"
@@ -247,7 +249,6 @@
     apiKeyV3: '',
     notifyUrl: '',
     returnUrl: '',
-    sandbox: false,
     remark: '',
   })
 

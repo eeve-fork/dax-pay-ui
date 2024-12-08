@@ -3,7 +3,7 @@
     destroyOnClose
     v-bind="$attrs"
     width="60%"
-    title="码牌配置"
+    title="收银台配置"
     :mask-closable="true"
     :open="visible"
     @close="handleCancel"

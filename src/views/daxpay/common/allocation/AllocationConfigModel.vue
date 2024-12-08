@@ -8,13 +8,14 @@
     @close="visible = false"
   >
     <a-tabs v-model:activeKey="activeKey" type="card">
-      <a-tab-pane :key="1" tab="分账配置">
+      <a-tab-pane :key="1" tab="分账模式">
+        <AllocationConfig :appId="appId"/>
       </a-tab-pane>
       <a-tab-pane :key="2" tab="分账接收方">
-        <AllocationReceiverList ref="allocationReceiverList" :appId="appId"/>
+        <AllocationReceiverList :appId="appId"/>
       </a-tab-pane>
       <a-tab-pane :key="3" tab="分账组">
-        <AllocationGroupList ref="allocationGroupList" :appId="appId" />
+        <AllocationGroupList :appId="appId" />
       </a-tab-pane>
     </a-tabs>
   </basic-drawer>
@@ -25,9 +26,7 @@
   import AllocationGroupList from '@/views/daxpay/common/allocation/group/AllocationGroupList.vue'
   import { ref } from 'vue'
   import { BasicDrawer } from '@/components/Drawer'
-
-  const allocationReceiverList = ref<any>()
-  const allocationGroupList = ref<any>()
+  import AllocationConfig from "@/views/daxpay/common/allocation/config/AllocationConfig.vue";
 
   const visible = ref(false)
   const activeKey = ref(2)

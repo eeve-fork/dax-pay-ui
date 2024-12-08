@@ -60,8 +60,6 @@ export interface WechatPayConfig extends MchEntity {
   notifyUrl?: string
   // 页面跳转同步通知页面路径
   returnUrl?: string
-  // 是否沙箱环境
-  sandbox?: boolean
   // 备注
   remark?: string
 }

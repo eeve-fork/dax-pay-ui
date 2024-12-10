@@ -30,11 +30,12 @@
           @sort-change="sortChange"
         >
           <vxe-column type="seq" title="序号" width="60" />
-          <vxe-column field="receiverNo" title="接收方编号" :min-width="180">
+          <vxe-column field="receiverNo" title="编号" :min-width="180">
             <template #default="{ row }">
               <a-link @click="show(row)">{{ row.receiverNo }}</a-link>
             </template>
           </vxe-column>
+          <vxe-column field="name" title="名称" :min-width="180" />
           <vxe-column field="channel" title="所属通道" :min-width="150" align="center">
             <template #default="{ row }">
               <a-tag>{{ dictConvert('channel', row.channel) }}</a-tag>
@@ -87,6 +88,7 @@
   import { LabeledValue } from 'ant-design-vue/lib/select'
   import AllocationReceiverEdit from './AllocationReceiverEdit.vue'
   import { FormEditType } from '@/enums/formTypeEnum'
+  import XEUtils from 'xe-utils'
 
   const props = defineProps({
     appId: String,
@@ -203,7 +205,12 @@
       content: '是否确认删除该条数据?',
       onOk: () => {
         loading.value = true
-        del(record.receiverNo, record.appId).then(() => {
+        const form = {
+          receiverNo: record.receiverNo,
+          appId: record.appId,
+          reqTime: XEUtils.toDateString(new Date(), 'yyyy-MM-dd HH:mm:ss'),
+        }
+        del(form).then(() => {
           createMessage.success('删除成功')
           queryPage()
         })

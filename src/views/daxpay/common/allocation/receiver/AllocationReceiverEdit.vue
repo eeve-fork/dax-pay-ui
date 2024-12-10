@@ -21,12 +21,11 @@
         <a-form-item label="主键" name="id" :hidden="true">
           <a-input v-model:value="form.id" :disabled="showable" />
         </a-form-item>
-        <a-form-item label="接收方编号" validate-first name="receiverNo">
-          <a-input
-            v-model:value="form.receiverNo"
-            :disabled="!addable"
-            placeholder="请输入接收方编号"
-          />
+        <a-form-item v-if="showable" label="接收方编号" name="receiverNo">
+          <a-input v-model:value="form.receiverNo" disabled/>
+        </a-form-item>
+        <a-form-item label="名称" name="name">
+          <a-input v-model:value="form.name" :disabled="!addable" placeholder="请输入名称" />
         </a-form-item>
         <a-form-item label="所属通道" name="channel">
           <a-select
@@ -100,23 +99,21 @@
         >
       </a-space>
     </template>
-    <open-id-qr-code ref="openIdQrCode" @close="pauseFun" />
+    <OpenIdQrCode ref="openIdQrCode" @close="pauseFun" />
   </basic-modal>
 </template>
 
 <script setup lang="ts">
   import useFormEdit from '@/hooks/bootx/useFormEdit'
   import { useMessage } from '@/hooks/web/useMessage'
-  import { computed, nextTick, ref, unref } from "vue";
+  import { computed, nextTick, ref, unref } from 'vue'
   import { FormInstance, Rule } from 'ant-design-vue/lib/form'
   import {
     add,
     get,
     AllocReceiver,
-    update,
     findChannels,
     findReceiverTypeByChannel,
-    existsByNo,
   } from './AllocationReceiver.api'
   import { FormEditType } from '@/enums/formTypeEnum'
   import { BasicModal } from '@/components/Modal'
@@ -129,7 +126,6 @@
   const {
     initFormEditType,
     handleCancel,
-    diffForm,
     labelCol,
     wrapperCol,
     title,
@@ -156,10 +152,6 @@
   // 校验
   const rules = computed(() => {
     return {
-      receiverNo: [
-        { required: true, message: '请输入账号编号' },
-        { trigger: 'blur', validator: validateCode },
-      ],
       channel: [{ required: true, message: '请选择所属通道' }],
       receiverType: [{ required: true, message: '请选择分账接收方类型' }],
       receiverAccount: [{ required: true, message: '请输入接收方账号' }],
@@ -227,14 +219,11 @@
     formRef.value?.validate().then(async () => {
       confirmLoading.value = true
       try {
+        form.value.receiverNo = 'none'
         form.value.reqTime = XEUtils.toDateString(new Date(), 'yyyy-MM-dd HH:mm:ss')
         if (formEditType.value === FormEditType.Add) {
           await add(form.value)
-        } else if (formEditType.value === FormEditType.Edit) {
-          await update({
-            ...form.value,
-            ...diffForm(rawForm.value, form.value, 'receiverAccount', 'receiverName'),
-          })
+          createMessage.success('新增成功')
         }
       } finally {
         confirmLoading.value = false
@@ -248,15 +237,6 @@
    * 显示扫码窗口
    */
   function showQrCode() {}
-
-  /**
-   * 校验编码重复
-   */
-  async function validateCode() {
-    const { receiverNo, appId } = form.value
-    const res = await existsByNo(receiverNo, appId)
-    return res.data ? Promise.reject('该接收方编号已经存在') : Promise.resolve()
-  }
 
   /**
    * 重置表单

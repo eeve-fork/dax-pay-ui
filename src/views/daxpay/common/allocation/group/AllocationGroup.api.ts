@@ -1,6 +1,6 @@
 import { defHttp } from '@/utils/http/axios'
 import { PageResult, Result } from '#/axios'
-import { BaseEntity, MchEntity } from "#/web";
+import { BaseEntity, MchEntity } from '#/web'
 
 /**
  * 分页查询
@@ -170,6 +170,10 @@ export interface AllocGroupReceiver extends BaseEntity {
    * 分账接收方ID
    */
   receiverId?: string
+  /**
+   * 名称
+   */
+  name?: string
   /**
    * 分账比例
    */

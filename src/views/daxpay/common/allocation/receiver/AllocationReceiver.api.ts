@@ -53,32 +53,12 @@ export function add(data: AllocReceiver) {
 }
 
 /**
- * 编码是否存在
- */
-export function existsByNo(receiverNo, appId) {
-  return defHttp.get<Result<boolean>>({
-    url: '/allocation/receiver/existsByReceiverNo',
-    params: { receiverNo, appId },
-  })
-}
-
-/**
- * 修改
- */
-export function update(data: AllocReceiver) {
-  return defHttp.post<Result<void>>({
-    url: '/allocation/receiver/update',
-    data,
-  })
-}
-
-/**
  * 删除
  */
-export function del(receiverNo, appId) {
+export function del(data) {
   return defHttp.post<Result<void>>({
     url: '/allocation/receiver/delete',
-    data: { receiverNo, appId },
+    data,
   })
 }
 
@@ -88,6 +68,8 @@ export function del(receiverNo, appId) {
 export interface AllocReceiver extends MchEntity {
   // 分账接收方编号
   receiverNo?: string
+  // 名称
+  name?: string
   // 所属通道
   channel?: string
   // 分账接收方类型

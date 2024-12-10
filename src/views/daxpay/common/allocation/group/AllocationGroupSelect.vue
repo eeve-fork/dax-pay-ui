@@ -28,6 +28,7 @@
     >
       <vxe-column type="checkbox" width="50" />
       <vxe-column field="receiverNo" title="接收方编号" :min-width="160" />
+      <vxe-column field="name" title="接收方名称" :min-width="100" />
       <vxe-column field="receiverType" title="分账接收方类型" :min-width="100">
         <template #default="{ row }">
           <a-tag>{{ dictConvert('alloc_receiver_type', row.receiverType) }}</a-tag>
@@ -86,6 +87,7 @@
   const fields = computed(() => {
     return [
       { field: 'receiverNo', type: STRING, name: '接收方编号', placeholder: '请输入接收方编号' },
+      { field: 'name', type: STRING, name: '接收方名称', placeholder: '请输入接收方名称' },
       {
         field: 'relationType',
         type: LIST,

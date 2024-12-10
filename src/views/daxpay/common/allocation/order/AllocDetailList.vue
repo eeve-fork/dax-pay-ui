@@ -4,7 +4,7 @@
     v-bind="$attrs"
     title="分账订单明细"
     width="60%"
-    :visible="visible"
+    :open="visible"
     @close="visible = false"
   >
     <vxe-toolbar ref="xToolbar" custom :refresh="{ queryMethod: queryPage }" />
@@ -55,14 +55,14 @@
   import { VxeTableInstance, VxeToolbarInstance } from 'vxe-table'
   import BasicDrawer from '@/components/Drawer/src/BasicDrawer.vue'
   import { useDict } from '@/hooks/bootx/useDict'
-  import { AllocationOrder, AllocationOrderDetail, detailList } from './Allocation.api'
+  import { AllocOrder, AllocDetail, detailList } from './Allocation.api'
   // 使用hooks
   const { loading } = useTablePage(queryPage)
   const { dictConvert } = useDict()
 
   let visible = ref(false)
-  let order = ref<AllocationOrder>({})
-  let records = ref<AllocationOrderDetail[]>([])
+  let order = ref<AllocOrder>({})
+  let records = ref<AllocDetail[]>([])
   const xTable = ref<VxeTableInstance>()
   const xToolbar = ref<VxeToolbarInstance>()
   const allocationOrderDetailInfo = ref<any>()

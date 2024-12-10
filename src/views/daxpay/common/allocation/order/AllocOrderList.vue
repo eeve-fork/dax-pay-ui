@@ -36,9 +36,9 @@
           </template>
         </vxe-column>
 
-        <vxe-column field="channel" title="所属通道" :min-width="100">
+        <vxe-column field="channel" title="所属通道" align="center" :min-width="150">
           <template #default="{ row }">
-            <a-tag>{{ dictConvert('PayChannel', row.channel) }}</a-tag>
+            <a-tag>{{ dictConvert('channel', row.channel) }}</a-tag>
           </template>
         </vxe-column>
         <vxe-column field="amount" title="总分账金额(元)" :min-width="120">
@@ -48,12 +48,12 @@
         </vxe-column>
         <vxe-column field="status" title="状态" :min-width="120">
           <template #default="{ row }">
-            <a-tag>{{ dictConvert('AllocOrderStatus', row.status) }}</a-tag>
+            <a-tag>{{ dictConvert('allocation_status', row.status) }}</a-tag>
           </template>
         </vxe-column>
         <vxe-column field="result" title="分账结果" :min-width="100">
           <template #default="{ row }">
-            {{ dictConvert('AllocOrderResult', row.result) }}
+            {{ dictConvert('allocation_result', row.result) }}
           </template> </vxe-column
         ><vxe-column field="errorMsg" title="错误原因" :min-width="160" />
         <vxe-column field="createTime" title="创建时间" :min-width="160" />
@@ -139,7 +139,7 @@
   const allocDetailList = ref<any>()
   const allocationOrderInfo = ref<any>()
 
-  let payChannelList = ref<LabeledValue[]>([])
+  let channelList = ref<LabeledValue[]>([])
   const payOrderInfo = ref<any>()
 
   const fields = computed(() => {
@@ -149,7 +149,7 @@
         type: LIST,
         name: '分账通道',
         placeholder: '请选择分账通道',
-        selectList: payChannelList.value,
+        selectList: channelList.value,
       },
       { field: 'orderNo', type: STRING, name: '分账订单号', placeholder: '请输入分账订单号' },
       { field: 'paymentId', type: STRING, name: '支付订单ID', placeholder: '请输入支付订单ID' },

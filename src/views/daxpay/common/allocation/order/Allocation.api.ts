@@ -6,8 +6,8 @@ import { MchEntity } from '#/web'
  * 分页
  */
 export function page(params) {
-  return defHttp.get<Result<PageResult<AllocationOrder>>>({
-    url: '/allocation/transaction/page',
+  return defHttp.get<Result<PageResult<AllocOrder>>>({
+    url: '/allocation/order/page',
     params,
   })
 }
@@ -16,8 +16,8 @@ export function page(params) {
  * 查询详情
  */
 export function get(id) {
-  return defHttp.get<Result<AllocationOrder>>({
-    url: '/allocation/transaction/findById',
+  return defHttp.get<Result<AllocOrder>>({
+    url: '/allocation/order/findById',
     params: { id },
   })
 }
@@ -27,7 +27,7 @@ export function get(id) {
  */
 export function getOrderByAllocNo(allocNo: string) {
   return defHttp.get<Result>({
-    url: '/allocation/transaction/findByAllocNo',
+    url: '/allocation/order/findByAllocNo',
     params: { allocNo },
   })
 }
@@ -36,8 +36,8 @@ export function getOrderByAllocNo(allocNo: string) {
  * 扩展信息
  */
 export function getExtra(id) {
-  return defHttp.get<Result<AllocationOrder>>({
-    url: '/allocation/transaction/findById',
+  return defHttp.get<Result<AllocOrder>>({
+    url: '/allocation/order/findById',
     params: { id },
   })
 }
@@ -46,8 +46,8 @@ export function getExtra(id) {
  * 明细列表
  */
 export function detailList(orderId) {
-  return defHttp.get<Result<AllocationOrderDetail[]>>({
-    url: '/allocation/transaction/detail/findAll',
+  return defHttp.get<Result<AllocDetail[]>>({
+    url: '/allocation/order/detail/findAll',
     params: { orderId },
   })
 }
@@ -56,8 +56,8 @@ export function detailList(orderId) {
  * 明细详情
  */
 export function detail(id) {
-  return defHttp.get<Result<AllocationOrderDetail>>({
-    url: '/allocation/transaction/detail/findById',
+  return defHttp.get<Result<AllocDetail>>({
+    url: '/allocation/order/detail/findById',
     params: { id },
   })
 }
@@ -66,8 +66,8 @@ export function detail(id) {
  * 分账完结
  */
 export function finish(allocNo) {
-  return defHttp.post<Result<AllocationOrder>>({
-    url: '/allocation/transaction/finish',
+  return defHttp.post<Result<AllocOrder>>({
+    url: '/allocation/order/finish',
     params: { allocNo },
   })
 }
@@ -76,8 +76,8 @@ export function finish(allocNo) {
  * 分账完结
  */
 export function retry(bizAllocNo) {
-  return defHttp.post<Result<AllocationOrder>>({
-    url: '/allocation/transaction/retry',
+  return defHttp.post<Result<AllocOrder>>({
+    url: '/allocation/order/retry',
     params: { bizAllocNo },
   })
 }
@@ -86,8 +86,8 @@ export function retry(bizAllocNo) {
  * 查询分账结果
  */
 export function sync(allocNo) {
-  return defHttp.post<Result<AllocationOrder>>({
-    url: '/allocation/transaction/sync',
+  return defHttp.post<Result<AllocOrder>>({
+    url: '/allocation/order/sync',
     params: { allocNo },
   })
 }
@@ -95,7 +95,7 @@ export function sync(allocNo) {
 /**
  * 分账订单
  */
-export interface AllocationOrder extends MchEntity {
+export interface AllocOrder extends MchEntity {
   // 分账单号
   allocNo?: string
   // 商户分账单号
@@ -143,7 +143,7 @@ export interface AllocationOrder extends MchEntity {
 /**
  * 分账订单明细
  */
-export interface AllocationOrderDetail extends MchEntity {
+export interface AllocDetail extends MchEntity {
   // 分账订单ID
   orderId?: string
   // 分账明细单号

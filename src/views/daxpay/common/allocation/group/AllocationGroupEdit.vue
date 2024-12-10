@@ -21,13 +21,6 @@
         <a-form-item label="主键" name="id" :hidden="true">
           <a-input v-model:value="form.id" :disabled="showable" />
         </a-form-item>
-        <a-form-item label="分账组编号" name="groupNo">
-          <a-input
-            v-model:value="form.groupNo"
-            :disabled="!addable"
-            placeholder="请输入分账组编号"
-          />
-        </a-form-item>
         <a-form-item label="所属通道" name="channel">
           <a-select
             style="width: 100%"
@@ -67,9 +60,9 @@
 
 <script setup lang="ts">
   import useFormEdit from '@/hooks/bootx/useFormEdit'
-  import { computed, nextTick, ref, unref } from "vue";
+  import { computed, nextTick, ref, unref } from 'vue'
   import { FormInstance, Rule } from 'ant-design-vue/lib/form'
-  import { get, add, update, AllocGroup, existsByNo } from './AllocationGroup.api'
+  import { get, add, update, AllocGroup } from './AllocationGroup.api'
   import { FormEditType } from '@/enums/formTypeEnum'
   import { BasicModal } from '@/components/Modal'
   import { LabeledValue } from 'ant-design-vue/lib/select'
@@ -97,10 +90,7 @@
   // 校验
   const rules = computed(() => {
     return {
-      groupNo: [
-        { required: true, message: '请输入分账组编号' },
-        { trigger: 'blur', validator: validateCode },
-      ],
+      groupNo: [{ required: true, message: '请输入分账组编号' }],
       channel: [{ required: true, message: '请选择所属通道' }],
     } as Record<string, Rule[]>
   })
@@ -154,18 +144,6 @@
       }
       handleCancel()
     })
-  }
-
-  /**
-   * 校验编码重复
-   */
-  async function validateCode() {
-    const { groupNo, appId } = form.value
-    if (!addable.value) {
-      return Promise.resolve()
-    }
-    const res = await existsByNo(groupNo, appId)
-    return res.data ? Promise.reject('该分账组编号已经存在') : Promise.resolve()
   }
 
   /**

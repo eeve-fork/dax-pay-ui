@@ -26,7 +26,9 @@
       @edit-closed="editClosedEvent"
     >
       <vxe-column type="seq" width="60" />
-      <vxe-column field="receiverType" title="接收方类型" :min-width="100">
+      <vxe-column field="receiverNo" title="编号" :min-width="180" />
+      <vxe-column field="name" title="接收方名称" :min-width="100" />
+      <vxe-column field="receiverType" title="接收方类型" :min-width="120">
         <template #default="{ row }">
           <a-tag>{{ dictConvert('alloc_receiver_type', row.receiverType) }}</a-tag>
         </template>

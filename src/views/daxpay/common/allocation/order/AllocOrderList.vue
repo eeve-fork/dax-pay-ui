@@ -43,7 +43,7 @@
         </vxe-column>
         <vxe-column field="amount" title="总分账金额(元)" :min-width="120">
           <template #default="{ row }">
-            {{ row.amount ? (row.amount / 100).toFixed(2) : 0 }}
+            {{ row.amount }}
           </template>
         </vxe-column>
         <vxe-column field="status" title="状态" :min-width="120">

@@ -55,7 +55,7 @@
   import { VxeTableInstance, VxeToolbarInstance } from 'vxe-table'
   import BasicDrawer from '@/components/Drawer/src/BasicDrawer.vue'
   import { useDict } from '@/hooks/bootx/useDict'
-  import { AllocOrder, AllocDetail, detailList } from './Allocation.api'
+  import { AllocOrder, AllocDetail, detailList } from './AllocationOrder.api'
   // 使用hooks
   const { loading } = useTablePage(queryPage)
   const { dictConvert } = useDict()

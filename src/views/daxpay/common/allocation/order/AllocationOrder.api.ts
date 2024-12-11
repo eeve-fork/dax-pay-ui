@@ -149,9 +149,9 @@ export interface AllocDetail extends MchEntity {
   // 分账明细单号
   receiverId?: string
   // 比例
-  rate: number
+  rate?: number
   // 金额
-  amount: number
+  amount?: number
   // 分账接收方类型
   receiverType?: string
   // 接收方账号

@@ -101,12 +101,13 @@
       />
     </div>
     <AllocDetailList ref="allocDetailList" />
+    <AllocOrderInfo ref="allocOrderInfo" />
   </div>
 </template>
 
 <script setup lang="ts">
   import { computed, onMounted, ref } from 'vue'
-  import { page, sync, finish, retry } from './Allocation.api'
+  import { page, sync, finish, retry } from './AllocationOrder.api'
   import useTablePage from '@/hooks/bootx/useTablePage'
   import { VxeTable, VxeTableInstance, VxeToolbarInstance } from 'vxe-table'
   import { useMessage } from '@/hooks/web/useMessage'
@@ -118,6 +119,7 @@
   import { FormEditType } from '@/enums/formTypeEnum'
   import AllocDetailList from './AllocDetailList.vue'
   import { Icon } from '@/components/Icon'
+  import AllocOrderInfo from "./AllocOrderInfo.vue";
 
   // 使用hooks
   const {
@@ -137,7 +139,7 @@
   const xTable = ref<VxeTableInstance>()
   const xToolbar = ref<VxeToolbarInstance>()
   const allocDetailList = ref<any>()
-  const allocationOrderInfo = ref<any>()
+  const allocOrderInfo = ref<any>()
 
   let channelList = ref<LabeledValue[]>([])
   const payOrderInfo = ref<any>()
@@ -181,7 +183,7 @@
    * 查看
    */
   function show(record) {
-    allocationOrderInfo.value.init(record.allocNo, FormEditType.Show)
+    allocOrderInfo.value.init(record)
   }
 
   /**

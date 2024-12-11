@@ -100,6 +100,7 @@
         @page-change="handleTableChange"
       />
     </div>
+    <PayOrderInfo ref="payOrderInfo" />
     <AllocDetailList ref="allocDetailList" />
     <AllocOrderInfo ref="allocOrderInfo" />
   </div>
@@ -116,10 +117,10 @@
   import BQuery from '/@/components/Bootx/Query/BQuery.vue'
   import { LIST, QueryField, STRING } from '@/components/Bootx/Query/Query'
   import { LabeledValue } from 'ant-design-vue/lib/select'
-  import { FormEditType } from '@/enums/formTypeEnum'
   import AllocDetailList from './AllocDetailList.vue'
   import { Icon } from '@/components/Icon'
   import AllocOrderInfo from "./AllocOrderInfo.vue";
+  import PayOrderInfo from "@/views/daxpay/common/order/pay/PayOrderInfo.vue";
 
   // 使用hooks
   const {

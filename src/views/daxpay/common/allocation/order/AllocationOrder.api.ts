@@ -145,15 +145,17 @@ export interface AllocOrder extends MchEntity {
  */
 export interface AllocDetail extends MchEntity {
   // 分账订单ID
-  orderId?: string
-  // 分账明细单号
-  receiverId?: string
+  allocationId?: string
   // 比例
   rate?: number
   // 金额
   amount?: number
   // 分账接收方类型
   receiverType?: string
+  // 分账接收方Id
+  receiverId?: string
+  // 分账接收方名称
+  name?: string
   // 接收方账号
   receiverAccount?: string
   // 接收方姓名

@@ -32,6 +32,10 @@ export function getConfig(appId) {
 export interface AllocConfig extends MchEntity {
   /** 是否自动分账 */
   autoAlloc?: boolean
+  /** 自动完结 */
+  autoFinish?: boolean
   /** 大于多少开启分账 */
   minAmount?: number
+  /** 分账延迟时长(分钟) */
+  DelayTime?: number
 }

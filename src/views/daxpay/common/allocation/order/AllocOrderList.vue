@@ -11,86 +11,89 @@
     </div>
     <div class="m-3 p-3 bg-white">
       <vxe-toolbar ref="xToolbar" custom :refresh="{ queryMethod: queryPage }" />
-      <vxe-table
-        keyField="id"
-        ref="xTable"
-        :data="pagination.records"
-        :loading="loading"
-        :sort-config="{ remote: true, trigger: 'cell' }"
-        @sort-change="sortChange"
-      >
-        <vxe-column type="seq" title="序号" width="60" />
-        <vxe-column field="allocNo" title="分账单号" :min-width="230">
-          <template #default="{ row }">
-            <a @click="show(row)">
-              {{ row.allocNo }}
-            </a>
-          </template>
-        </vxe-column>
-        <vxe-column field="title" title="订单标题" :min-width="150" />
-        <vxe-column field="orderNo" title="支付订单号" :min-width="230">
-          <template #default="{ row }">
-            <a @click="showPayOrder(row)">
-              {{ row.orderNo }}
-            </a>
-          </template>
-        </vxe-column>
-
-        <vxe-column field="channel" title="所属通道" align="center" :min-width="150">
-          <template #default="{ row }">
-            <a-tag>{{ dictConvert('channel', row.channel) }}</a-tag>
-          </template>
-        </vxe-column>
-        <vxe-column field="amount" title="总分账金额(元)" :min-width="120">
-          <template #default="{ row }">
-            {{ row.amount }}
-          </template>
-        </vxe-column>
-        <vxe-column field="status" title="状态" :min-width="120">
-          <template #default="{ row }">
-            <a-tag>{{ dictConvert('allocation_status', row.status) }}</a-tag>
-          </template>
-        </vxe-column>
-        <vxe-column field="result" title="分账结果" :min-width="100">
-          <template #default="{ row }">
-            {{ dictConvert('allocation_result', row.result) }}
-          </template> </vxe-column
-        ><vxe-column field="errorMsg" title="错误原因" :min-width="160" />
-        <vxe-column field="createTime" title="创建时间" :min-width="160" />
-        <vxe-column fixed="right" :min-width="200" :showOverflow="false" title="操作">
-          <template #default="{ row }">
-            <a-link @click="show(row)">查看</a-link>
-            <a-divider type="vertical" />
-            <a-link @click="showDetail(row)">明细列表</a-link>
-            <a-divider type="vertical" />
-            <a-dropdown>
-              <a>
-                更多
-                <icon icon="ant-design:down-outlined" :size="12" />
+      <div class="h-60vh">
+        <vxe-table
+          keyField="id"
+          height="auto"
+          ref="xTable"
+          :data="pagination.records"
+          :loading="loading"
+          :sort-config="{ remote: true, trigger: 'cell' }"
+          @sort-change="sortChange"
+        >
+          <vxe-column type="seq" title="序号" width="60" />
+          <vxe-column field="allocNo" title="分账单号" :min-width="230">
+            <template #default="{ row }">
+              <a @click="show(row)">
+                {{ row.allocNo }}
               </a>
-              <template #overlay>
-                <a-menu>
-                  <a-menu-item
-                    v-if="
-                      ['allocation_processing', 'allocation_end', 'allocation_failed'].includes(
-                        row.status,
-                      )
-                    "
-                  >
-                    <a-link @click="retryInfo(row)">重试</a-link>
-                  </a-menu-item>
-                  <a-menu-item>
-                    <a-link @click="syncInfo(row)">同步</a-link>
-                  </a-menu-item>
-                  <a-menu-item v-if="['allocation_end', 'finish_failed'].includes(row.status)">
-                    <a-link @click="finishInfo(row)">完结</a-link>
-                  </a-menu-item>
-                </a-menu>
-              </template>
-            </a-dropdown>
-          </template>
-        </vxe-column>
-      </vxe-table>
+            </template>
+          </vxe-column>
+          <vxe-column field="title" title="订单标题" :min-width="150" />
+          <vxe-column field="orderNo" title="支付订单号" :min-width="230">
+            <template #default="{ row }">
+              <a @click="showPayOrder(row)">
+                {{ row.orderNo }}
+              </a>
+            </template>
+          </vxe-column>
+
+          <vxe-column field="channel" title="所属通道" align="center" :min-width="150">
+            <template #default="{ row }">
+              <a-tag>{{ dictConvert('channel', row.channel) }}</a-tag>
+            </template>
+          </vxe-column>
+          <vxe-column field="amount" title="总分账金额(元)" :min-width="120">
+            <template #default="{ row }">
+              {{ row.amount }}
+            </template>
+          </vxe-column>
+          <vxe-column field="status" title="状态" :min-width="120">
+            <template #default="{ row }">
+              <a-tag>{{ dictConvert('allocation_status', row.status) }}</a-tag>
+            </template>
+          </vxe-column>
+          <vxe-column field="result" title="分账结果" :min-width="100">
+            <template #default="{ row }">
+              {{ dictConvert('allocation_result', row.result) }}
+            </template> </vxe-column
+          ><vxe-column field="errorMsg" title="错误原因" :min-width="160" />
+          <vxe-column field="createTime" title="创建时间" :min-width="160" />
+          <vxe-column fixed="right" :min-width="200" :showOverflow="false" title="操作">
+            <template #default="{ row }">
+              <a-link @click="show(row)">查看</a-link>
+              <a-divider type="vertical" />
+              <a-link @click="showDetail(row)">明细列表</a-link>
+              <a-divider type="vertical" />
+              <a-dropdown>
+                <a>
+                  更多
+                  <icon icon="ant-design:down-outlined" :size="12" />
+                </a>
+                <template #overlay>
+                  <a-menu>
+                    <a-menu-item
+                      v-if="
+                        ['allocation_processing', 'allocation_end', 'allocation_failed'].includes(
+                          row.status,
+                        )
+                      "
+                    >
+                      <a-link @click="retryInfo(row)">重试</a-link>
+                    </a-menu-item>
+                    <a-menu-item>
+                      <a-link @click="syncInfo(row)">同步</a-link>
+                    </a-menu-item>
+                    <a-menu-item v-if="['alloc_end', 'finish_failed'].includes(row.status)">
+                      <a-link @click="finishInfo(row)">完结</a-link>
+                    </a-menu-item>
+                  </a-menu>
+                </template>
+              </a-dropdown>
+            </template>
+          </vxe-column>
+        </vxe-table>
+      </div>
       <vxe-pager
         size="medium"
         :loading="loading"
@@ -119,8 +122,8 @@
   import { LabeledValue } from 'ant-design-vue/lib/select'
   import AllocDetailList from './AllocDetailList.vue'
   import { Icon } from '@/components/Icon'
-  import AllocOrderInfo from "./AllocOrderInfo.vue";
-  import PayOrderInfo from "@/views/daxpay/common/order/pay/PayOrderInfo.vue";
+  import AllocOrderInfo from './AllocOrderInfo.vue'
+  import PayOrderInfo from '@/views/daxpay/common/order/pay/PayOrderInfo.vue'
 
   // 使用hooks
   const {
@@ -212,7 +215,7 @@
       title: '同步分账状态',
       content: '确定同步分账状态吗？',
       onOk: () => {
-        sync(record.allocNo).then(() => {
+        sync(record.id).then(() => {
           createMessage.success('同步成功')
           queryPage()
         })
@@ -226,10 +229,10 @@
   function retryInfo(record) {
     createConfirm({
       iconType: 'info',
-      title: '分账重试',
-      content: '确定分账重试吗？',
+      title: '重试分账',
+      content: '确定重试分账吗？',
       onOk: () => {
-        retry(record.bizAllocNo).then(() => {
+        retry(record.id).then(() => {
           createMessage.success('分账重试请求发送成功')
           queryPage()
         })
@@ -246,7 +249,7 @@
       title: '完结分账',
       content: '确定完结分账吗？',
       onOk: () => {
-        finish(record.allocNo).then(() => {
+        finish(record.id).then(() => {
           createMessage.success('完结请求发送成功')
           queryPage()
         })

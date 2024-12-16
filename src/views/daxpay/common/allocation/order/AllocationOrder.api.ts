@@ -23,26 +23,6 @@ export function get(id) {
 }
 
 /**
- * 获取订单详细信息
- */
-export function getOrderByAllocNo(allocNo: string) {
-  return defHttp.get<Result>({
-    url: '/allocation/order/findByAllocNo',
-    params: { allocNo },
-  })
-}
-
-/**
- * 扩展信息
- */
-export function getExtra(id) {
-  return defHttp.get<Result<AllocOrder>>({
-    url: '/allocation/order/findById',
-    params: { id },
-  })
-}
-
-/**
  * 明细列表
  */
 export function detailList(orderId) {
@@ -65,30 +45,30 @@ export function detail(id) {
 /**
  * 分账完结
  */
-export function finish(allocNo) {
+export function finish(id) {
   return defHttp.post<Result<AllocOrder>>({
     url: '/allocation/order/finish',
-    params: { allocNo },
+    params: { id },
   })
 }
 
 /**
- * 分账完结
+ * 分账重试
  */
-export function retry(bizAllocNo) {
+export function retry(id) {
   return defHttp.post<Result<AllocOrder>>({
     url: '/allocation/order/retry',
-    params: { bizAllocNo },
+    params: { id },
   })
 }
 
 /**
- * 查询分账结果
+ * 同步分账结果
  */
-export function sync(allocNo) {
+export function sync(id) {
   return defHttp.post<Result<AllocOrder>>({
     url: '/allocation/order/sync',
-    params: { allocNo },
+    params: { id },
   })
 }
 

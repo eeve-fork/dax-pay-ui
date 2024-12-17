@@ -62,6 +62,13 @@
             v-model:checked="form.allocation"
           />
         </a-form-item>
+        <a-form-item label="是否自动分账" name="autoAllocation">
+          <a-switch
+            checked-children="是"
+            un-checked-children="否"
+            v-model:checked="form.autoAllocation"
+          />
+        </a-form-item>
         <a-form-item label="支付描述" name="description">
           <a-input v-model:value="form.description" placeholder="请输入支付描述" />
         </a-form-item>

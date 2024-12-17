@@ -9,7 +9,7 @@
     @close="visible = false"
   >
     <a-tabs v-model:activeKey="activeKey" type="card">
-      <a-tab-pane :key="1" tab="分账模式">
+      <a-tab-pane :key="1" tab="分账配置">
         <AllocationConfig :appId="appId" />
       </a-tab-pane>
       <a-tab-pane :key="2" tab="分账接收方">

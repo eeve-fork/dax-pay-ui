@@ -37,5 +37,5 @@ export interface AllocConfig extends MchEntity {
   /** 大于多少开启分账 */
   minAmount?: number
   /** 分账延迟时长(分钟) */
-  DelayTime?: number
+  delayTime?: number
 }

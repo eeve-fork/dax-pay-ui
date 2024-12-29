@@ -119,6 +119,8 @@ export interface RefundOrder extends MchEntity {
   orderNo?: string
   // 商户支付订单号
   bizOrderNo?: string
+  // 通道支付订单号
+  outOrderNo?: string
   // 支付标题
   title?: string
   // 退款号

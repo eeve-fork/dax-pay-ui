@@ -30,6 +30,12 @@ export interface WechatPayConfig extends MchEntity {
   wxAppId?: string
   // 微信商户号
   wxMchId?: string
+  // 微信子应用AppId
+  subAppId?: string
+  // 微信子商户号
+  subMchId?: string
+  // 是否特约商户
+  isv?: boolean
   // 是否启用
   enable: boolean
   // 授权认证地址
@@ -44,13 +50,17 @@ export interface WechatPayConfig extends MchEntity {
   apiKeyV3?: string
   // APPID对应的接口密码，用于获取接口调用凭证access_token时使用
   appSecret?: string
-  // 私钥Key
-  privateKey?: string
-  // 私钥证书
+  // 支付公钥
+  publicKey?: string
+  // 支付公钥ID
+  publicKeyId?: string
+  // 商户API证书
   privateCert?: string
-  // 证书序列号
+  // 商户API证书私钥
+  privateKey?: string
+  // 商户API证书序列号
   certSerialNo?: string
-  // p12的文件id
+  // p12的文件
   p12?: string | null
   // 应用域名，回调中会使用此参数
   domain?: string
@@ -62,4 +72,18 @@ export interface WechatPayConfig extends MchEntity {
   returnUrl?: string
   // 备注
   remark?: string
+}
+
+/**
+ * 特约商户服务商配置
+ */
+export interface WechatPaySimpleConfig extends MchEntity {
+  // 服务商应用号
+  isvAppId?: string
+  // 子商户应用AppId
+  subAppId?: string
+  // 子商户商户号
+  subMchId?: string
+  // 是否启用
+  enable?: boolean
 }

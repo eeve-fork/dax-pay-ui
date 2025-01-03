@@ -105,13 +105,13 @@
 </template>
 
 <script lang="ts" setup>
-  import { computed, onMounted, ref, watch } from 'vue'
+  import { computed, onMounted, ref } from 'vue'
   import {
     closeTransfer,
     getTotalAmount,
     page,
     retryTransfer,
-    syncByTransferNo,
+    syncByTransferId,
     cellStyle,
   } from './TransferOrder.api'
   import useTablePage from '@/hooks/bootx/useTablePage'
@@ -125,7 +125,6 @@
   import ALink from '/@/components/Link/Link.vue'
   import { TransferStatusEnum } from '@/enums/daxpay/tradeStatusEnum'
   import { Icon } from '@/components/Icon'
-  import { merchantDropdown } from '@/views/daxpay/admin/merchant/info/Merchant.api'
   import { mchAppDropdown } from '@/views/daxpay/common/merchant/app/MchApp.api'
 
   // 使用hooks
@@ -233,10 +232,10 @@
     createConfirm({
       iconType: 'warning',
       title: '警告',
-      content: '是否同步退款信息',
+      content: '是否同步转账信息',
       onOk: () => {
         loading.value = true
-        syncByTransferNo(record.transferNo).then(() => {
+        syncByTransferId(record.id).then(() => {
           createMessage.success('同步成功')
           queryPage()
         })

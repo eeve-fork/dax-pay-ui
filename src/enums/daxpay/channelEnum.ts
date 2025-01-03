@@ -3,7 +3,9 @@
  */
 export enum ChannelEnum {
   ALI = 'ali_pay',
+  ALI_ISV = 'alipay_isv',
   WECHAT = 'wechat_pay',
+  WECHAT_ISV = 'wechat_pay_isv',
   UNION_PAY = 'union_pay',
 }
 
@@ -63,7 +65,6 @@ export enum ChannelAuthStatusEnum {
   NOT_EXIST = 'not_exist',
 }
 
-
 /**
  * 收银台类型
  */
@@ -78,7 +79,6 @@ export enum CheckoutTypeEnum {
  * 支付调起类型
  */
 export enum CheckoutCallTypeEnum {
-
   /** 扫码支付 */
   QR_CODE = 'qr_code',
   /** 条码支付 */
@@ -93,6 +93,4 @@ export enum CheckoutCallTypeEnum {
   JSAPI = 'jsapi',
   /** 表单方式 */
   FROM = 'from',
-
 }
-

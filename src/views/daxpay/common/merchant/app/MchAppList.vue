@@ -44,6 +44,11 @@
               <a-tag>{{ dictConvert('merchant_notify_type', row.notifyType) || '空' }}</a-tag>
             </template>
           </vxe-column>
+          <vxe-column field="status" title="应用状态" :min-width="100">
+            <template #default="{ row }">
+              <a-tag>{{ dictConvert('mch_app_status', row.status) || '空' }}</a-tag>
+            </template>
+          </vxe-column>
           <vxe-column field="notifyUrl" title="通知地址" :min-width="220" />
           <vxe-column field="createTime" title="创建时间" :min-width="120" />
           <vxe-column fixed="right" :width="220" :showOverflow="false" title="操作">

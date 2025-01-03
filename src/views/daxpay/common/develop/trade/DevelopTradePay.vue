@@ -156,6 +156,7 @@
     clientIp: '127.0.0.1',
     amount: 0.01,
     allocation: false,
+    autoAllocation: false,
   })
   const rules = computed(() => {
     return {
@@ -166,6 +167,7 @@
       amount: [{ required: true, message: '支付金额不可为空' }],
       method: [{ required: true, message: '支付方式不可为空' }],
       allocation: [{ required: true, message: '分账不可为空' }],
+      autoAllocation: [{ required: true, message: '自动分账不可为空' }],
       clientIp: [{ required: true, message: '终端IP不可为空' }],
       nonceStr: [{ required: true, message: '随机数不可为空' }],
       reqTime: [{ required: true, message: '请求时间不可为空' }],

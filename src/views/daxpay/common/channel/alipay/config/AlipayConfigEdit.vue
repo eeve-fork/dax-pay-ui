@@ -34,7 +34,7 @@
         <a-form-item name="limitAmount">
           <template #label>
             <basic-title
-              helpMessage="每次发起支付的金额不能超过该值，如果同时配置了应用支付限额，则以额度低的为准"
+              helpMessage="每次发起支付的金额不能超过该值，如果同时配置了全局支付限额，则以额度低的为准"
             >
               支付限额(元)
             </basic-title>
@@ -54,6 +54,14 @@
             </basic-title>
           </template>
           <a-input v-model:value="form.alipayUserId" placeholder="请输入合作者身份ID" />
+        </a-form-item>
+        <a-form-item name="appAuthToken" v-if="isIsv">
+          <template #label>
+            <basic-title helpMessage="商家授权给服务商的应用授权凭证, 用于代调用接口"
+              >应用授权Token
+            </basic-title>
+          </template>
+          <a-input v-model:value="form.appAuthToken" placeholder="请输入特约商户AppAuthToken" />
         </a-form-item>
         <a-form-item label="沙箱环境" name="sandbox">
           <a-switch checked-children="是" un-checked-children="否" v-model:checked="form.sandbox" />
@@ -195,7 +203,7 @@
   import { BasicDrawer } from '@/components/Drawer'
   import { Icon } from '@/components/Icon'
   import BasicTitle from '@/components/Basic/src/BasicTitle.vue'
-  import { ChannelConfig } from '@/views/daxpay/common/merchant/channel/ChannelConfig.api'
+  import { ChannelConfig } from "@/views/daxpay/common/merchant/channel/ChannelConfig.api";
 
   const { handleCancel, diffForm, labelCol, wrapperCol, confirmLoading, visible, showable } =
     useFormEdit()
@@ -205,8 +213,9 @@
 
   const formRef = ref<FormInstance>()
   const channelConfig = ref<ChannelConfig>({})
+  const isIsv = ref<boolean>(false)
 
-  const form = ref({
+  const form = ref<AlipayConfig>({
     aliAppId: '',
     enable: false,
     limitAmount: 20000,
@@ -220,8 +229,7 @@
     alipayRootCert: '',
     privateKey: '',
     sandbox: false,
-    remark: '',
-  } as AlipayConfig)
+  })
   let rawForm: any = {}
   // 校验
   const rules = computed(() => {
@@ -230,6 +238,7 @@
       enable: [{ required: true, message: '请选择是否启用' }],
       limitAmount: [{ required: true, message: '请输入单次支付限额' }],
       authType: [{ required: true, message: '请选择认证方式' }],
+      appAuthToken: [{ required: isIsv.value, message: '请输入特约商户AppAuthToken' }],
       signType: [{ required: true, message: '请选择加密类型' }],
       alipayPublicKey: [{ required: form.value.authType === 'key', message: '请输入支付宝公钥' }],
       privateKey: [{ required: true, message: '请输入应用私钥' }],
@@ -240,7 +249,6 @@
       ],
       sandbox: [{ required: true, message: '请选择是否为沙箱环境' }],
       expireTime: [{ required: true, message: '请输入默认超时配置' }],
-      payWays: [{ required: true, message: '请选择支持的支付类型' }],
     } as Record<string, Rule[]>
   })
   // 事件
@@ -248,8 +256,9 @@
   /**
    * 入口
    */
-  function init(config: ChannelConfig) {
+  function init(config: ChannelConfig, isv: boolean) {
     channelConfig.value = config
+    isIsv.value = isv
     resetForm()
     visible.value = true
     getInfo()
@@ -284,6 +293,7 @@
           'alipayRootCert',
           'privateKey',
         ),
+        isv: isIsv.value,
         appId: channelConfig.value.appId,
       })
         .then(() => {

@@ -24,11 +24,25 @@
         <a-form-item label="商户号" name="wxMchId">
           <a-input v-model:value="form.wxMchId" :disabled="showable" placeholder="请输入商户号" />
         </a-form-item>
-        <a-form-item label="应用编号(AppId)" name="wxAppId">
+        <a-form-item label="应用号(AppId)" name="wxAppId">
           <a-input
             v-model:value="form.wxAppId"
             :disabled="showable"
             placeholder="请输入微信应用AppId"
+          />
+        </a-form-item>
+        <a-form-item label="子商户号" name="subMchId" v-if="isIsv">
+          <a-input
+            v-model:value="form.subMchId"
+            :disabled="showable"
+            placeholder="请输入子商户号"
+          />
+        </a-form-item>
+        <a-form-item label="子应用号(subAppId)" name="subAppId" v-if="isIsv">
+          <a-input
+            v-model:value="form.subAppId"
+            :disabled="showable"
+            placeholder="请输入微信子应用AppId"
           />
         </a-form-item>
         <a-form-item label="公众号AppSecret" name="appSecret">
@@ -62,7 +76,7 @@
         <a-form-item name="limitAmount">
           <template #label>
             <basic-title
-              helpMessage="每次发起支付的金额不能超过该值，如果同时配置了应用支付限额，则以额度低的为准"
+              helpMessage="每次发起支付的金额不能超过该值，如果同时配置了全局支付限额，则以额度低的为准"
             >
               支付限额(元)
             </basic-title>
@@ -96,53 +110,10 @@
             placeholder="请输入APIv3密钥"
           />
         </a-form-item>
-        <a-form-item name="certSerialNo">
-          <template #label>
-            <basic-title helpMessage="登录微信支付平台进入到账户中心 – API安全 – 查看证书, 查看证书序列号">
-              证书序列号
-            </basic-title>
-          </template>
-          <a-input
-            :disabled="showable"
-            v-model:value="form.certSerialNo"
-            placeholder="请输入证书序列号"
-          />
-        </a-form-item>
-        <a-form-item name="privateKey">
-          <template #label>
-            <basic-title helpMessage="微信商户平台Api接口中的apiclient_key.pem证书">
-              私钥Key
-            </basic-title>
-          </template>
-          <a-upload
-            v-if="!form.privateKey"
-            :disabled="showable"
-            name="file"
-            :multiple="false"
-            :action="uploadAction"
-            :headers="tokenHeader"
-            :showUploadList="false"
-            @change="(info) => handleChange(info, 'privateKey')"
-          >
-            <a-button type="primary" preIcon="carbon:cloud-upload"> 私钥Key上传 </a-button>
-          </a-upload>
-          <a-input v-else defaultValue="apiclient_key.pem" disabled>
-            <template #addonAfter v-if="!showable">
-              <a-tooltip>
-                <template #title> 删除上传的证书文件 </template>
-                <icon
-                  @click="form.privateKey = ''"
-                  icon="ant-design:close-circle-outlined"
-                  :size="20"
-                />
-              </a-tooltip>
-            </template>
-          </a-input>
-        </a-form-item>
         <a-form-item name="privateCert">
           <template #label>
-            <basic-title helpMessage="微信商户平台Api接口中的apiclient_cert.pem证书">
-              私钥证书
+            <basic-title helpMessage="微信平台中的商户API证书(apiclient_cert.pem)">
+              商户API证书
             </basic-title>
           </template>
           <a-upload
@@ -155,12 +126,12 @@
             :showUploadList="false"
             @change="(info) => handleChange(info, 'privateCert')"
           >
-            <a-button type="primary" preIcon="carbon:cloud-upload"> 私钥Key上传 </a-button>
+            <a-button type="primary" preIcon="carbon:cloud-upload"> API证书上传 </a-button>
           </a-upload>
           <a-input v-else defaultValue="apiclient_cert.pem" disabled>
             <template #addonAfter v-if="!showable">
               <a-tooltip>
-                <template #title> 删除上传的证书文件 </template>
+                <template #title> 删除上传的商户API证书 </template>
                 <icon
                   @click="form.privateCert = ''"
                   icon="ant-design:close-circle-outlined"
@@ -169,6 +140,80 @@
               </a-tooltip>
             </template>
           </a-input>
+        </a-form-item>
+        <a-form-item name="privateKey">
+          <template #label>
+            <basic-title helpMessage="微信平台中的商户API证书私钥(apiclient_key.pem)">
+              商户API证书私钥
+            </basic-title>
+          </template>
+          <a-upload
+            v-if="!form.privateKey"
+            :disabled="showable"
+            name="file"
+            :multiple="false"
+            :action="uploadAction"
+            :headers="tokenHeader"
+            :showUploadList="false"
+            @change="(info) => handleChange(info, 'privateKey')"
+          >
+            <a-button type="primary" preIcon="carbon:cloud-upload"> API证书私钥上传 </a-button>
+          </a-upload>
+          <a-input v-else defaultValue="apiclient_key.pem" disabled>
+            <template #addonAfter v-if="!showable">
+              <a-tooltip>
+                <template #title> 删除上传的API证书私钥 </template>
+                <icon
+                  @click="form.privateKey = ''"
+                  icon="ant-design:close-circle-outlined"
+                  :size="20"
+                />
+              </a-tooltip>
+            </template>
+          </a-input>
+        </a-form-item>
+        <a-form-item label="商户API证书序列号" name="certSerialNo">
+          <a-input
+            :disabled="showable"
+            v-model:value="form.certSerialNo"
+            placeholder="请输入商户API证书序列号"
+          />
+        </a-form-item>
+        <a-form-item name="publicKey">
+          <template #label>
+            <basic-title helpMessage="微信平台中的支付公钥(pub_key.pem)"> 支付公钥 </basic-title>
+          </template>
+          <a-upload
+            v-if="!form.publicKey"
+            :disabled="showable"
+            name="file"
+            :multiple="false"
+            :action="uploadAction"
+            :headers="tokenHeader"
+            :showUploadList="false"
+            @change="(info) => handleChange(info, 'publicKey')"
+          >
+            <a-button type="primary" preIcon="carbon:cloud-upload"> 支付公钥上传 </a-button>
+          </a-upload>
+          <a-input v-else defaultValue="pub_key.pem" disabled>
+            <template #addonAfter v-if="!showable">
+              <a-tooltip>
+                <template #title> 删除上传的支付公钥 </template>
+                <icon
+                  @click="form.publicKey = ''"
+                  icon="ant-design:close-circle-outlined"
+                  :size="20"
+                />
+              </a-tooltip>
+            </template>
+          </a-input>
+        </a-form-item>
+        <a-form-item label="支付公钥ID" name="publicKeyId">
+          <a-input
+            :disabled="showable"
+            v-model:value="form.publicKeyId"
+            placeholder="请输入支付公钥ID"
+          />
         </a-form-item>
         <a-form-item name="p12">
           <template #label>
@@ -225,13 +270,14 @@
   import { useUpload } from '@/hooks/bootx/useUpload'
   import { useMessage } from '@/hooks/web/useMessage'
   import BasicTitle from '@/components/Basic/src/BasicTitle.vue'
-  import { ChannelConfig } from '@/views/daxpay/common/merchant/channel/ChannelConfig.api'
+  import { ChannelConfig } from "@/views/daxpay/common/merchant/channel/ChannelConfig.api";
 
   const { handleCancel, diffForm, labelCol, wrapperCol, confirmLoading, visible, showable } =
     useFormEdit()
   // 文件上传
   const { tokenHeader, uploadAction } = useUpload('/readBase64')
   const { createMessage } = useMessage()
+  const isIsv = ref<boolean>(false)
 
   // 表单
   const formRef = ref<FormInstance>()
@@ -258,13 +304,12 @@
   const rules = computed(() => {
     return {
       wxMchId: [{ required: true, message: '请输入商户号' }],
-      limitAmount: [{ required: true, message: '请输入单次支付限额' }],
       wxAppId: [{ required: true, message: '请输入应用编号' }],
-      // appSecret: [{ required: true, message: '请输入AppSecret' }],
+      subMchId: [{ required: isIsv.value, message: '请输入子商户号' }],
+      limitAmount: [{ required: true, message: '请输入单次支付限额' }],
       enable: [{ required: true, message: '请选择是否启用' }],
       notifyUrl: [{ required: true, message: '请输入异步通知页面地址' }],
       returnUrl: [{ required: true, message: '请输入同步通知页面地址' }],
-      sandbox: [{ required: true, message: '请选择是否为沙箱环境' }],
       apiVersion: [{ required: true, message: '请选择支付API版本' }],
       apiKeyV2: [{ required: form.value.apiVersion === 'apiV2', message: '请输入V2秘钥' }],
       apiKeyV3: [{ required: form.value.apiVersion === 'apiV3', message: '请输入V3秘钥' }],
@@ -281,7 +326,6 @@
           message: '请上传私钥Key(apiclient_cert.pem)',
         },
       ],
-      payWays: [{ required: true, message: '请选择支持的支付类型' }],
     } as Record<string, Rule[]>
   })
 
@@ -290,8 +334,9 @@
   /**
    * 入口
    */
-  function init(config: ChannelConfig) {
+  function init(config: ChannelConfig, isv: boolean) {
     channelConfig.value = config
+    isIsv.value = isv
     visible.value = true
     resetForm()
     getInfo()
@@ -324,9 +369,13 @@
           'appSecret',
           'apiKeyV2',
           'apiKeyV3',
-          'privateKey',
           'privateCert',
+          'privateKey',
+          'certSerialNo',
+          'publicKey',
+          'publicKeyId',
         ),
+        isv: isIsv.value,
         appId: channelConfig.value.appId,
       })
         .then(() => {

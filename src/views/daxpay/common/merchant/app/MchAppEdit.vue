@@ -27,6 +27,12 @@
         <a-form-item label="应用名称" name="appName">
           <a-input v-model:value="form.appName" :disabled="showable" placeholder="请输入应用名称" />
         </a-form-item>
+        <a-form-item label="应用状态" name="status">
+          <a-radio-group v-model:value="form.status" :disabled="showable" button-style="solid">
+            <a-radio-button value="disabled">禁用</a-radio-button>
+            <a-radio-button value="enable">启用</a-radio-button>
+          </a-radio-group>
+        </a-form-item>
         <a-form-item label="支付限额(元)" name="limitAmount">
           <a-input-number
             v-model:value="form.limitAmount"
@@ -145,6 +151,7 @@
   const rules = reactive({
     appName: [{ required: true, message: '请输入应用名称' }],
     signType: [{ required: true, message: '请选择签名方式' }],
+    status: [{ required: true, message: '请选择应用状态' }],
     signSecret: [{ required: true, message: '请输入签名秘钥' }],
     reqSign: [{ required: true, message: '请选择是否验签' }],
     limitAmount: [{ required: true, message: '请输入支付限额(元)' }],

@@ -25,15 +25,23 @@
   function show(record: ChannelConfig) {
     switch (record.channel) {
       case ChannelEnum.ALI: {
-        alipay.value.init(record)
+        alipay.value.init(record, false)
+        break
+      }
+      case ChannelEnum.ALI_ISV: {
+        alipay.value.init(record, true)
+        break
+      }
+      case ChannelEnum.UNION_PAY: {
+        union.value.init(record)
         break
       }
       case ChannelEnum.WECHAT: {
         wechat.value.init(record)
         break
       }
-      case ChannelEnum.UNION_PAY: {
-        union.value.init(record)
+      case ChannelEnum.WECHAT_ISV: {
+        wechat.value.init(record, true)
         break
       }
       default: {

@@ -113,7 +113,11 @@
     switch (type) {
       case ChannelEnum.ALI:
         return alipay
+      case ChannelEnum.ALI_ISV:
+        return alipay
       case ChannelEnum.WECHAT:
+        return wechat
+      case ChannelEnum.WECHAT_ISV:
         return wechat
       case ChannelEnum.UNION_PAY:
         return unionPay

@@ -33,6 +33,10 @@ export interface AlipayConfig extends MchEntity {
   enable: boolean
   // 支付限额
   limitAmount?: number
+  // 是否为特约商户
+  isv?: boolean
+  // 特约商户Token
+  appAuthToken?: string
   // 商户账号ID
   alipayUserId?: string
   // 授权回调地址

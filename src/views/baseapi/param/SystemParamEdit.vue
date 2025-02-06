@@ -27,7 +27,7 @@
           placeholder="请输入参数名称"
         />
       </a-form-item>
-      <a-form-item label="参数Key" name="key">
+      <a-form-item label="参数Key" name="paramKey">
         <a-input
           v-model:value="form.paramKey"
           :disabled="showable || form.internal"

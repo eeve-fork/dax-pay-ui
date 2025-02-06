@@ -109,7 +109,7 @@
   // 查询条件
   const fields = [
     { field: 'name', type: STRING, name: '参数名称', placeholder: '请输入参数名称' },
-    { field: 'key', type: STRING, name: '参数Key', placeholder: '请输入参数Key' },
+    { field: 'paramKey', type: STRING, name: '参数Key', placeholder: '请输入参数Key' },
   ] as QueryField[]
 
   const xTable = ref<VxeTableInstance>()

@@ -41,7 +41,7 @@
 
       <a-form-item name="minAmount" v-if="form.autoAlloc">
         <template #label>
-          <basic-title helpMessage="只有大于或等于其实金额的订单才会进行分账">
+          <basic-title helpMessage="只有大于或等于其金额的订单才会进行分账">
             自动分账起始金额(元)
           </basic-title>
         </template>

@@ -45,7 +45,7 @@ export const update = (obj: UpdateFileInfo) => {
  * 删除
  */
 export const del = (id) => {
-  return defHttp.delete({
+  return defHttp.post({
     url: '/file/delete',
     params: { id },
   })

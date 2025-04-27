@@ -46,15 +46,15 @@ export function tradeTransfer(params) {
 /**
  * 创建收银台链接签名
  */
-export function checkoutSign(param: CheckoutCreatParam) {
-  return defHttp.post<Result<string>>({ url: '/develop/trade/sign/checkout', data: param })
+export function gatewaySign(param: GatewayPayParam) {
+  return defHttp.post<Result<string>>({ url: '/develop/trade/sign/gateway', data: param })
 }
 
 /**
  * 创建收银台链接
  */
-export function checkoutUrl(params) {
-  return defHttp.post<Result<CheckoutUrlResult>>({ url: '/develop/trade/checkoutUrl', data: params })
+export function gateway(params) {
+  return defHttp.post<Result<CheckoutUrlResult>>({ url: '/develop/trade/gateway', data: params })
 }
 
 /**
@@ -71,14 +71,22 @@ export interface PayParam {
   allocation?: boolean
   /** 自动分账 */
   autoAllocation?: boolean
+  /** 限制用户支付类型 */
+  limitPay?: string
   /** 过期时间 */
   expiredTime?: string
   /** 支付通道编码 */
   channel?: string
   /** 支付方式编码 */
   method?: string
+  /** 其他支付方式编码 */
+  otherMethod?: string
   /** 支付金额 */
   amount?: number
+  /** 付款码 */
+  authCode?: string
+  /** openId */
+  openId?: string
   /** 支付扩展参数 */
   extraParam?: string
   /** 商户扩展参数 */
@@ -91,6 +99,8 @@ export interface PayParam {
   notifyUrl?: string
   /** 终端IP */
   clientIp?: string
+  /** 商户号 */
+  mchNo?: string
   /** 应用号 */
   appId?: string
   /** 随机数 */
@@ -113,6 +123,8 @@ export interface PayResult {
   status?: string
   /** 支付参数体 */
   payBody?: string
+  /** 商户号 */
+  mchNo?: string
   /** 应用号 */
   appId?: string
   /** 随机数 */
@@ -143,6 +155,8 @@ export interface RefundParam {
   notifyUrl?: string
   /** 终端IP */
   clientIp?: string
+  /** 商户号 */
+  mchNo?: string
   /** 应用号 */
   appId?: string
   /** 随机数 */
@@ -163,6 +177,8 @@ export interface RefundResult {
   bizRefundNo?: string
   /** 退款状态 */
   status?: string
+  /** 商户号 */
+  mchNo?: string
   /** 应用号 */
   appId?: string
   /** 随机数 */
@@ -199,6 +215,8 @@ export interface TransferParam {
   notifyUrl?: string
   /** 终端IP */
   clientIp?: string
+  /** 商户号 */
+  mchNo?: string
   /** 应用号 */
   appId?: string
   /** 随机数 */
@@ -220,6 +238,8 @@ export interface TransferResult {
   status?: string
   /** 提示信息 */
   errorMsg?: string
+  /** 商户号 */
+  mchNo?: string
   /** 应用号 */
   appId?: string
   /** 随机数 */
@@ -229,11 +249,11 @@ export interface TransferResult {
 }
 
 /**
- * 收银台创建参数
+ * 收银台支付参数
  */
-export interface CheckoutCreatParam {
+export interface GatewayPayParam {
   /** 收银台类型 */
-  checkoutType?: string
+  gatewayPayType?: string
   /** 商户订单号 */
   bizOrderNo?: string
   /** 支付标题 */
@@ -244,6 +264,8 @@ export interface CheckoutCreatParam {
   allocation?: boolean
   /** 自动分账 */
   autoAllocation?: boolean
+  /** 限制用户支付类型 */
+  limitPay?: string
   /** 过期时间 */
   expiredTime?: string
   /** 支付通道编码 */
@@ -264,6 +286,8 @@ export interface CheckoutCreatParam {
   notifyUrl?: string
   /** 终端IP */
   clientIp?: string
+  /** 商户号 */
+  mchNo?: string
   /** 应用号 */
   appId?: string
   /** 随机数 */

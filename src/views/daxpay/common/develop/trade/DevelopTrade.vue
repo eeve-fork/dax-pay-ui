@@ -11,7 +11,7 @@
         <develop-trade-pay v-if="tradeType === TradeTypeEnum.PAY" />
         <develop-trade-refund v-if="tradeType === TradeTypeEnum.REFUND" />
         <develop-trade-transfer v-if="tradeType === TradeTypeEnum.TRANSFER" />
-        <develop-trade-check v-if="tradeType === 'checkout'" />
+        <develop-trade-gateway v-if="tradeType === 'gateway'" />
       </div>
     </div>
   </div>
@@ -19,13 +19,13 @@
 
 <script setup lang="ts">
   import { onMounted, ref } from 'vue'
-  import { TradeTypeEnum } from '@/enums/daxpay/channelEnum'
+  import { TradeTypeEnum } from '@/enums/daxpay/daxpayEnum'
   import { useDict } from '@/hooks/bootx/useDict'
   import { LabeledValue } from 'ant-design-vue/lib/select'
   import DevelopTradePay from './DevelopTradePay.vue'
   import DevelopTradeRefund from './DevelopTradeRefund.vue'
   import DevelopTradeTransfer from './DevelopTradeTransfer.vue'
-  import DevelopTradeCheck from './DevelopTradeCheck.vue'
+  import DevelopTradeGateway from './DevelopTradeGateway.vue'
 
   const { dictDropDown } = useDict()
 
@@ -38,8 +38,10 @@
    * 初始化数据
    */
   async function initData() {
-    tradeTypes.value = await dictDropDown('trade_type')
-    tradeTypes.value.push({ label: '收银台', value: 'checkout' })
+    tradeTypes.value.push({ value: TradeTypeEnum.PAY, label: '支付' })
+    tradeTypes.value.push({ value: TradeTypeEnum.REFUND, label: '退款' })
+    tradeTypes.value.push({ value: TradeTypeEnum.TRANSFER, label: '转账' })
+    tradeTypes.value.push({ value: 'gateway', label: '网关支付' })
   }
 </script>
 

@@ -20,6 +20,6 @@ export interface PlatformConfig extends BaseEntity {
   gatewayServiceUrl?: string
   // 网关移动端地址
   gatewayMobileUrl?: string
-  // 网关PC端地址
-  gatewayPcUrl?: string
+  // 全局支付限额
+  limitAmount?: number
 }

@@ -16,7 +16,7 @@ async function getFilePlatforms(): Promise<FilePlatform[]> {
 }
 
 /**
- * 获取地址
+ * 获取地址, 如果不传输自动使用默认平台
  * @param fileUrl 文件保存的url地址
  * @param platform 存储平台类型编码
  */

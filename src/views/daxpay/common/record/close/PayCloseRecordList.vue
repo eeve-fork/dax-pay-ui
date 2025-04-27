@@ -48,7 +48,7 @@
           <vxe-column field="errorMsg" title="错误消息" :min-width="180" />
           <vxe-column field="clientIp" title="客户端IP" :min-width="120" />
           <vxe-column field="createTime" title="创建时间" :min-width="170" />
-          <vxe-column field="appId" title="应用号" :min-width="150" />
+          <vxe-column field="appName" title="应用" :min-width="150" />
           <vxe-column fixed="right" width="60" :showOverflow="false" title="操作">
             <template #default="{ row }">
               <span>
@@ -83,7 +83,7 @@
   import { LabeledValue } from 'ant-design-vue/lib/select'
   import PayCloseRecordInfo from './PayCloseRecordInfo.vue'
   import PayOrderInfo from '@/views/daxpay/common/order/pay/PayOrderInfo.vue'
-  import { mchAppDropdown } from '@/views/daxpay/common/merchant/app/MchApp.api'
+  import { mchAppDropdown } from '@/views/daxpay/admin/merchant/app/MchAppAdmin.api'
 
   // 使用hooks
   const {
@@ -99,7 +99,7 @@
   } = useTablePage(queryPage)
   const { dictConvert, dictDropDown } = useDict()
 
-  const mchAppList = ref<LabeledValue[]>([])
+  const mchAppOptions = ref<LabeledValue[]>([])
   let payChannelList = ref<LabeledValue[]>([])
   let closeTypeList = ref<LabeledValue[]>([])
 
@@ -128,16 +128,16 @@
         name: '关闭状态',
         placeholder: '请选择关闭状态',
         selectList: [
-          { label: '成功', value: true },
-          { label: '失败', value: false },
+          { label: '成功', value: 'true' },
+          { label: '失败', value: 'false' },
         ],
       },
       {
         field: 'appId',
         type: LIST,
         name: '应用号',
-        placeholder: '请先选择商户后选择应用号',
-        selectList: mchAppList.value,
+        placeholder: '请选择商户应用',
+        selectList: mchAppOptions.value,
       },
     ] as QueryField[]
   })
@@ -159,17 +159,11 @@
    * 初始化
    */
   async function initData() {
+    mchAppDropdown().then(({ data }) => {
+      mchAppOptions.value = data
+    })
     payChannelList.value = await dictDropDown('channel')
     closeTypeList.value = await dictDropDown('close_type')
-    initMchApp()
-  }
-  /**
-   * 初始化商户应用列表
-   */
-  function initMchApp() {
-    mchAppDropdown().then(({ data }) => {
-      mchAppList.value = data
-    })
   }
 
   /**
@@ -190,7 +184,6 @@
    * 查看
    */
   function show(record) {
-    console.log(record)
     payCloseRecordInfo.value.init(record.id)
   }
 

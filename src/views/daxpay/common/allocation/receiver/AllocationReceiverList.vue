@@ -12,11 +12,7 @@
     <div class="m-3 p-3 bg-white">
       <vxe-toolbar ref="xToolbar" custom :refresh="{ queryMethod: queryPage }">
         <template #buttons>
-          <a-space>
-            <a-button type="primary" pre-icon="ant-design:plus-outlined" @click="add"
-              >新建</a-button
-            >
-          </a-space>
+          <a-button type="primary" @click="add">新增</a-button>
         </template>
       </vxe-toolbar>
       <div class="h-60vh">
@@ -35,8 +31,9 @@
               <a-link @click="show(row)">{{ row.receiverNo }}</a-link>
             </template>
           </vxe-column>
-          <vxe-column field="name" title="名称" :min-width="180" />
-          <vxe-column field="channel" title="所属通道" :min-width="150" align="center">
+          <vxe-column field="receiverName" title="名称" :min-width="180" />
+          <vxe-column field="receiverAccount" title="接收方账号" :min-width="230" />
+          <vxe-column field="channel" title="所属通道" :min-width="170" align="center">
             <template #default="{ row }">
               <a-tag>{{ dictConvert('channel', row.channel) }}</a-tag>
             </template>
@@ -46,18 +43,11 @@
               <a-tag>{{ dictConvert('alloc_receiver_type', row.receiverType) }}</a-tag>
             </template>
           </vxe-column>
-          <vxe-column field="receiverAccount" title="接收方账号" :min-width="230" />
-          <vxe-column field="receiverName" title="接收方姓名" :min-width="160" />
-          <vxe-column field="relationType" title="分账关系" :min-width="100" align="center">
+          <vxe-column fixed="right" width="130" :showOverflow="false" title="操作">
             <template #default="{ row }">
-              <a-tag>{{ dictConvert('alloc_relation_type', row.relationType) }}</a-tag>
-            </template>
-          </vxe-column>
-          <vxe-column fixed="right" min-width="100" :showOverflow="false" title="操作">
-            <template #default="{ row }">
-              <a-link @click="show(row)">查看</a-link>
+              <a-link @click="edit(row)">编辑</a-link>
               <a-divider type="vertical" />
-              <a-link @click="remove(row)">删除</a-link>
+              <a-link danger @click="remove(row)">删除</a-link>
             </template>
           </vxe-column>
         </vxe-table>
@@ -71,7 +61,8 @@
         @page-change="handleTableChange"
       />
     </div>
-    <AllocationReceiverEdit ref="allocationReceiverEdit" @ok="queryPage" />
+    <AllocationReceiverEdit ref="allocationReceiverEdit" @ok="queryPage" :appId="appId" />
+    <AllocationReceiverSelect ref="allocationReceiverSelect" @next="next" />
   </div>
 </template>
 
@@ -88,11 +79,9 @@
   import { LabeledValue } from 'ant-design-vue/lib/select'
   import AllocationReceiverEdit from './AllocationReceiverEdit.vue'
   import { FormEditType } from '@/enums/formTypeEnum'
-  import XEUtils from 'xe-utils'
+  import AllocationReceiverSelect from './AllocationReceiverSelect.vue'
 
-  const props = defineProps({
-    appId: String,
-  })
+  const { appId } = defineProps<{ appId: string }>()
 
   // 使用hooks
   const {
@@ -109,9 +98,10 @@
   const { createMessage, createConfirm } = useMessage()
   const { dictConvert, dictDropDown } = useDict()
 
-  const allocationReceiverEdit = ref<any>()
   const xTable = ref<VxeTableInstance>()
   const xToolbar = ref<VxeToolbarInstance>()
+  const allocationReceiverEdit = ref<any>()
+  const allocationReceiverSelect = ref<any>()
 
   let payChannelList = ref<LabeledValue[]>([])
   let relationTypeList = ref<LabeledValue[]>([])
@@ -119,27 +109,22 @@
 
   const fields = computed(() => {
     return [
-      { field: 'receiverNo', type: STRING, name: '接收方编号', placeholder: '请输入接收方编号' },
+      { field: 'receiverNo', type: STRING, name: '编号', placeholder: '请输入接收方编号' },
+      { field: 'receiverName', type: STRING, name: '名称', placeholder: '请输入接收方名称' },
+      { field: 'receiverAccount', type: STRING, name: '账号', placeholder: '请输入接收方账号' },
       {
         field: 'channel',
         type: LIST,
-        name: '分账通道',
-        placeholder: '请选择分账通道',
+        name: '通道',
+        placeholder: '请选择接收方所属通道',
         selectList: payChannelList.value,
       },
       {
-        field: 'allocReceiverType',
+        field: 'receiverType',
         type: LIST,
         name: '接收方类型',
         placeholder: '请选择接收方类型',
         selectList: receiverTypeList.value,
-      },
-      {
-        field: 'relationType',
-        type: LIST,
-        name: '分账关系',
-        placeholder: '请选择分账关系',
-        selectList: relationTypeList.value,
       },
     ] as QueryField[]
   })
@@ -166,19 +151,29 @@
   }
 
   /**
-   * 新建
+   * 新增
    */
   function add() {
-    allocationReceiverEdit.value.init(null, FormEditType.Add, props.appId)
+    allocationReceiverSelect.value.init()
   }
-
+  /**
+   * 新增
+   */
+  function next(channel) {
+    allocationReceiverEdit.value.add(channel)
+  }
+  /**
+   * 编辑
+   */
+  function edit(row: any) {
+    allocationReceiverEdit.value.init(row, FormEditType.Edit)
+  }
   /**
    * 查看
    */
-  function show(record) {
-    allocationReceiverEdit.value.init(record, FormEditType.Show)
+  function show(row: any) {
+    allocationReceiverEdit.value.init(row, FormEditType.Show)
   }
-
   /**
    * 分页查询
    */
@@ -186,7 +181,7 @@
     loading.value = true
     page({
       ...model.queryParam,
-      appId: props.appId,
+      appId,
       ...pages,
       ...sortParam,
     }).then(({ data }) => {
@@ -205,12 +200,7 @@
       content: '是否确认删除该条数据?',
       onOk: () => {
         loading.value = true
-        const form = {
-          receiverNo: record.receiverNo,
-          appId: record.appId,
-          reqTime: XEUtils.toDateString(new Date(), 'yyyy-MM-dd HH:mm:ss'),
-        }
-        del(form).then(() => {
+        del(record.id).then(() => {
           createMessage.success('删除成功')
           queryPage()
         })

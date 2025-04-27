@@ -29,7 +29,7 @@ export const INTERNAL: AppRouteModule = {
 }
 
 /**
- * 位于主框架外的页面 也需要登陆
+ * 位于主框架外的页面
  */
 export const OUTSIDE: AppRouteModule = {
   path: '/outside',

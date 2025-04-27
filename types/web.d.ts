@@ -36,6 +36,8 @@ export interface BaseEntity {
 export interface MchEntity extends BaseEntity {
   // 应用号
   appId?: string
+  // 应用名称
+  appName?: string
 }
 
 /**

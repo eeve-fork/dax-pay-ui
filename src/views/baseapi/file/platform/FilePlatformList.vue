@@ -1,16 +1,8 @@
 <template>
   <div>
-    <div class="m-3 p-3 pt-5 bg-white">
-      <b-query
-        :query-params="model.queryParam"
-        :fields="fields"
-        @query="queryPage"
-        @reset="resetQueryParams"
-      />
-    </div>
     <div class="m-3 p-3 bg-white">
       <vxe-toolbar ref="xToolbar" custom :refresh="{ queryMethod: queryPage }" />
-      <div class="h-70vh">
+      <div class="h-75vh">
         <vxe-table
           height="auto"
           key-field="id"
@@ -79,11 +71,6 @@
   const { createMessage, createConfirm } = useMessage()
 
   const records = ref<FilePlatform[]>([])
-
-  // 查询条件
-  const fields = [
-    { field: 'name', type: 'string', name: '文件名称', placeholder: '请输入文件名称' },
-  ] as QueryField[]
 
   const xTable = ref<VxeTableInstance>()
   const xToolbar = ref<VxeToolbarInstance>()

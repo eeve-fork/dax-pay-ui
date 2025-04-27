@@ -99,7 +99,18 @@
 
   // 查询条件
   const fields = computed(() => {
-    return [{}] as QueryField[]
+    return [
+      { field: 'filename', type: 'string', name: '文件名称', placeholder: '请输入文件名称' },
+      {
+        field: 'originalFilename',
+        type: 'string',
+        name: '原始文件名',
+        placeholder: '请输入原始文件名',
+      },
+      { field: 'url', type: 'string', name: '访问地址', placeholder: '请输入文件访问地址' },
+      { field: 'ext', type: 'string', name: '文件扩展名', placeholder: '请输入文件扩展名' },
+      { field: 'contentType', type: 'string', name: '用户账号', placeholder: '请输入用户账号' },
+    ] as QueryField[]
   })
 
   const xTable = ref<VxeTableInstance>()

@@ -95,9 +95,7 @@
 
   const edit = ref<boolean>(false)
 
-  const props = defineProps({
-    appId: String,
-  })
+  const { appId } = defineProps<{ appId: string }>()
 
   onMounted(() => {
     initData()
@@ -115,7 +113,7 @@
     return {
       autoAlloc: [{ required: true, message: '' }],
       minAmount: [{ required: form.value.autoAlloc, message: '请输自动分账起始金额(元)' }],
-      autoFinish: [{ required: form.value.autoAlloc, message: '' }],
+      autoFinish: [{ required: form.value.autoAlloc, message: '请选择是否自动完结分账' }],
       delayTime: [
         {
           required: form.value.autoAlloc,
@@ -131,10 +129,10 @@
   function initData() {
     confirmLoading.value = true
     edit.value = false
-    getConfig(props.appId).then(({ data }) => {
+    getConfig(appId).then(({ data }) => {
       form.value = data
       confirmLoading.value = false
-      form.value.appId = props.appId
+      form.value.appId = appId
     })
   }
 

@@ -60,7 +60,8 @@
             </template>
           </vxe-column>
           <vxe-column field="createTime" title="创建时间" sortable :min-width="230" />
-          <vxe-column field="appId" title="应用号" :min-width="150" />
+
+          <vxe-column field="appName" title="应用" :min-width="150" />
           <vxe-column fixed="right" width="120" :showOverflow="false" title="操作">
             <template #default="{ row }">
               <a-link @click="show(row)">查看</a-link>
@@ -107,7 +108,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { computed, onMounted, ref, watch } from 'vue'
+  import { computed, onMounted, ref } from 'vue'
   import {
     closeRefund,
     getTotalAmount,
@@ -128,7 +129,7 @@
   import ALink from '@/components/Link/Link.vue'
   import { RefundStatusEnum } from '@/enums/daxpay/tradeStatusEnum'
   import { Icon } from '@/components/Icon'
-  import { mchAppDropdown } from '@/views/daxpay/common/merchant/app/MchApp.api'
+  import { mchAppDropdown } from '@/views/daxpay/admin/merchant/app/MchAppAdmin.api'
 
   // 使用hooks
   const {
@@ -145,7 +146,7 @@
   const { createMessage, createConfirm } = useMessage()
   const { dictConvert, dictDropDown } = useDict()
 
-  const mchAppList = ref<LabeledValue[]>([])
+  const mchAppOptions = ref<LabeledValue[]>([])
   const channelList = ref<LabeledValue[]>([])
   const refundStatusList = ref<LabeledValue[]>([])
   const totalAmount = ref<number>(0.0)
@@ -182,8 +183,8 @@
         field: 'appId',
         type: LIST,
         name: '应用号',
-        placeholder: '请先选择商户后选择应用号',
-        selectList: mchAppList.value,
+        placeholder: '请选择商户应用',
+        selectList: mchAppOptions.value,
       },
     ] as QueryField[]
   })
@@ -206,18 +207,11 @@
    * 初始化数据
    */
   async function initData() {
+    mchAppDropdown().then(({ data }) => {
+      mchAppOptions.value = data
+    })
     refundStatusList.value = await dictDropDown('RefundStatus')
     channelList.value = await dictDropDown('channel')
-    initMchApp()
-  }
-
-  /**
-   * 初始化商户应用列表
-   */
-  function initMchApp() {
-    mchAppDropdown().then(({ data }) => {
-      mchAppList.value = data
-    })
   }
 
   /**
@@ -253,7 +247,6 @@
         loading.value = true
         syncOrder(record.id).then(({ data }) => {
           createMessage.success('同步成功')
-          console.log(data)
           queryPage()
         })
       },

@@ -103,7 +103,6 @@ export const usePermissionStore = defineStore({
             targetOutside: o.targetOutside,
             iframeUrl: o.iframeUrl,
             redirect: o.redirect,
-            fullScreen: o.fullScreen,
             meta: {
               orderNo: o.sortNo,
               title: o.title,

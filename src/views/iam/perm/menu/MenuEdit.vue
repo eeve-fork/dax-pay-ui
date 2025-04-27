@@ -176,7 +176,7 @@
   import { IconPicker } from '@/components/Icon'
   import { BasicTitle } from '@/components/Basic'
   import { BasicDrawer } from '@/components/Drawer'
-  import Icon from '../../../../components/Icon/Icon.vue'
+  import Icon from '@/components/Icon/Icon.vue'
 
   defineComponent({
     name: 'MenuEdit',

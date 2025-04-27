@@ -118,13 +118,13 @@
   import BQuery from '/@/components/Bootx/Query/BQuery.vue'
   import { LabeledValue } from 'ant-design-vue/lib/select'
   import { useDict } from '@/hooks/bootx/useDict'
-  import { TradeTypeEnum } from '@/enums/daxpay/channelEnum'
+  import { TradeTypeEnum } from '@/enums/daxpay/daxpayEnum'
   import ReconcileDiscrepancyInfo from './ReconcileDiscrepancyInfo.vue'
   import ReconcileStatementInfo from '../statement/ReconcileStatementInfo.vue'
   import PayOrderInfo from '@/views/daxpay/common/order/pay/PayOrderInfo.vue'
   import RefundOrderInfo from '@/views/daxpay/common/order/refund/RefundOrderInfo.vue'
   import TransferOrderInfo from '@/views/daxpay/common/order/transfer/TransferOrderInfo.vue'
-  import { mchAppDropdown } from '@/views/daxpay/common/merchant/app/MchApp.api'
+  import { mchAppDropdown } from '@/views/daxpay/admin/merchant/app/MchAppAdmin.api'
 
   // 使用hooks
   const {
@@ -140,7 +140,7 @@
   } = useTablePage(queryPage)
   const { dictDropDown, dictConvert } = useDict()
 
-  const mchAppList = ref<LabeledValue[]>([])
+  const mchAppOptions = ref<LabeledValue[]>([])
   let channelList = ref<LabeledValue[]>([])
   let discrepancyTypeList = ref<LabeledValue[]>([])
   let tradeStatusList = ref<LabeledValue[]>([])
@@ -215,8 +215,8 @@
         field: 'appId',
         type: LIST,
         name: '应用号',
-        placeholder: '请先选择商户后选择应用号',
-        selectList: mchAppList.value,
+        placeholder: '请选择商户应用',
+        selectList: mchAppOptions.value,
       },
     ] as QueryField[]
   })
@@ -241,20 +241,13 @@
    * 初始化基础数据
    */
   async function initData() {
+    mchAppDropdown().then(({ data }) => {
+      mchAppOptions.value = data
+    })
     discrepancyTypeList.value = await dictDropDown('reconcile_discrepancy_type')
     channelList.value = await dictDropDown('channel')
     tradeStatusList.value = await dictDropDown('trade_status')
     tradeTypeList.value = await dictDropDown('trade_type')
-    initMchApp()
-  }
-
-  /**
-   * 初始化商户应用列表
-   */
-  function initMchApp() {
-    mchAppDropdown().then(({ data }) => {
-      mchAppList.value = data
-    })
   }
   /**
    * 入口

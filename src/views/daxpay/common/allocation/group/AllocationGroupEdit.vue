@@ -90,7 +90,7 @@
   // 校验
   const rules = computed(() => {
     return {
-      groupNo: [{ required: true, message: '请输入分账组编号' }],
+      name: [{ required: true, message: '请输入分账组名称' }],
       channel: [{ required: true, message: '请选择所属通道' }],
     } as Record<string, Rule[]>
   })

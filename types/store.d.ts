@@ -1,5 +1,6 @@
 import { ErrorTypeEnum } from '@/enums/exceptionEnum'
 import { MenuModeEnum, MenuTypeEnum } from '@/enums/menuEnum'
+import { RoleInfo } from '@/api/sys/model/userModel'
 
 export interface ApiAddress {
   key: string

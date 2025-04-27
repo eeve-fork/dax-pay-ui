@@ -9,7 +9,7 @@
     @cancel="handleCancel"
   >
     <a-descriptions bordered>
-      <a-descriptions-item label="退款标题" :span="2">
+      <a-descriptions-item label="退款号" :column="{ lg: 2, md: 1 }">
         {{ order.refundNo }}
       </a-descriptions-item>
       <a-descriptions-item label="商户退款号" :span="2">
@@ -26,9 +26,6 @@
       </a-descriptions-item>
       <a-descriptions-item label="商户支付订单号" :span="2">
         {{ order.bizOrderNo }}
-      </a-descriptions-item>
-      <a-descriptions-item label="通道支付订单号" :span="2">
-        {{ order.outOrderNo }}
       </a-descriptions-item>
       <a-descriptions-item label="退款金额(元)" :span="2">
         {{ order.amount ? order.amount : 0 }}
@@ -50,6 +47,9 @@
       </a-descriptions-item>
       <a-descriptions-item label="退款终端ip">
         {{ order.clientIp }}
+      </a-descriptions-item>
+      <a-descriptions-item label="商户号" :span="2">
+        {{ order.mchNo }}
       </a-descriptions-item>
       <a-descriptions-item label="应用AppId" :span="2">
         {{ order.appId }}

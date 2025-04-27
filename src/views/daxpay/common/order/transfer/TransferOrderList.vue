@@ -55,7 +55,8 @@
           </vxe-column>
           <vxe-column field="reason" title="转账原因" :min-width="160" />
           <vxe-column field="createTime" title="创建时间" sortable :min-width="170" />
-          <vxe-column field="appId" title="应用号" :min-width="150" />
+
+          <vxe-column field="appName" title="应用" :min-width="150" />
           <vxe-column fixed="right" :width="120" :showOverflow="false" title="操作">
             <template #default="{ row }">
               <a-link @click="show(row)">查看</a-link>
@@ -105,7 +106,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { computed, onMounted, ref } from 'vue'
+  import { computed, onMounted, ref, watch } from 'vue'
   import {
     closeTransfer,
     getTotalAmount,
@@ -125,7 +126,7 @@
   import ALink from '/@/components/Link/Link.vue'
   import { TransferStatusEnum } from '@/enums/daxpay/tradeStatusEnum'
   import { Icon } from '@/components/Icon'
-  import { mchAppDropdown } from '@/views/daxpay/common/merchant/app/MchApp.api'
+  import { mchAppDropdown } from '@/views/daxpay/admin/merchant/app/MchAppAdmin.api'
 
   // 使用hooks
   const {
@@ -142,7 +143,7 @@
   const { createMessage, createConfirm } = useMessage()
   const { dictConvert, dictDropDown } = useDict()
 
-  const mchAppList = ref<LabeledValue[]>([])
+  const mchAppOptions = ref<LabeledValue[]>([])
   let channelList = ref<LabeledValue[]>([])
   let transferStatusList = ref<LabeledValue[]>([])
   let totalAmount = ref<number>(0)
@@ -167,8 +168,8 @@
         field: 'appId',
         type: LIST,
         name: '应用号',
-        placeholder: '请先选择商户后选择应用号',
-        selectList: mchAppList.value,
+        placeholder: '请选择商户应用',
+        selectList: mchAppOptions.value,
       },
     ] as QueryField[]
   })
@@ -190,18 +191,13 @@
    * 初始化数据
    */
   async function initData() {
+    mchAppDropdown().then(({ data }) => {
+      mchAppOptions.value = data
+    })
     transferStatusList.value = await dictDropDown('transfer_status')
     channelList.value = await dictDropDown('channel')
   }
 
-  /**
-   * 初始化商户应用列表
-   */
-  function initMchApp() {
-    mchAppDropdown().then(({ data }) => {
-      mchAppList.value = data
-    })
-  }
   /**
    * 分页查询
    */

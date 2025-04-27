@@ -33,7 +33,7 @@
               <a-tag>{{ dictConvert('trade_type', row.tradeType) }}</a-tag>
             </template>
           </vxe-column>
-          <vxe-column field="success" title="发送成功" sortable :min-width="120" align="center">
+          <vxe-column field="success" title="发送状态" sortable :min-width="120" align="center">
             <template #default="{ row }">
               <a-tag v-if="row.success" color="green">成功</a-tag>
               <a-tag v-else color="red">失败</a-tag>
@@ -50,7 +50,7 @@
           />
           <vxe-column field="latestTime" title="最后发送时间" sortable :min-width="170" />
           <vxe-column field="createTime" title="创建时间" sortable :min-width="170" />
-          <vxe-column field="appId" title="应用号" :min-width="150" />
+          <vxe-column field="appName" title="应用" :min-width="150" />
           <vxe-column fixed="right" width="180" :showOverflow="false" title="操作">
             <template #default="{ row }">
               <a-link @click="show(row)">查看</a-link>
@@ -79,7 +79,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { computed, onMounted, ref, watch } from 'vue'
+  import { computed, onMounted, ref } from 'vue'
   import { CallbackTask, page, send } from './CallbackTask.api'
   import useTablePage from '@/hooks/bootx/useTablePage'
   import BQuery from '@/components/Bootx/Query/BQuery.vue'
@@ -93,7 +93,7 @@
   import PayOrderInfo from '@/views/daxpay/common/order/pay/PayOrderInfo.vue'
   import TransferOrderInfo from '@/views/daxpay/common/order/transfer/TransferOrderInfo.vue'
   import CallbackRecordList from './CallbackRecordList.vue'
-  import { mchAppDropdown } from '@/views/daxpay/common/merchant/app/MchApp.api'
+  import { mchAppDropdown } from '@/views/daxpay/admin/merchant/app/MchAppAdmin.api'
 
   // 使用hooks
   const {
@@ -123,16 +123,26 @@
         selectList: tradeTypeList.value,
       },
       {
+        field: 'success',
+        type: LIST,
+        name: '发送状态',
+        placeholder: '请选择发送状态',
+        selectList: [
+          { label: '成功', value: 'true' },
+          { label: '失败', value: 'false' },
+        ],
+      },
+      {
         field: 'appId',
         type: LIST,
         name: '应用号',
-        placeholder: '请先选择商户后选择应用号',
-        selectList: mchAppList.value,
+        placeholder: '请选择商户应用',
+        selectList: mchAppOptions.value,
       },
     ] as QueryField[]
   })
 
-  const mchAppList = ref<LabeledValue[]>([])
+  const mchAppOptions = ref<LabeledValue[]>([])
   const noticeRecordList = ref<any>()
   const noticeTaskInfo = ref<any>()
   const payOrderInfo = ref<any>()
@@ -154,16 +164,10 @@
    * 初始化
    */
   async function initData() {
-    tradeTypeList.value = await dictDropDown('trade_type')
-    initMchApp()
-  }
-  /**
-   * 初始化商户应用列表
-   */
-  function initMchApp() {
     mchAppDropdown().then(({ data }) => {
-      mchAppList.value = data
+      mchAppOptions.value = data
     })
+    tradeTypeList.value = await dictDropDown('trade_type')
   }
   /**
    * 分页查询

@@ -58,7 +58,7 @@
               {{ dictConvert('allocation_result', row.result) }}
             </template> </vxe-column
           ><vxe-column field="errorMsg" title="错误原因" :min-width="160" />
-          <vxe-column field="createTime" title="创建时间" :min-width="160" />
+          <vxe-column field="createTime" title="创建时间" :min-width="170" />
           <vxe-column fixed="right" :min-width="200" :showOverflow="false" title="操作">
             <template #default="{ row }">
               <a-link @click="show(row)">查看</a-link>

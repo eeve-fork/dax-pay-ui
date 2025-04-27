@@ -85,7 +85,7 @@ export function banUser(userId) {
  */
 export function banUserBatch(userIds) {
   return defHttp.post({
-    url: '/user/admin/banUserBatch',
+    url: '/user/admin/banBatch',
     data: userIds,
   })
 }

@@ -88,7 +88,6 @@
   import { Rule } from 'ant-design-vue/lib/form'
   import { getAppEnvConfig } from '@/utils/env'
   import { imgCaptcha } from '@/api/common/Captcha'
-  import { LoginType } from '@/api/common/LoginAssist'
 
   const { notification } = useMessage()
   // 用户信息存储

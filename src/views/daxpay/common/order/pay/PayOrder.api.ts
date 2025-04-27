@@ -94,8 +94,6 @@ export function cellStyle({ row, column }) {
   // 支付状态
   if (column.field == 'status') {
     switch (row.status) {
-      case PayStatusEnum.WAIT:
-        return { color: 'orange' }
       case PayStatusEnum.SUCCESS:
         return { color: 'green' }
       case PayStatusEnum.FAIL:

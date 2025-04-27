@@ -28,19 +28,13 @@
     >
       <vxe-column type="checkbox" width="50" />
       <vxe-column field="receiverNo" title="接收方编号" :min-width="160" />
-      <vxe-column field="name" title="接收方名称" :min-width="100" />
+      <vxe-column field="receiverName" title="接收方名称" :min-width="100" />
       <vxe-column field="receiverType" title="分账接收方类型" :min-width="100">
         <template #default="{ row }">
           <a-tag>{{ dictConvert('alloc_receiver_type', row.receiverType) }}</a-tag>
         </template>
       </vxe-column>
       <vxe-column field="receiverAccount" title="接收方账号" :min-width="160" />
-      <vxe-column field="receiverName" title="接收方姓名" :min-width="100" />
-      <vxe-column field="relationType" title="分账关系" :min-width="100">
-        <template #default="{ row }">
-          <a-tag>{{ dictConvert('alloc_relation_type', row.relationType) }}</a-tag>
-        </template>
-      </vxe-column>
     </vxe-table>
     <vxe-pager
       border

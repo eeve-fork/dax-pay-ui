@@ -81,7 +81,7 @@
             <vxe-column field="channelRefundAmount" title="退款交易金额" :min-width="150" />
           </vxe-colgroup>
           <vxe-column field="errorMsg" title="错误信息" :min-width="160" />
-          <vxe-column field="createTime" title="创建时间" :min-width="160" />
+          <vxe-column field="createTime" title="创建时间" :min-width="170" />
           <vxe-column fixed="right" width="120" :showOverflow="false" title="操作">
             <template #default="{ row }">
               <a-link @click="show(row)">查看</a-link>
@@ -121,7 +121,7 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, nextTick, onMounted, ref, watch } from 'vue'
+  import { computed, nextTick, onMounted, ref } from 'vue'
   import { compare, downAndSave, page } from './ReconcileStatement.api'
   import useTablePage from '@/hooks/bootx/useTablePage'
   import { VxeTable, VxeTableInstance, VxeToolbarInstance } from 'vxe-table'
@@ -135,7 +135,7 @@
   import ReconcileStatementCreate from './ReconcileStatementCreate.vue'
   import ReconcileStatementInfo from './ReconcileStatementInfo.vue'
   import { useFilePlatform } from '@/hooks/bootx/useFilePlatform'
-  import { mchAppDropdown } from '@/views/daxpay/common/merchant/app/MchApp.api'
+  import { mchAppDropdown } from '@/views/daxpay/admin/merchant/app/MchAppAdmin.api'
 
   // 使用hooks
   const {
@@ -153,7 +153,7 @@
   const { createMessage, createConfirm } = useMessage()
   const { getFileUrl } = useFilePlatform()
 
-  const mchAppList = ref<LabeledValue[]>([])
+  const mchAppOptions = ref<LabeledValue[]>([])
   let channelList = ref<LabeledValue[]>([])
   let resultList = ref<LabeledValue[]>([])
 
@@ -170,8 +170,8 @@
         type: LIST,
         placeholder: '请选择是否已经下载对账文件',
         selectList: [
-          { label: '已完成', value: true },
-          { label: '未完成', value: false },
+          { label: '已完成', value: 'true' },
+          { label: '未完成', value: 'false' },
         ],
       },
       {
@@ -180,16 +180,16 @@
         type: LIST,
         placeholder: '请选择是否已经对账比对完成',
         selectList: [
-          { label: '已完成', value: true },
-          { label: '未完成', value: false },
+          { label: '已完成', value: 'true' },
+          { label: '未完成', value: 'false' },
         ],
       },
       {
         field: 'appId',
         type: LIST,
-        name: '应用号',
-        placeholder: '请先选择商户后选择应用号',
-        selectList: mchAppList.value,
+        name: '应用',
+        placeholder: '请先选择商户后选择应用',
+        selectList: mchAppOptions.value,
       },
     ] as QueryField[]
   })
@@ -211,19 +211,13 @@
    * 初始化基础数据
    */
   async function initData() {
+    mchAppDropdown().then(({ data }) => {
+      mchAppOptions.value = data
+    })
     channelList.value = await dictDropDown('channel')
     resultList.value = await dictDropDown('reconcile_result')
-    initMchApp()
   }
 
-  /**
-   * 初始化商户应用列表
-   */
-  function initMchApp() {
-    mchAppDropdown().then(({ data }) => {
-      mchAppList.value = data
-    })
-  }
   /**
    * 入口
    */

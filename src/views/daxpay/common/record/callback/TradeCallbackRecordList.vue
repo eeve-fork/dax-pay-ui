@@ -47,7 +47,7 @@
           </vxe-column>
           <vxe-column field="msg" title="提示信息" :min-width="250" />
           <vxe-column field="createTime" title="通知时间" sortable :min-width="170" />
-          <vxe-column field="appId" title="应用号" :min-width="150" />
+          <vxe-column field="appName" title="应用" :min-width="150" />
           <vxe-column fixed="right" width="60" :showOverflow="false" title="操作">
             <template #default="{ row }">
               <span>
@@ -86,8 +86,8 @@
   import PayOrderInfo from '@/views/daxpay/common/order/pay/PayOrderInfo.vue'
   import RefundOrderInfo from '@/views/daxpay/common/order/refund/RefundOrderInfo.vue'
   import TransferOrderInfo from '@/views/daxpay/common/order/transfer/TransferOrderInfo.vue'
-  import { TradeTypeEnum } from '@/enums/daxpay/channelEnum'
-  import { mchAppDropdown } from '@/views/daxpay/common/merchant/app/MchApp.api'
+  import { TradeTypeEnum } from '@/enums/daxpay/daxpayEnum'
+  import { mchAppDropdown } from '@/views/daxpay/admin/merchant/app/MchAppAdmin.api'
 
   // 使用hooks
   const {
@@ -103,7 +103,7 @@
   } = useTablePage(queryPage)
   const { dictConvert, dictDropDown } = useDict()
 
-  const mchAppList = ref<LabeledValue[]>([])
+  const mchAppOptions = ref<LabeledValue[]>([])
   let channelList = ref<LabeledValue[]>([])
   let callbackTypeList = ref<LabeledValue[]>([])
   let callbackStatusList = ref<LabeledValue[]>([])
@@ -138,8 +138,8 @@
         field: 'appId',
         type: LIST,
         name: '应用号',
-        placeholder: '请先选择商户后选择应用号',
-        selectList: mchAppList.value,
+        placeholder: '请选择商户应用',
+        selectList: mchAppOptions.value,
       },
     ] as QueryField[]
   })
@@ -166,14 +166,8 @@
     channelList.value = await dictDropDown('channel')
     callbackTypeList.value = await dictDropDown('trade_type')
     callbackStatusList.value = await dictDropDown('callback_status')
-    initMchApp()
-  }
-  /**
-   * 初始化商户应用列表
-   */
-  function initMchApp() {
     mchAppDropdown().then(({ data }) => {
-      mchAppList.value = data
+      mchAppOptions.value = data
     })
   }
 

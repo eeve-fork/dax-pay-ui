@@ -24,7 +24,16 @@
           :filter-option="search"
           :options="mchAppList"
           v-model:value="form.appId"
+          @change="appChange"
           placeholder="请选择商户应用"
+        />
+      </a-form-item>
+      <a-form-item label="对账通道" name="channel" v-show="form.appId">
+        <a-select
+          style="width: 100%"
+          v-model:value="form.channel"
+          :options="channels"
+          placeholder="请选择对账通道"
         />
       </a-form-item>
       <a-form-item label="对账日期" name="date">
@@ -36,14 +45,6 @@
           :defaultPickerValue="form.date"
           :disabled-date="disabledDate"
           :show-today="false"
-        />
-      </a-form-item>
-      <a-form-item label="对账通道" name="channel">
-        <a-select
-          style="width: 100%"
-          v-model:value="form.channel"
-          :options="channels"
-          placeholder="请选择对账通道"
         />
       </a-form-item>
     </a-form>
@@ -62,12 +63,10 @@
   import { useMessage } from '@/hooks/web/useMessage'
   import { FormInstance, Rule } from 'ant-design-vue/lib/form'
   import { LabeledValue } from 'ant-design-vue/lib/select'
-  import { useDict } from '@/hooks/bootx/useDict'
   import dayjs, { Dayjs } from 'dayjs'
   import XEUtils from 'xe-utils'
   import { create, ReconcileCreatParam } from './ReconcileStatement.api'
-  import { mchAppDropdown } from '@/views/daxpay/common/merchant/app/MchApp.api'
-
+  import { mchAppDropdownByEnable, dropdownByEnable as channelDropdown } from '@/views/daxpay/admin/merchant/app/MchAppAdmin.api'
   const {
     handleCancel,
     search,
@@ -79,7 +78,6 @@
     showable,
   } = useFormEdit()
   const { createMessage } = useMessage()
-  const { dictDropDown } = useDict()
 
   const form = reactive<ReconcileCreatParam>({})
 
@@ -91,6 +89,7 @@
   } as Record<string, Rule[]>
 
   const channels = ref<LabeledValue[]>([])
+  const merchantList = ref<LabeledValue[]>([])
   const mchAppList = ref<LabeledValue[]>([])
 
   const formRef = ref<FormInstance>()
@@ -105,17 +104,19 @@
    * 初始化数据
    */
   async function initData() {
-    // 通道
-    channels.value = await dictDropDown('channel')
-    initMchApp()
+    // 商户
+    mchAppDropdownByEnable().then(({ data }) => {
+      mchAppList.value = data
+    })
   }
 
   /**
-   * 商户变动时刷新应用列表
+   * 应用变动时刷新可用通道列表
    */
-  function initMchApp() {
-    mchAppDropdown().then(({ data }) => {
-      mchAppList.value = data
+  function appChange() {
+    form.channel = undefined
+    channelDropdown(form.appId).then(({ data }) => {
+      channels.value = data
     })
   }
 

@@ -1,8 +1,10 @@
 export enum PageEnum {
   // 基础登录页
   BASE_LOGIN = '/login',
-  // 登陆后主页
-  BASE_HOME = '/dashboard',
+  // 首页
+  BASE_HOME = '/',
+  // 服务端登陆后主页
+  ADMIN_HOME = '/dashboard',
   // 错误页
   ERROR_PAGE = '/exception',
 }

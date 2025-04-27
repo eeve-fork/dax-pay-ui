@@ -11,8 +11,6 @@
 
     <template #overlay>
       <a-menu @click="handleMenuClick">
-        <MenuItem key="doc" text="在线文档" icon="ion:document-text-outline" v-if="getShowDoc" />
-        <Menu.Divider v-if="getShowDoc" />
         <MenuItem key="logout" text="退出登录" icon="ion:power-outline" />
       </a-menu>
     </template>

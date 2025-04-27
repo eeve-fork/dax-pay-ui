@@ -54,6 +54,9 @@
       <a-descriptions-item label="终端ip" :span="4">
         {{ order.clientIp }}
       </a-descriptions-item>
+      <a-descriptions-item label="商户号" :span="2">
+        {{ order.mchNo }}
+      </a-descriptions-item>
       <a-descriptions-item label="应用AppId" :span="2">
         {{ order.appId }}
       </a-descriptions-item>

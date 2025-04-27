@@ -33,32 +33,12 @@ export function findChannels() {
 }
 
 /**
- * 根据通道获取分账接收方类型
- */
-export function findReceiverTypeByChannel(channel) {
-  return defHttp.get<Result<LabeledValue[]>>({
-    url: '/allocation/receiver/findReceiverTypeByChannel',
-    params: { channel },
-  })
-}
-
-/**
- * 新增
- */
-export function add(data: AllocReceiver) {
-  return defHttp.post<Result<null>>({
-    url: '/allocation/receiver/add',
-    data,
-  })
-}
-
-/**
  * 删除
  */
-export function del(data) {
+export function del(id) {
   return defHttp.post<Result<void>>({
     url: '/allocation/receiver/delete',
-    data,
+    params: { id },
   })
 }
 
@@ -69,19 +49,11 @@ export interface AllocReceiver extends MchEntity {
   // 分账接收方编号
   receiverNo?: string
   // 名称
-  name?: string
+  receiverName?: string
   // 所属通道
   channel?: string
   // 分账接收方类型
   receiverType?: string
   // 接收方账号
   receiverAccount?: string
-  // 接收方姓名
-  receiverName?: string
-  // 分账关系类型
-  relationType?: string
-  // 关系名称
-  relationName?: string
-  // 请求时间
-  reqTime?: string
 }

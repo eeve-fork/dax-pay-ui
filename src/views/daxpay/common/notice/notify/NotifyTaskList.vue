@@ -33,7 +33,7 @@
               <a-tag>{{ dictConvert('notify_content_type', row.notifyType) }}</a-tag>
             </template>
           </vxe-column>
-          <vxe-column field="success" title="发送成功" sortable :min-width="120">
+          <vxe-column field="success" title="发送状态" sortable :min-width="120">
             <template #default="{ row }">
               <a-tag v-if="row.success" color="green">成功</a-tag>
               <a-tag v-else color="red">失败</a-tag>
@@ -44,7 +44,7 @@
           <vxe-column field="delayCount" title="延迟重试次数" sortable :min-width="150" />
           <vxe-column field="latestTime" title="最后发送时间" sortable :min-width="170" />
           <vxe-column field="createTime" title="创建时间" sortable :min-width="170" />
-          <vxe-column field="appId" title="应用号" :min-width="150" />
+          <vxe-column field="appName" title="应用" :min-width="150" />
           <vxe-column fixed="right" width="180" :showOverflow="false" title="操作">
             <template #default="{ row }">
               <a-link @click="show(row)">查看</a-link>
@@ -74,7 +74,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { computed, onMounted, ref, watch } from 'vue'
+  import { computed, onMounted, ref } from 'vue'
   import { NotifyTask, page, send } from './NotifyTask.api'
   import useTablePage from '@/hooks/bootx/useTablePage'
   import BQuery from '@/components/Bootx/Query/BQuery.vue'
@@ -88,9 +88,9 @@
   import PayOrderInfo from '@/views/daxpay/common/order/pay/PayOrderInfo.vue'
   import TransferOrderInfo from '@/views/daxpay/common/order/transfer/TransferOrderInfo.vue'
   import NotifyRecordList from './NotifyRecordList.vue'
-  import { NotifyContentTypeEnum } from '@/enums/daxpay/channelEnum'
+  import { NotifyContentTypeEnum } from '@/enums/daxpay/daxpayEnum'
   import RefundOrderInfo from '@/views/daxpay/common/order/refund/RefundOrderInfo.vue'
-  import { mchAppDropdown } from '@/views/daxpay/common/merchant/app/MchApp.api'
+  import { mchAppDropdown } from '@/views/daxpay/admin/merchant/app/MchAppAdmin.api'
 
   // 使用hooks
   const {
@@ -120,16 +120,26 @@
         selectList: noticeTypeList.value,
       },
       {
+        field: 'success',
+        type: LIST,
+        name: '发送状态',
+        placeholder: '请选择发送状态',
+        selectList: [
+          { label: '成功', value: 'true' },
+          { label: '失败', value: 'false' },
+        ],
+      },
+      {
         field: 'appId',
         type: LIST,
         name: '应用号',
-        placeholder: '请先选择商户后选择应用号',
-        selectList: mchAppList.value,
+        placeholder: '请选择商户应用',
+        selectList: mchAppOptions.value,
       },
     ] as QueryField[]
   })
 
-  const mchAppList = ref<LabeledValue[]>([])
+  const mchAppOptions = ref<LabeledValue[]>([])
   const notifyRecordList = ref<any>()
   const notifyTaskInfo = ref<any>()
   const payOrderInfo = ref<any>()
@@ -151,16 +161,10 @@
    * 初始化
    */
   async function initData() {
-    noticeTypeList.value = await dictDropDown('notify_content_type')
-    initMchApp()
-  }
-  /**
-   * 初始化商户应用列表
-   */
-  function initMchApp() {
     mchAppDropdown().then(({ data }) => {
-      mchAppList.value = data
+      mchAppOptions.value = data
     })
+    noticeTypeList.value = await dictDropDown('notify_content_type')
   }
   /**
    * 分页查询
@@ -210,6 +214,7 @@
    * 查看订单信息
    */
   function showOrder(record: NotifyTask) {
+    console.log(record.notifyType)
     if (record.notifyType === NotifyContentTypeEnum.PAY) {
       payOrderInfo.value.init(record.tradeNo)
     } else if (record.notifyType === NotifyContentTypeEnum.REFUND) {

@@ -48,7 +48,7 @@
           </vxe-column>
           <vxe-column field="errorMsg" title="错误消息" :min-width="160" />
           <vxe-column field="createTime" title="同步时间" :min-width="170" />
-          <vxe-column field="appId" title="应用号" :min-width="150" />
+          <vxe-column field="appName" title="应用" :min-width="150" />
           <vxe-column fixed="right" :min-width="50" :showOverflow="false" title="操作">
             <template #default="{ row }">
               <span>
@@ -75,21 +75,21 @@
 </template>
 
 <script lang="ts" setup>
-  import { computed, onMounted, ref, watch } from 'vue'
+  import { computed, onMounted, ref } from 'vue'
   import { page, TradeSyncRecord } from './TradeSyncRecord.api'
   import useTablePage from '@/hooks/bootx/useTablePage'
   import { VxeTable, VxeTableInstance, VxeToolbarInstance } from 'vxe-table'
   import BQuery from '@/components/Bootx/Query/BQuery.vue'
   import { LIST, QueryField, STRING } from '@/components/Bootx/Query/Query'
   import { useDict } from '@/hooks/bootx/useDict'
-  import { TradeTypeEnum } from '@/enums/daxpay/channelEnum'
+  import { TradeTypeEnum } from '@/enums/daxpay/daxpayEnum'
   import { LabeledValue } from 'ant-design-vue/lib/select'
   import ALink from '/@/components/Link/Link.vue'
   import PayOrderInfo from '@/views/daxpay/common/order/pay/PayOrderInfo.vue'
   import TradeSyncRecordInfo from './TradeSyncRecordInfo.vue'
   import RefundOrderInfo from '@/views/daxpay/common/order/refund/RefundOrderInfo.vue'
   import TransferOrderInfo from '@/views/daxpay/common/order/transfer/TransferOrderInfo.vue'
-  import { mchAppDropdown } from '@/views/daxpay/common/merchant/app/MchApp.api'
+  import { mchAppDropdown } from '@/views/daxpay/admin/merchant/app/MchAppAdmin.api'
 
   // 使用hooks
   const {
@@ -103,7 +103,7 @@
   } = useTablePage(queryPage)
   const { dictConvert, dictDropDown } = useDict()
 
-  const mchAppList = ref<LabeledValue[]>([])
+  const mchAppOptions = ref<LabeledValue[]>([])
   let syncStatusList = ref<LabeledValue[]>([])
   let payChannelList = ref<LabeledValue[]>([])
   let syncTypeList = ref<LabeledValue[]>([])
@@ -139,8 +139,8 @@
         field: 'appId',
         type: LIST,
         name: '应用号',
-        placeholder: '请先选择商户后选择应用号',
-        selectList: mchAppList.value,
+        placeholder: '请选择商户应用',
+        selectList: mchAppOptions.value,
       },
     ] as QueryField[]
   })
@@ -167,14 +167,8 @@
     syncStatusList.value = await dictDropDown('PaySyncStatus')
     payChannelList.value = await dictDropDown('channel')
     syncTypeList.value = await dictDropDown('PaymentType')
-    initMchApp()
-  }
-  /**
-   * 初始化商户应用列表
-   */
-  function initMchApp() {
     mchAppDropdown().then(({ data }) => {
-      mchAppList.value = data
+      mchAppOptions.value = data
     })
   }
   /**

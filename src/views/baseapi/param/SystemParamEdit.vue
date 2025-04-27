@@ -27,9 +27,9 @@
           placeholder="请输入参数名称"
         />
       </a-form-item>
-      <a-form-item label="参数Key" name="paramKey">
+      <a-form-item label="参数Key" name="key">
         <a-input
-          v-model:value="form.paramKey"
+          v-model:value="form.key"
           :disabled="showable || form.internal"
           placeholder="请输入参数键名"
         />
@@ -119,7 +119,7 @@
   let form = ref<SystemParam>({
     id: null,
     name: '',
-    paramKey: '',
+    key: '',
     value: '',
     enable: true,
     type: undefined,
@@ -181,15 +181,8 @@
   }
   // 校验key值
   async function validateKey() {
-    const { paramKey, id } = form.value
-    return existsByServer(
-      paramKey,
-      id,
-      formEditType.value,
-      existsByKey,
-      existsByKeyNotId,
-      '该Key已存在',
-    )
+    const { key, id } = form.value
+    return existsByServer(key, id, formEditType.value, existsByKey, existsByKeyNotId, '该Key已存在')
   }
   defineExpose({
     init,

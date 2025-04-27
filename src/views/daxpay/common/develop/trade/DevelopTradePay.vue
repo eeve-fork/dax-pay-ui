@@ -13,7 +13,7 @@
         <a-form-item label="应用号" name="appId">
           <a-select
             :filter-option="search"
-            :options="mchAppList"
+            :options="mchAppOptions"
             v-model:value="form.appId"
             placeholder="请选择商户应用"
           />
@@ -55,6 +55,19 @@
             placeholder="请选择支付方式"
           />
         </a-form-item>
+        <a-form-item
+          label="其他支付方式"
+          name="otherMethod"
+          v-if="form.method === PayMethodEnum.OTHER"
+        >
+          <a-input v-model:value="form.otherMethod" placeholder="请输入其他支付方式" />
+        </a-form-item>
+        <a-form-item label="付款码" name="authCode">
+          <a-input v-model:value="form.authCode" placeholder="请输入付款码" />
+        </a-form-item>
+        <a-form-item label="OpenID" name="openId">
+          <a-input v-model:value="form.openId" placeholder="请输入OpenID" />
+        </a-form-item>
         <a-form-item label="是否分账" name="allocation">
           <a-switch
             checked-children="是"
@@ -69,6 +82,14 @@
             v-model:checked="form.autoAllocation"
           />
         </a-form-item>
+        <a-form-item label="限制用户支付类型" name="limitPay">
+          <a-select
+            allow-clear
+            v-model:value="form.limitPay"
+            :options="[{ label: '信用卡支付', value: 'no_credit'}]"
+            placeholder="请选择限制用户支付的类型"
+          />
+        </a-form-item>
         <a-form-item label="支付描述" name="description">
           <a-input v-model:value="form.description" placeholder="请输入支付描述" />
         </a-form-item>
@@ -76,11 +97,7 @@
           <a-textarea v-model:value="form.extraParam" :rows="3" placeholder="请输入支付扩展参数" />
         </a-form-item>
         <a-form-item label="商户扩展参数" name="attach">
-          <a-textarea
-            v-model:value="form.attach"
-            :rows="3"
-            placeholder="请输入商户扩展参数, 会原样回调返回"
-          />
+          <a-textarea v-model:value="form.attach" :rows="3" placeholder="请输入商户扩展参数" />
         </a-form-item>
         <a-form-item label="异步通知地址" name="notifyUrl">
           <a-input v-model:value="form.notifyUrl" placeholder="请输入异步通知地址" />
@@ -140,11 +157,12 @@
   import { PayParam, paySign, tradePay } from './DevelopTrade.api'
   import { LabeledValue } from 'ant-design-vue/lib/select'
   import useFormEdit from '@/hooks/bootx/useFormEdit'
-  import { mchAppDropdown } from '@/views/daxpay/common/merchant/app/MchApp.api'
+  import { mchAppDropdownByEnable } from '@/views/daxpay/admin/merchant/app/MchAppAdmin.api'
   import { useDict } from '@/hooks/bootx/useDict'
   import XEUtils from 'xe-utils'
   import { buildShortUUID, buildUUID } from '@/utils/uuid'
   import { copyText } from '@/utils/copyTextToClipboard'
+  import { PayMethodEnum } from '@/enums/daxpay/daxpayEnum'
 
   const { search } = useFormEdit()
   const { dictDropDown } = useDict()
@@ -160,12 +178,17 @@
   })
   const rules = computed(() => {
     return {
+      mchNo: [{ required: true, message: '商户号不可为空' }],
       appId: [{ required: true, message: '应用号不可为空' }],
       channel: [{ required: true, message: '支付通道不可为空' }],
       bizOrderNo: [{ required: true, message: '订单号不可为空' }],
       title: [{ required: true, message: '支付标题不可为空' }],
       amount: [{ required: true, message: '支付金额不可为空' }],
       method: [{ required: true, message: '支付方式不可为空' }],
+      otherMethod: [
+        { required: form.method === PayMethodEnum.OTHER, message: '其他支付方式不可为空' },
+      ],
+      authCode: [{ required: form.method === PayMethodEnum.BARCODE, message: '付款码不可为空' }],
       allocation: [{ required: true, message: '分账不可为空' }],
       autoAllocation: [{ required: true, message: '自动分账不可为空' }],
       clientIp: [{ required: true, message: '终端IP不可为空' }],
@@ -174,7 +197,7 @@
     } as Record<string, Rule[]>
   })
 
-  const mchAppList = ref<LabeledValue[]>([])
+  const mchAppOptions = ref<LabeledValue[]>([])
   const channelOptions = ref<LabeledValue[]>([])
   const methodOptions = ref<LabeledValue[]>([])
 
@@ -189,24 +212,17 @@
     confirmLoading.value = false
     channelOptions.value = await dictDropDown('channel')
     methodOptions.value = await dictDropDown('pay_method')
+    mchAppDropdownByEnable().then(({ data }) => {
+      mchAppOptions.value = data
+    })
     // 时间默认30M后
     form.expiredTime = XEUtils.toDateString(
       new Date(new Date().getTime() + 30 * 60 * 1000),
       'yyyy-MM-dd HH:mm:ss',
     )
-    initMchApp()
     genNonceStr()
     genBizOrderNo()
     updateReqTime()
-  }
-
-  /**
-   * 商户变动时刷新应用列表
-   */
-  function initMchApp() {
-    mchAppDropdown().then(({ data }) => {
-      mchAppList.value = data
-    })
   }
 
   /**

@@ -131,6 +131,10 @@ export interface ReconcileCreatParam {
   /** 支付通道 */
   channel?: string
   /**
+   * 商户号
+   */
+  mchNo?: string
+  /**
    * 应用AppId
    */
   appId?: string

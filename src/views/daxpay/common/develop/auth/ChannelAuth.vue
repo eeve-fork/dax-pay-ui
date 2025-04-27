@@ -13,20 +13,19 @@
     <a-form class="small-from-item mt-15px mb-15px" ref="formRef" :model="form">
       <a-form-item label="商户应用" name="appId">
         <a-select
-          style="width: 320px"
           :filter-option="search"
           :options="mchAppList"
           v-model:value="form.appId"
           placeholder="请选择商户应用"
         />
       </a-form-item>
-      <a-form-item label="对账通道" name="channel" v-show="form.appId">
+      <a-form-item label="支付通道" name="channel" v-show="form.appId">
         <a-input-group compact>
           <a-select
             style="width: calc(100% - 60px)"
             v-model:value="form.channel"
             :options="channels"
-            placeholder="请选择对账通道"
+            placeholder="请选择支付通道"
           />
           <a-button
             :loading="loading"
@@ -81,15 +80,16 @@
     queryAuthResult,
   } from './ChannelAuth.api'
   import useFormEdit from '@/hooks/bootx/useFormEdit'
-  import { mchAppDropdown } from '@/views/daxpay/common/merchant/app/MchApp.api'
+  import { mchAppDropdownByEnable } from '@/views/daxpay/admin/merchant/app/MchAppAdmin.api'
   import { useDict } from '@/hooks/bootx/useDict'
-  import { ChannelAuthStatusEnum } from '@/enums/daxpay/channelEnum'
+  import { ChannelAuthStatusEnum } from '@/enums/daxpay/daxpayEnum'
 
   const { createMessage } = useMessage()
   const { dictDropDown } = useDict()
   const { search } = useFormEdit()
 
   const channels = ref<LabeledValue[]>([])
+  const merchantList = ref<LabeledValue[]>([])
   const mchAppList = ref<LabeledValue[]>([])
 
   const formRef = ref<FormInstance>()
@@ -109,14 +109,7 @@
   async function initData() {
     // 通道
     channels.value = await dictDropDown('channel')
-    initMchApp()
-  }
-
-  /**
-   * 商户变动时刷新应用列表
-   */
-  function initMchApp() {
-    mchAppDropdown().then(({ data }) => {
+    mchAppDropdownByEnable().then(({ data }) => {
       mchAppList.value = data
     })
   }

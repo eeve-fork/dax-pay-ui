@@ -34,7 +34,7 @@
           <a-tag v-else>否</a-tag>
         </a-form-item>
         <a-form-item label="用户状态">
-          <a-tag>{{ dictConvert('UserStatusCode', form.status) || '无' }}</a-tag>
+          <a-tag>{{ dictConvert('user_status', form.status) || '无' }}</a-tag>
         </a-form-item>
         <a-form-item label="角色列表">
           <a-tag color="green" v-for="o in roles" :key="o.id">{{ o.name }}</a-tag>

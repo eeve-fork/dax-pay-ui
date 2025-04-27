@@ -72,7 +72,7 @@
             </template>
           </vxe-column>
           <vxe-column field="createTime" title="创建时间" sortable :min-width="230" />
-          <vxe-column field="appId" title="应用号" :min-width="150" />
+          <vxe-column field="appName" title="应用" :min-width="150" />
           <vxe-column fixed="right" width="120" :showOverflow="false" title="操作">
             <template #default="{ row }">
               <a-link @click="show(row)">查看</a-link>
@@ -161,11 +161,11 @@
     PayRefundStatusEnum,
     PayStatusEnum,
   } from '@/enums/daxpay/tradeStatusEnum'
-  import { mchAppDropdown } from '@/views/daxpay/common/merchant/app/MchApp.api'
+  import { mchAppDropdown } from '@/views/daxpay/admin/merchant/app/MchAppAdmin.api'
 
   // 使用hooks
   const {
-    handleTableChange,
+    handleTableChange, //表格页脚变化
     pageQueryResHandel,
     sortChange,
     resetQueryParams,
@@ -178,7 +178,7 @@
   const { createMessage, createConfirm } = useMessage()
   const { dictConvert, dictDropDown } = useDict()
 
-  const mchAppList = ref<LabeledValue[]>([])
+  const mchAppOptions = ref<LabeledValue[]>([])
   const channelList = ref<LabeledValue[]>([])
   const methodList = ref<LabeledValue[]>([])
   const payStatusList = ref<LabeledValue[]>([])
@@ -202,8 +202,8 @@
         name: '支持分账',
         type: LIST,
         selectList: [
-          { label: '支持', value: true },
-          { label: '不支持', value: false },
+          { label: '支持', value: 'true' },
+          { label: '不支持', value: 'false' },
         ],
       },
       { field: 'channel', name: '支付通道', type: LIST, selectList: channelList.value },
@@ -220,8 +220,8 @@
         field: 'appId',
         type: LIST,
         name: '应用号',
-        placeholder: '请先选择商户后选择应用号',
-        selectList: mchAppList.value,
+        placeholder: '请选择商户应用',
+        selectList: mchAppOptions.value,
       },
     ] as QueryField[]
   })
@@ -233,7 +233,7 @@
   const totalAmount = ref<number>(0.0)
 
   onMounted(() => {
-    initData()
+    initData() //初始化数据
     vxeBind()
     queryPage()
   })
@@ -245,21 +245,14 @@
    * 初始化数据
    */
   async function initData() {
-    channelList.value = await dictDropDown('channel')
-    methodList.value = await dictDropDown('pay_method')
-    payStatusList.value = await dictDropDown('pay_status')
-    payRefundStatusList.value = await dictDropDown('pay_refund_status')
-    payAllocStatusList.value = await dictDropDown('pay_alloc_status')
-    initMchApp()
-  }
-
-  /**
-   * 初始化商户应用列表
-   */
-  function initMchApp() {
     mchAppDropdown().then(({ data }) => {
-      mchAppList.value = data
+      mchAppOptions.value = data //更新应用号
     })
+    channelList.value = await dictDropDown('channel') //获取查询支付通道下拉列表
+    methodList.value = await dictDropDown('pay_method') //获取查询支付方式下拉列表
+    payStatusList.value = await dictDropDown('pay_status') //获取查询支付状态下拉列表
+    payRefundStatusList.value = await dictDropDown('pay_refund_status') //获取查询退款状态下拉列表
+    payAllocStatusList.value = await dictDropDown('pay_alloc_status') //获取分账状态状态下拉列表
   }
 
   /**
@@ -341,6 +334,13 @@
     })
   }
   /**
+   * 退款
+   */
+  function refund(record) {
+    refundModel.value.init(record.id)
+  }
+
+  /**
    * 触发分账
    */
   function allocationOrder(record) {
@@ -355,12 +355,6 @@
         })
       },
     })
-  }
-  /**
-   * 退款
-   */
-  function refund(record) {
-    refundModel.value.init(record.id)
   }
 </script>
 

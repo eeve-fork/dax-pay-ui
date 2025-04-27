@@ -16,6 +16,5 @@ export interface PermMenu {
   sortNo: number
   keepAlive: boolean
   targetOutside: boolean
-  fullScreen: boolean
   children: Array<PermMenu>
 }

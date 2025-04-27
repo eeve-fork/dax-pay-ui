@@ -36,7 +36,7 @@
             </template>
           </vxe-column>
           <vxe-column field="name" title="分组名称" :min-width="160" />
-          <vxe-column field="channel" title="所属通道" :min-width="120" align="center">
+          <vxe-column field="channel" title="所属通道" :min-width="150" align="center">
             <template #default="{ row }">
               <a-tag>{{ dictConvert('channel', row.channel) }}</a-tag>
             </template>
@@ -109,9 +109,8 @@
   import { FormEditType } from '@/enums/formTypeEnum'
   import { findChannels } from '../receiver/AllocationReceiver.api'
 
-  const props = defineProps({
-    appId: String,
-  })
+  const { appId } = defineProps<{ appId: string }>()
+
   // 使用hooks
   const {
     handleTableChange,
@@ -171,7 +170,7 @@
    * 新建
    */
   function add() {
-    allocationGroupEdit.value.init(null, FormEditType.Add, props.appId)
+    allocationGroupEdit.value.init(null, FormEditType.Add, appId)
   }
 
   /**
@@ -202,7 +201,7 @@
     loading.value = true
     page({
       ...model.queryParam,
-      appId: props.appId,
+      appId,
       ...pages,
       ...sortParam,
     }).then(({ data }) => {

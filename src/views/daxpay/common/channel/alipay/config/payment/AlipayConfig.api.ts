@@ -47,8 +47,6 @@ export function saveOrUpdateSub(obj: AlipaySubConfig) {
  * 支付宝配置
  */
 export interface AlipayConfig extends MchEntity {
-  // 商户号
-  mchNo?: string
   // 商户AppId
   appId?: string
   // 支付宝商户appId

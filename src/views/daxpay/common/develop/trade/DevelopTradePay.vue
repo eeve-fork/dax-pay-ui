@@ -178,7 +178,6 @@
   })
   const rules = computed(() => {
     return {
-      mchNo: [{ required: true, message: '商户号不可为空' }],
       appId: [{ required: true, message: '应用号不可为空' }],
       channel: [{ required: true, message: '支付通道不可为空' }],
       bizOrderNo: [{ required: true, message: '订单号不可为空' }],

@@ -99,8 +99,6 @@ export interface PayParam {
   notifyUrl?: string
   /** 终端IP */
   clientIp?: string
-  /** 商户号 */
-  mchNo?: string
   /** 应用号 */
   appId?: string
   /** 随机数 */
@@ -123,8 +121,6 @@ export interface PayResult {
   status?: string
   /** 支付参数体 */
   payBody?: string
-  /** 商户号 */
-  mchNo?: string
   /** 应用号 */
   appId?: string
   /** 随机数 */
@@ -155,8 +151,6 @@ export interface RefundParam {
   notifyUrl?: string
   /** 终端IP */
   clientIp?: string
-  /** 商户号 */
-  mchNo?: string
   /** 应用号 */
   appId?: string
   /** 随机数 */
@@ -177,8 +171,6 @@ export interface RefundResult {
   bizRefundNo?: string
   /** 退款状态 */
   status?: string
-  /** 商户号 */
-  mchNo?: string
   /** 应用号 */
   appId?: string
   /** 随机数 */
@@ -215,8 +207,6 @@ export interface TransferParam {
   notifyUrl?: string
   /** 终端IP */
   clientIp?: string
-  /** 商户号 */
-  mchNo?: string
   /** 应用号 */
   appId?: string
   /** 随机数 */
@@ -238,8 +228,6 @@ export interface TransferResult {
   status?: string
   /** 提示信息 */
   errorMsg?: string
-  /** 商户号 */
-  mchNo?: string
   /** 应用号 */
   appId?: string
   /** 随机数 */
@@ -286,8 +274,6 @@ export interface GatewayPayParam {
   notifyUrl?: string
   /** 终端IP */
   clientIp?: string
-  /** 商户号 */
-  mchNo?: string
   /** 应用号 */
   appId?: string
   /** 随机数 */

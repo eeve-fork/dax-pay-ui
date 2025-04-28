@@ -276,7 +276,6 @@
           'privateKey',
         ),
         isv: isIsv.value,
-        mchNo: channelConfig.value.mchNo,
         appId: channelConfig.value.appId,
       })
         .then(() => {

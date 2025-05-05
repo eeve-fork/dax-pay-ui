@@ -70,9 +70,6 @@
                       <a-link @click="showGatewayPay(row)">网关支付</a-link>
                     </a-menu-item>
                     <a-menu-item>
-                      <a-link @click="showTerminalDevice(row)">收款终端</a-link>
-                    </a-menu-item>
-                    <a-menu-item>
                       <a-link danger @click="remove(row)">删除</a-link>
                     </a-menu-item>
                   </a-menu>

@@ -33,52 +33,6 @@
           <a-radio-button :value="true">升级</a-radio-button>
         </a-radio-group>
       </a-form-item>
-      <a-form-item label="小程序快捷收银开启分账" name="miniAppAllocation">
-        <a-radio-group
-          v-model:value="form.miniAppAllocation"
-          :disabled="!edit"
-          button-style="solid"
-        >
-          <a-radio-button :value="false">关闭</a-radio-button>
-          <a-radio-button :value="true">开启</a-radio-button>
-        </a-radio-group>
-      </a-form-item>
-      <a-form-item label="小程序快捷收银自动分账" name="miniAppAutoAllocation">
-        <a-radio-group
-          v-model:value="form.miniAppAutoAllocation"
-          :disabled="!edit"
-          button-style="solid"
-        >
-          <a-radio-button :value="false">关闭</a-radio-button>
-          <a-radio-button :value="true">开启</a-radio-button>
-        </a-radio-group>
-      </a-form-item>
-      <a-form-item label="小程序快捷收银限制用户支付类型" name="limitPay">
-        <a-select
-          style="width: 250px"
-          allow-clear
-          :disabled="!edit"
-          v-model:value="form.miniAppLimitPay"
-          :options="[{ label: '信用卡支付', value: 'no_credit' }]"
-          placeholder="请选择限制用户支付的类型"
-        />
-      </a-form-item>
-      <a-form-item name="miniAppTerminalNo">
-        <template #label>
-          <basic-title
-            helpMessage="部分通道付款码支付的时候要求上送终端设备信息, 所以需要选择默认的收款终端设备"
-            >小程序关联终端号</basic-title
-          >
-        </template>
-        <a-select
-          style="width: 250px"
-          allow-clear
-          :disabled="!edit"
-          v-model:value="form.miniAppTerminalNo"
-          :options="terminalOptions"
-          placeholder="请选择限制用户支付的类型"
-        />
-      </a-form-item>
     </a-form>
     <a-space :size="55" class="flex justify-center">
       <a-button v-if="edit" @click="initData">取消</a-button>
@@ -96,9 +50,7 @@
   import { FormInstance, Rule } from 'ant-design-vue/lib/form'
   import { GatewayConfig, getConfig, saveConfig, updateConfig } from './GatewayConfig.api'
   import { useMessage } from '@/hooks/web/useMessage'
-  import { BasicTitle } from '@/components/Basic'
   import { LabeledValue } from 'ant-design-vue/lib/select'
-  import { dropdown } from '@/views/daxpay/common/assist/terminal/TerminalDevice.api'
 
   const { labelCol, wrapperCol, confirmLoading, showable } = useFormEdit()
   const { createMessage } = useMessage()
@@ -113,23 +65,18 @@
     initData()
   })
 
-  const terminalOptions = ref<LabeledValue[]>([])
   // 表单
   const formRef = ref<FormInstance>()
   const form = ref<GatewayConfig>({
     aggregateShow: false,
     barPayShow: false,
     h5AutoUpgrade: false,
-    miniAppAllocation: false,
-    miniAppAutoAllocation: false,
   })
 
   const rules = {
     aggregateShow: [{ required: true, message: '是否显示显示聚合收银码必选' }],
     h5AutoUpgrade: [{ required: true, message: 'H5收银台自动升级聚合支付必选' }],
     barPayShow: [{ required: true, message: '是否显示聚合条码支付必选' }],
-    miniAppAllocation: [{ required: true, message: '小程序是否分账必选' }],
-    miniAppAutoAllocation: [{ required: true, message: '小程序是否自动分账必选' }],
   } as Record<string, Rule[]>
 
   /**
@@ -145,9 +92,6 @@
       form.value.appId = props.appId
     })
     // 终端下拉
-    dropdown(props.appId).then(({ data }) => {
-      terminalOptions.value = data
-    })
   }
 
   /**

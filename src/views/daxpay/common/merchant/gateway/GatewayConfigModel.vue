@@ -21,7 +21,7 @@
       <a-tab-pane :key="4" tab="聚合支付配置">
         <Aggregate-config-list :appId="currentAppId" />
       </a-tab-pane>
-      <a-tab-pane :key="5" tab="聚合被扫配置">
+      <a-tab-pane :key="5" tab="付款码支付配置">
         <Aggregate-code-list :appId="currentAppId" />
       </a-tab-pane>
       <a-tab-pane :key="6" tab="收款码牌配置">

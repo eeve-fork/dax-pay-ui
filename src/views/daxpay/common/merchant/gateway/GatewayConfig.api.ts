@@ -46,12 +46,4 @@ export interface GatewayConfig extends MchEntity {
   barPayShow?: boolean
   /** h5收银台自动升级聚合支付 */
   h5AutoUpgrade?: boolean
-  /** 小程序开启分账 */
-  miniAppAllocation?: boolean
-  /** 小程序自动分账 */
-  miniAppAutoAllocation?: boolean
-  /** 限制小程序支付方式 */
-  miniAppLimitPay?: string
-  /** 小程序关联终端号 */
-  miniAppTerminalNo?: string
 }

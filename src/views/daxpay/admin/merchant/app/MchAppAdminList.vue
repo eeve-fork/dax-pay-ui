@@ -70,6 +70,9 @@
                       <a-link @click="showGatewayPay(row)">网关支付</a-link>
                     </a-menu-item>
                     <a-menu-item>
+                      <a-link @click="showTerminalDevice(row)">收款终端</a-link>
+                    </a-menu-item>
+                    <a-menu-item>
                       <a-link danger @click="remove(row)">删除</a-link>
                     </a-menu-item>
                   </a-menu>
@@ -104,7 +107,7 @@
   import useTablePage from '@/hooks/bootx/useTablePage'
   import MchAppAdminEdit from './MchAppAdminEdit.vue'
   import BQuery from '@/components/Bootx/Query/BQuery.vue'
-  import { LIST, QueryField, STRING } from '@/components/Bootx/Query/Query'
+  import { QueryField, STRING } from '@/components/Bootx/Query/Query'
   import { FormEditType } from '@/enums/formTypeEnum'
   import { useMessage } from '@/hooks/web/useMessage'
   import { VxeTableInstance, VxeToolbarInstance } from 'vxe-table'
@@ -114,7 +117,6 @@
   import MerchantNotifyConfigList from '@/views/daxpay/common/merchant/notify/MerchantNotifyConfigList.vue'
   import Icon from '@/components/Icon/Icon.vue'
   import AllocationConfigModel from '@/views/daxpay/common/allocation/AllocationConfigModel.vue'
-  import { MerchantTypeEnum } from '@/enums/daxpay/daxpayEnum'
   import TerminalDeviceList from '@/views/daxpay/common/assist/terminal/TerminalDeviceList.vue'
   import GatewayConfigModel from '@/views/daxpay/common/merchant/gateway/GatewayConfigModel.vue'
 

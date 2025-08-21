@@ -101,7 +101,7 @@ export function unlockUser(userId) {
 }
 
 /**
- * 解锁用户
+ * 批量解锁用户
  */
 export function unlockUserBatch(userIds) {
   return defHttp.post({

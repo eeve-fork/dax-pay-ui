@@ -13,7 +13,7 @@ export enum DaxPayClientEnum {
   MERCHANT = 'dax-pay-merchant',
 
   /**
-   * 服务商端
+   * 代理商端
    */
-  ISV = 'dax-pay-isv',
+  AGENT = 'dax-pay-agent',
 }

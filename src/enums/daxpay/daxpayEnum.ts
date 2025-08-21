@@ -10,6 +10,7 @@ export enum ChannelEnum {
   LESHUA_PAY = 'leshua_pay',
   VBILL_PAY = 'vbill_pay',
   ADA_PAY = 'ada_pay',
+  HKRT_PAY = 'hkrt_pay',
 }
 
 /**
@@ -92,14 +93,32 @@ export enum MerchantTypeEnum {
   COMMON = 'common',
   /** 特约商户 */
   PARTNER = 'partner',
-  /** 代理商 */
-  AGENT = 'agent',
+}
+
+/**
+ * 服务商状态枚举
+ */
+export enum IsvStatusEnum {
+  /** 停用 */
+  DISABLED = 'disabled',
+  /** 启用 */
+  ENABLED = 'enable',
 }
 
 /**
  * 商户状态枚举
  */
 export enum MerchantStatusEnum {
+  /** 禁用 */
+  DISABLED = 'disabled',
+  /** 启用 */
+  ENABLED = 'enable',
+}
+
+/**
+ * 代理商状态枚举
+ */
+export enum AgentStatusEnum {
   /** 启用 */
   DISABLED = 'disabled',
   /** 禁用 */
@@ -198,4 +217,30 @@ export enum AllocReceiverTypeEnum {
   OPEN_ID = 'open_id',
   /** 账号 */
   LOGIN_NAME = 'login_name',
+}
+
+/**
+ * 进件申请状态
+ */
+export enum IsvApplyStatusEnum {
+  /** 草稿 */
+  DRAFT = 'draft',
+  /** 预审 = 暂时不用) */
+  PRE_TRIAL = 'pre_trial',
+  /** 预审拒绝 = 暂时不用) */
+  PRE_TRIAL_REJECT = 'pre_trial_reject',
+  /** 申请中 */
+  APPLY = 'apply',
+  /** 驳回 */
+  REJECT = 'reject',
+  /** 待签署 */
+  SIGN = 'sign',
+  /** 开通中 */
+  OPENING = 'opening',
+  /** 通过 */
+  PASS = 'pass',
+  /** 已生成进件商户 */
+  GENERATED = 'generated',
+  /** 关闭 */
+  CLOSED = 'closed',
 }

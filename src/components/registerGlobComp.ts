@@ -41,10 +41,10 @@ import {
   DatePicker,
   TimePicker,
   Descriptions,
+  Transfer,
   Space,
   Statistic,
   Cascader,
-  Transfer,
 } from 'ant-design-vue'
 
 export function registerGlobComp(app: App) {
@@ -90,8 +90,8 @@ export function registerGlobComp(app: App) {
   app.use(Steps)
   app.use(Form)
   app.use(Spin)
-  app.use(Dropdown)
   app.use(Transfer)
+  app.use(Dropdown)
   app.use(Input)
   app.use(Statistic)
 }

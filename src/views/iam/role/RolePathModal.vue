@@ -25,7 +25,7 @@
         @expand="onExpand"
       >
         <template #title="{ title }">
-          <span v-if="title.toLowerCase().indexOf(searchName.toLowerCase()) > -1">
+          <span v-if="title?.toLowerCase().indexOf(searchName.toLowerCase()) > -1">
             {{ searchRenderStart(title, searchName) }}
             <span style="color: #f50">
               {{ searchRenderMiddle(title, searchName) }}
@@ -223,15 +223,15 @@
    * 渲染搜索项目数据开始段
    */
   function searchRenderStart(title, searchName) {
-    return title.substring(0, title.toLowerCase().indexOf(searchName.toLowerCase()))
+    return title.substring(0, title?.toLowerCase().indexOf(searchName.toLowerCase()))
   }
   /**
    * 渲染搜索项目数据中间段
    */
   function searchRenderMiddle(title, searchName) {
     return title.substring(
-      title.toLowerCase().indexOf(searchName.toLowerCase()),
-      title.toLowerCase().indexOf(searchName.toLowerCase()) + searchName.length,
+      title?.toLowerCase().indexOf(searchName.toLowerCase()),
+      title?.toLowerCase().indexOf(searchName.toLowerCase()) + searchName.length,
     )
   }
   /**
@@ -239,7 +239,7 @@
    */
   function searchRenderEnd(title, searchName) {
     return title.substring(
-      title.toLowerCase().indexOf(searchName.toLowerCase()) + searchName.length,
+      title?.toLowerCase().indexOf(searchName.toLowerCase()) + searchName.length,
     )
   }
   /**

@@ -58,12 +58,6 @@
               <a-tag v-else color="red">否</a-tag>
             </template>
           </vxe-column>
-          <vxe-column field="avatar" title="头像" align="center">
-            <template #default="{ row }">
-              <Avatar size="large" :src="getFileUrl(row.avatar)" />
-            </template>
-          </vxe-column>
-
           <vxe-column field="status" title="用户状态" align="center">
             <template #default="{ row }">
               {{ dictConvert('user_status', row.status) || '无' }}
@@ -119,7 +113,6 @@
 
 <script lang="ts" setup>
   import BQuery from '/@/components/Bootx/Query/BQuery.vue'
-  import { Avatar } from 'ant-design-vue'
   import useTablePage from '@/hooks/bootx/useTablePage'
   import { useMessage } from '@/hooks/web/useMessage'
   import { onMounted, ref } from 'vue'
@@ -134,7 +127,6 @@
   import UserResetPwd from './UserResetPwd.vue'
   import UserRoleAssign from './role/UserRoleAssign.vue'
   import ALink from '@/components/Link/Link.vue'
-  import { useFilePlatform } from '@/hooks/bootx/useFilePlatform'
   import { UserStatusEnum } from '@/enums/bootx/bootxEnum'
 
   // 使用hooks
@@ -150,7 +142,6 @@
   } = useTablePage(queryPage)
   const { createConfirm } = useMessage()
   const { dictConvert } = useDict()
-  const { getFileUrl } = useFilePlatform()
 
   // 查询条件
   const fields = [
@@ -163,10 +154,6 @@
   let userEdit = ref<any>()
   let userShow = ref<any>()
   let userRoleAssign = ref<any>()
-  let userDataScopeAssign = ref<any>()
-  let userDataScopeAssignBatch = ref<any>()
-  let userDeptAssign = ref<any>()
-  let userDeptAssignBatch = ref<any>()
   let userResetPwd = ref<any>()
 
   onMounted(() => {
@@ -224,14 +211,14 @@
   }
   /**
    * 批量封禁/解锁用户
-   * @param type true 锁定, false 解锁
+   * @param type true 封禁, false 解锁
    */
   function lockUserConfirmBatch(type) {
     const userIds = xTable.value?.getCheckboxRecords().map((o) => o.id)
     createConfirm({
       iconType: 'warning',
       title: '警告',
-      content: type ? '是否锁定选中的用户' : '是否解锁选中的用户',
+      content: type ? '是否封禁选中的用户' : '是否解锁选中的用户',
       onOk: async () => {
         if (type) {
           await banUserBatch(userIds)

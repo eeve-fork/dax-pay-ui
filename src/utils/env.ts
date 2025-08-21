@@ -87,10 +87,10 @@ export function isAdmin() {
 }
 
 /**
- * 是否为服务商端
+ * 是否为代理商端
  */
-export function isIsv() {
-  return import.meta.env.VITE_GLOB_APP_CLIENT === DaxPayClientEnum.ISV
+export function isAgent() {
+  return import.meta.env.VITE_GLOB_APP_CLIENT === DaxPayClientEnum.AGENT
 }
 
 /**

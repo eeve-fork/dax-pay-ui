@@ -1,3 +1,4 @@
+<!-- 只支持前端直传 -->
 <template>
   <a-upload
     v-if="!picUrl"
@@ -6,10 +7,11 @@
     list-type="picture-card"
     name="file"
     :multiple="false"
-    :action="uploadAction"
-    :headers="tokenHeader"
+    :action="uploadUrl"
+    :headers="uploadHeader"
+    :customRequest="uploadOssFile"
+    :beforeUpload="beforeUpload"
     :showUploadList="false"
-    @change="uploadChange"
   >
     <div>
       <plus-outlined />
@@ -17,56 +19,105 @@
     </div>
   </a-upload>
   <div class="img-div" v-else>
-    <a-image :preview="false" :height="100" :width="100" :src="getFileUrl(picUrl as string)" />
-    <div
-      class="ant-image-mask"
-      v-if="!showable"
-      @click="
-        () => {
-          picUrl = undefined
-          picId = undefined
-        }
-      "
-    >
-      <div>删除</div>
+    <a-image
+      :preview="{ visible: preview, onVisibleChange: setVisible }"
+      :height="100"
+      :width="100"
+      :src="getFileUrl(picUrl as string)"
+    />
+    <div class="ant-image-mask" v-if="!showable" style="">
+      <EyeOutlined @click="() => setVisible(true)" />
+      <DeleteOutlined @click="delImg" />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-  import { PlusOutlined } from '@ant-design/icons-vue'
+  import { PlusOutlined, EyeOutlined, DeleteOutlined } from '@ant-design/icons-vue'
   import { useUpload } from '@/hooks/bootx/useUpload'
-  import { useFilePlatform } from '@/hooks/bootx/useFilePlatform'
   import { useMessage } from '@/hooks/web/useMessage'
+  import { ref } from 'vue'
+  import { getUploadParams, saveOssFileInfo } from '@/views/baseapi/file/upload/FileUpload.api'
+  import { UploadProps } from 'ant-design-vue'
+  import { useInjectFormItemContext } from 'ant-design-vue/es/form'
 
   const { createMessage } = useMessage()
+  // 自定义组件校验触发时机
+  const { onFieldChange } = useInjectFormItemContext()
 
-  const { showable = false } = defineProps<{ showable: boolean }>()
+  const { showable = false } = defineProps<{ showable?: boolean }>()
 
-  const picUrl = defineModel('picUrl')
-  const picId = defineModel('picId')
+  const picUrl = defineModel<string | undefined>('picUrl')
+  const picId = defineModel<string | undefined>('picId')
   const emit = defineEmits(['uploadChange'])
 
-  const { tokenHeader, uploadAction } = useUpload('/file/upload')
-  const { getFileUrl } = useFilePlatform()
+  const { uploadFileToOss, getFileUrl } = useUpload()
+
+  // 文件存储平台
+  const uploadUrl = ref<string>()
+  const uploadHeader = ref<Map<string, string>>()
+  const uploadAttachName = ref<string>()
+
+  // 图片预览
+  const preview = ref<boolean>(false)
+  const setVisible = (value): void => {
+    preview.value = value
+  }
 
   /**
-   * 文件上传
+   * 上传前处理
    */
-  function uploadChange(info) {
-    emit('uploadChange', info)
-    // 上传完毕
-    if (info.file.status === 'done') {
-      const res = info.file.response
-      if (!res.code) {
-        picUrl.value = res.data.url
-        createMessage.success(`${info.file.name} 上传成功!`)
-      } else {
-        createMessage.error(`${res.msg}`)
-      }
-    } else if (info.file.status === 'error') {
-      createMessage.error('上传失败')
-    }
+  const beforeUpload: UploadProps['beforeUpload'] = async (file) => {
+    // 前端直传获取签名链接
+    await getUploadParams({
+      fileName: file.name,
+      mediaType: file.type || '*/*',
+      fileSize: file.size,
+    })
+      .then(({ data }) => {
+        // 预签名形式
+        uploadUrl.value = data.url
+        uploadHeader.value = data.headers
+        uploadAttachName.value = data.attachName
+      })
+      .catch((error) => {
+        createMessage.error(`${error.msg}`)
+      })
+  }
+
+  /**
+   * 自定义文件上传到OSS中
+   */
+  async function uploadOssFile(action: any) {
+    uploadFileToOss(action.file, uploadUrl.value as string, uploadHeader.value).then(() => {
+      const file = action.file
+      saveOssFileInfo({
+        url: uploadAttachName.value,
+        size: file.size,
+        originalFilename: file.name,
+        filename: uploadAttachName.value,
+        contentType: file.type,
+      })
+        .then(() => {
+          picUrl.value = uploadAttachName.value
+          emit('uploadChange', uploadAttachName.value)
+          onFieldChange()
+          createMessage.success(`${file.name} 上传成功!`)
+        })
+        .catch(() => {
+          createMessage.error(`${file.name} 上传失败!`)
+        })
+    })
+  }
+
+  /**
+   * 删除
+   */
+  function delImg() {
+    picUrl.value = undefined
+    picId.value = undefined
+    onFieldChange()
+    emit('uploadChange', undefined)
   }
 </script>
 
@@ -75,35 +126,39 @@
     width: 100px;
     height: 100px;
   }
+
   .img-div {
     display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
     width: 102px;
     height: 102px;
-    margin-inline-end: 8px;
     margin-bottom: 8px;
+    margin-inline-end: 8px;
+    transition: border-color 0.3s;
+    border: 1px dashed rgb(217 217 217 / 0%);
+    border-radius: 8px;
+    background-color: rgb(0 0 0 / 2%);
     text-align: center;
     vertical-align: top;
-    background-color: rgba(0, 0, 0, 0.02);
-    border: 1px dashed rgba(217, 217, 217, 0);
-    border-radius: 8px;
     cursor: pointer;
-    transition: border-color 0.3s;
   }
+
   .ant-image-mask {
-    width: 100px;
-    height: 100px;
-    position: absolute;
-    inset: 0;
     display: flex;
+    position: absolute;
     align-items: center;
     justify-content: center;
-    color: #fff;
-    background: rgba(0, 0, 0, 0.5);
-    cursor: pointer;
-    opacity: 0;
+    width: 100px;
+    height: 100px;
     transition: opacity 0.3s;
+    opacity: 0;
+    background: rgb(0 0 0 / 50%);
+    color: #fff;
+    cursor: pointer;
+    inset: 0;
+    gap: 16px;
+
     &:hover {
       opacity: 1;
     }

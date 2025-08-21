@@ -13,7 +13,7 @@ const Dashboard: AppRouteModule = {
   },
   children: [
     {
-      path: '/dashboard',
+      path: '/admin/dashboard',
       name: 'AdminDashboard',
       component: () => import('@/views/daxpay/admin/dashboard/index.vue'),
       meta: {

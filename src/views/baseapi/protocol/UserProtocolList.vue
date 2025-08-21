@@ -26,23 +26,22 @@
           :data="pagination.records"
           :loading="loading"
         >
-          <vxe-column type="seq" :width="60" />
-          <vxe-column field="code" title="编码" :min-width="170" />
-          <vxe-column field="name" title="名称" :min-width="150" />
-          <vxe-column field="groupTag" title="分类标签" :min-width="130" align="center">
+          <vxe-column type="seq" :min-width="60" />
+          <vxe-column field="name" title="协议名称" :min-width="200" />
+          <vxe-column field="showName" title="显示名称" :min-width="250" />
+          <vxe-column field="defaultProtocol" title="默认协议" :min-width="80">
             <template #default="{ row }">
-              <a-tag color="green">{{ row.groupTag || '空' }}</a-tag>
+              <a-tag v-if="row.defaultProtocol" color="green">是</a-tag>
+              <a-tag v-else color="red">否</a-tag>
             </template>
           </vxe-column>
-          <vxe-column field="enable" title="启用状态" :min-width="100" align="center">
+          <vxe-column field="type" title="类型" :min-width="80">
             <template #default="{ row }">
-              <a-tag v-if="row.enable" color="green">启用</a-tag>
-              <a-tag v-else color="red">停用</a-tag>
+              {{ dictConvert('protocol_type', row.type) }}
             </template>
           </vxe-column>
-          <vxe-column field="remark" title="备注" :min-width="150" />
           <vxe-column field="createTime" title="创建时间" :min-width="140" />
-          <vxe-column fixed="right" width="220" :showOverflow="false" title="操作">
+          <vxe-column fixed="right" width="150" :showOverflow="false" title="操作" :min-width="150">
             <template #default="{ row }">
               <span>
                 <a href="javascript:" @click="show(row)">查看</a>
@@ -51,14 +50,12 @@
               <span>
                 <a href="javascript:" @click="edit(row)">编辑</a>
               </span>
-              <a-divider type="vertical" />
-              <span>
-                <a href="javascript:" @click="itemList(row)">字典配置</a>
-              </span>
-              <a-divider type="vertical" />
-              <a-popconfirm title="是否删除" @confirm="remove(row)" okText="是" cancelText="否">
-                <a href="javascript:" style="color: red">删除</a>
-              </a-popconfirm>
+              <template v-if="!row.internal">
+                <a-divider type="vertical" />
+                <a-popconfirm title="是否删除" @confirm="remove(row)" okText="是" cancelText="否">
+                  <a href="javascript:" style="color: red">删除</a>
+                </a-popconfirm>
+              </template>
             </template>
           </vxe-column>
         </vxe-table>
@@ -71,23 +68,22 @@
         :total="pagination.total"
         @page-change="handleTableChange"
       />
-      <DictEdit ref="dictEdit" @ok="queryPage" />
-      <DictItemList ref="dictItemList" />
+      <UserProtocolEdit ref="userProtocolEdit" @ok="queryPage" />
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-  import { computed, onMounted, ref } from 'vue'
-  import { del, page } from './Dict.api'
+  import { onMounted, ref } from 'vue'
+  import { del, page } from './UserProtocol.api'
   import useTablePage from '@/hooks/bootx/useTablePage'
-  import DictEdit from './DictEdit.vue'
   import { VxeTableInstance, VxeToolbarInstance } from 'vxe-table'
-  import BQuery from '@/components/Bootx/Query/BQuery.vue'
+  import BQuery from '/@/components/Bootx/Query/BQuery.vue'
   import { FormEditType } from '@/enums/formTypeEnum'
   import { useMessage } from '@/hooks/web/useMessage'
   import { QueryField, STRING } from '@/components/Bootx/Query/Query'
-  import DictItemList from './DictItemList.vue'
+  import { useDict } from '@/hooks/bootx/useDict'
+  import UserProtocolEdit from '@/views/baseapi/protocol/UserProtocolEdit.vue'
 
   // 使用hooks
   const {
@@ -100,20 +96,17 @@
     loading,
   } = useTablePage(queryPage)
   const { createMessage } = useMessage()
+  const { dictConvert } = useDict()
 
   // 查询条件
-  const fields = computed(() => {
-    return [
-      { field: 'code', type: STRING, name: '字典编码', placeholder: '请输入字典编码' },
-      { field: 'name', type: STRING, name: '字典名称', placeholder: '请输入字典名称' },
-      { field: 'groupTag', type: STRING, name: '分组标签', placeholder: '请输入分组标签' },
-    ] as QueryField[]
-  })
+  const fields = [
+    { field: 'name', type: STRING, name: '参数名称', placeholder: '请输入参数名称' },
+    { field: 'key', type: STRING, name: '参数Key', placeholder: '请输入参数Key' },
+  ] as QueryField[]
 
   const xTable = ref<VxeTableInstance>()
   const xToolbar = ref<VxeToolbarInstance>()
-  const dictEdit = ref<any>()
-  const dictItemList = ref<any>()
+  const userProtocolEdit = ref<any>()
 
   onMounted(() => {
     vxeBind()
@@ -136,19 +129,15 @@
   }
   // 新增
   function add() {
-    dictEdit.value.init(null, FormEditType.Add)
+    userProtocolEdit.value.init(null, FormEditType.Add)
   }
   // 查看
   function edit(record) {
-    dictEdit.value.init(record.id, FormEditType.Edit)
+    userProtocolEdit.value.init(record.id, FormEditType.Edit)
   }
   // 查看
   function show(record) {
-    dictEdit.value.init(record.id, FormEditType.Show)
-  }
-  // 明细列表查看
-  function itemList(record) {
-    dictItemList.value.init(record)
+    userProtocolEdit.value.init(record.id, FormEditType.Show)
   }
 
   // 删除

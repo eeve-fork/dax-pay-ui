@@ -1,10 +1,10 @@
-import type {AppRouteModule, AppRouteRecordRaw} from '@/router/types'
+import type { AppRouteModule, AppRouteRecordRaw } from '@/router/types'
 
-import {PAGE_NOT_FOUND_ROUTE, REDIRECT_ROUTE} from '@/router/routes/basic'
+import { PAGE_NOT_FOUND_ROUTE, REDIRECT_ROUTE } from '@/router/routes/basic'
 
-import {PageEnum} from '@/enums/pageEnum'
-import {getAppEnvConfig} from '@/utils/env'
-import {DaxPayClientEnum} from "@/enums/daxpay/daxpayClientEnum";
+import { PageEnum } from '@/enums/pageEnum'
+import { getAppEnvConfig } from '@/utils/env'
+import { DaxPayClientEnum } from '@/enums/daxpay/daxpayClientEnum'
 
 // import.meta.glob() 直接引入所有的模块 Vite 独有的功能
 const modules = import.meta.glob('./modules/**/*.ts', { eager: true })
@@ -18,14 +18,23 @@ Object.keys(modules).forEach((key) => {
   routeModuleList.push(...modList)
 })
 
+const redirectPage = () => {
+  if (VITE_GLOB_APP_CLIENT === DaxPayClientEnum.ADMIN) {
+    return PageEnum.ADMIN_HOME
+  }
+  if (VITE_GLOB_APP_CLIENT === DaxPayClientEnum.AGENT) {
+    return PageEnum.AGENT_HOME
+  }
+  return PageEnum.MERCHANT_HOME
+}
+
 export const asyncRoutes = [PAGE_NOT_FOUND_ROUTE, ...routeModuleList]
 
 // 根路由
 export const RootRoute: AppRouteRecordRaw = {
   path: '/',
   name: 'Root',
-  redirect:
-    VITE_GLOB_APP_CLIENT === DaxPayClientEnum.ADMIN ? PageEnum.ADMIN_HOME : PageEnum.MERCHANT_HOME,
+  redirect: redirectPage(),
   meta: {
     title: 'Root',
   },

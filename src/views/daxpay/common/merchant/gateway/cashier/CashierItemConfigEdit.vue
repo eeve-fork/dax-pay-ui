@@ -23,21 +23,13 @@
       <a-form-item label="名称" name="name">
         <a-input v-model:value="form.name" :disabled="showable" placeholder="请输入配置项名称" />
       </a-form-item>
-      <a-form-item label="调用方式" validate-first name="callType">
-        <a-select
-          v-model:value="form.callType"
-          :disabled="showable"
-          :options="callTypeTypeList"
-          allow-clear
-          placeholder="请选择支付调起方式类型"
-        />
-      </a-form-item>
       <a-form-item label="支付通道" name="channel">
         <a-select
           v-model:value="form.channel"
           :disabled="showable"
           :options="channelList"
           allow-clear
+          @change="changeChannel"
           placeholder="请选择支付通道"
         />
       </a-form-item>
@@ -47,6 +39,7 @@
           :disabled="showable"
           :options="methodList"
           allow-clear
+          @change="changePayMethod"
           placeholder="请选择支付方式"
         />
       </a-form-item>
@@ -55,16 +48,31 @@
         name="otherMethod"
         v-if="form.payMethod === PayMethodEnum.OTHER"
       >
-        <a-input v-model:value="form.otherMethod" placeholder="请输入其他支付方式" />
-      </a-form-item>
-      <a-form-item label="是否推荐" name="recommend">
-        <a-switch
+        <a-select
+          v-model:value="form.otherMethod"
           :disabled="showable"
-          v-model:checked="form.recommend"
-          checked-children="是"
-          un-checked-children="否"
+          :options="otherMethodList"
+          allow-clear
+          placeholder="请选择其他支付方式"
         />
       </a-form-item>
+      <a-form-item label="调用方式" validate-first name="callType">
+        <a-select
+          v-model:value="form.callType"
+          :disabled="showable"
+          :options="callTypeTypeList"
+          allow-clear
+          placeholder="请选择支付调起方式类型"
+        />
+      </a-form-item>
+      <!--      <a-form-item label="是否推荐" name="recommend">-->
+      <!--        <a-switch-->
+      <!--          :disabled="showable"-->
+      <!--          v-model:checked="form.recommend"-->
+      <!--          checked-children="是"-->
+      <!--          un-checked-children="否"-->
+      <!--        />-->
+      <!--      </a-form-item>-->
       <a-form-item label="显示图标" name="icon">
         <a-select
           v-model:value="form.icon"
@@ -104,14 +112,10 @@
   import { FormEditType } from '@/enums/formTypeEnum'
   import { BasicModal } from '@/components/Modal'
   import { LabeledValue } from 'ant-design-vue/lib/select'
-  import {
-    getItemConfig,
-    saveItemConfig,
-    updateItemConfig,
-    CashierItemConfig,
-  } from './Cashier.api'
+  import { getItemConfig, saveItemConfig, updateItemConfig, CashierItemConfig } from './Cashier.api'
   import { useDict } from '@/hooks/bootx/useDict'
   import { PayMethodEnum } from '@/enums/daxpay/daxpayEnum'
+  import { payMethodList } from '@/views/daxpay/common/assist/basic/ChannelBasic.api'
 
   const props = defineProps({
     appId: String,
@@ -137,9 +141,11 @@
   const callTypeTypeList = ref<LabeledValue[]>([])
   const channelList = ref<LabeledValue[]>([])
   const methodList = ref<LabeledValue[]>([])
+  const otherMethodList = ref<LabeledValue[]>([])
 
   let form = ref<CashierItemConfig>({
     recommend: false,
+    sortNo: 0,
   })
   // 校验
   const rules = reactive({
@@ -147,7 +153,9 @@
     callType: [{ required: true, message: '请选择支付调用方式' }],
     channel: [{ required: true, message: '请选择支付通道' }],
     payMethod: [{ required: true, message: '请选择支付方式' }],
+    otherMethod: [{ required: true, message: '请选择其他付方式' }],
     recommend: [{ required: true, message: '' }],
+    icon: [{ required: true, message: '请选择要显示的图标' }],
   } as Record<string, Rule[]>)
 
   // 事件
@@ -163,17 +171,47 @@
   async function initData() {
     callTypeTypeList.value = await dictDropDown('gateway_call_type')
     channelList.value = await dictDropDown('channel')
-    methodList.value = await dictDropDown('pay_method')
   }
 
   /**
    * 入口
    */
-  function init(id, editType: FormEditType, groupId: string) {
+  async function init(id, editType: FormEditType, groupId: string) {
     initFormEditType(editType)
     resetForm()
     form.value.groupId = unref(groupId)
     getInfo(id, editType)
+  }
+
+  /**
+   * 支付方式发生改变(只要切换，就将其他支付方式置空)
+   */
+  function changePayMethod() {
+    form.value.otherMethod = undefined
+  }
+
+  /**
+   * 支付通道切换
+   */
+  function changeChannel() {
+    form.value.payMethod = undefined
+    form.value.otherMethod = undefined
+    initPayMethod()
+  }
+
+  /**
+   * 获取支付方式
+   */
+  async function initPayMethod() {
+    if (form.value.channel) {
+      payMethodList(form.value.channel).then(({ data }) => {
+        methodList.value = data
+      })
+    } else {
+      methodList.value = []
+    }
+    // 获取其他支付方式列表
+    otherMethodList.value = await dictDropDown(`${form.value.channel}_method`)
   }
 
   /**
@@ -184,6 +222,7 @@
       confirmLoading.value = true
       getItemConfig(id).then(({ data }) => {
         form.value = data
+        initPayMethod()
         confirmLoading.value = false
       })
     } else {

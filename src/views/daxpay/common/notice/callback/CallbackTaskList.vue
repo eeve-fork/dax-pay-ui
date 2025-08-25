@@ -49,7 +49,8 @@
             align="center"
           />
           <vxe-column field="latestTime" title="最后发送时间" sortable :min-width="170" />
-          <vxe-column field="createTime" title="创建时间" sortable :min-width="170" />
+          <vxe-column field="createTime" title="创建时间" sortable :min-width="140" />
+          <vxe-column field="mchName" title="商户" :min-width="150" />
           <vxe-column field="appName" title="应用" :min-width="150" />
           <vxe-column fixed="right" width="180" :showOverflow="false" title="操作">
             <template #default="{ row }">
@@ -79,7 +80,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { computed, onMounted, ref } from 'vue'
+  import { computed, onMounted, ref, watch } from 'vue'
   import { CallbackTask, page, send } from './CallbackTask.api'
   import useTablePage from '@/hooks/bootx/useTablePage'
   import BQuery from '@/components/Bootx/Query/BQuery.vue'
@@ -93,7 +94,8 @@
   import PayOrderInfo from '@/views/daxpay/common/order/pay/PayOrderInfo.vue'
   import TransferOrderInfo from '@/views/daxpay/common/order/transfer/TransferOrderInfo.vue'
   import CallbackRecordList from './CallbackRecordList.vue'
-  import { mchAppDropdown } from '@/views/daxpay/admin/merchant/app/MchAppAdmin.api'
+  import { dropdown as merchantDropdown } from '@/views/daxpay/common/assist/basic/MerchantQuery.api'
+  import { dropdownByMchNo as mchAppDropdown } from '@/views/daxpay/common/assist/basic/MchAppQuery.api'
 
   // 使用hooks
   const {
@@ -133,15 +135,23 @@
         ],
       },
       {
+        field: 'mchNo',
+        type: LIST,
+        name: '商户号',
+        placeholder: '请选择商户号',
+        selectList: mchNoOptions.value,
+      },
+      {
         field: 'appId',
         type: LIST,
         name: '应用号',
-        placeholder: '请选择商户应用',
+        placeholder: '请先选择商户后选择应用号',
         selectList: mchAppOptions.value,
       },
     ] as QueryField[]
   })
 
+  const mchNoOptions = ref<LabeledValue[]>([])
   const mchAppOptions = ref<LabeledValue[]>([])
   const noticeRecordList = ref<any>()
   const noticeTaskInfo = ref<any>()
@@ -159,15 +169,32 @@
   function vxeBind() {
     xTable.value?.connect(xToolbar.value as VxeToolbarInstance)
   }
+  watch(
+    () => model.queryParam?.mchNo,
+    (value) => changeMch(value),
+  )
 
   /**
    * 初始化
    */
   async function initData() {
-    mchAppDropdown().then(({ data }) => {
-      mchAppOptions.value = data
+    merchantDropdown().then(({ data }) => {
+      mchNoOptions.value = data
     })
     tradeTypeList.value = await dictDropDown('trade_type')
+  }
+  /**
+   * 商户变动后更新应用列表
+   */
+  function changeMch(mchNo) {
+    if (mchNo) {
+      mchAppDropdown(mchNo).then(({ data }) => {
+        mchAppOptions.value = data
+      })
+    } else {
+      mchAppOptions.value = []
+      model.queryParam.appId = undefined
+    }
   }
   /**
    * 分页查询

@@ -86,16 +86,6 @@ export enum CashierTypeEnum {
 }
 
 /**
- * 商户类型
- */
-export enum MerchantTypeEnum {
-  /** 普通商户 */
-  COMMON = 'common',
-  /** 特约商户 */
-  PARTNER = 'partner',
-}
-
-/**
  * 服务商状态枚举
  */
 export enum IsvStatusEnum {

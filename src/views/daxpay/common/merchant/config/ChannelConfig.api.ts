@@ -2,6 +2,7 @@ import { defHttp } from '@/utils/http/axios'
 import { Result } from '#/axios'
 import { MchEntity } from '#/web'
 import { unref } from 'vue'
+import { LabeledValue } from 'ant-design-vue/lib/select'
 
 /**
  * 列表
@@ -12,6 +13,16 @@ export function findAll(appId) {
     params: {
       appId: unref(appId),
     },
+  })
+}
+
+/**
+ * 根据应用AppId获取启用的通道
+ */
+export function dropdownByEnable(appId) {
+  return defHttp.get<Result<LabeledValue[]>>({
+    url: '/channel/config/dropdownByEnable',
+    params: { appId },
   })
 }
 

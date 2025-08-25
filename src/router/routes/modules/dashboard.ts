@@ -20,6 +20,14 @@ const Dashboard: AppRouteModule = {
         title: '主页',
       },
     },
+    {
+      path: '/merchant/dashboard',
+      name: 'MerchantDashboard',
+      component: () => import('@/views/daxpay/merchant/dashboard/index.vue'),
+      meta: {
+        title: '主页',
+      },
+    },
   ],
 }
 

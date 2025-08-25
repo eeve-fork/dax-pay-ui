@@ -45,7 +45,7 @@
         </a-list>
       </a-spin>
     </div>
-    <ChannelConfigEdit ref="channelConfigEdit" :app="currentApp" @ok="query" />
+    <ChannelConfigEdit ref="channelConfigEdit" @ok="query" />
   </basic-drawer>
 </template>
 
@@ -60,6 +60,8 @@
   import unionPay from '@/assets/daxpay/unionPay.svg'
   import leshua from '@/assets/daxpay/leshua.svg'
   import vbillPay from '@/assets/daxpay/vbillPay.svg'
+  import allinPay from '@/assets/daxpay/allinPay.svg'
+  import hkrtPay from '@/assets/daxpay/hkrtPay.svg'
   import ChannelConfigEdit from '@/views/daxpay/common/merchant/config/ChannelConfigEdit.vue'
   import { MchApp } from '@/views/daxpay/admin/merchant/app/MchAppAdmin.api'
 
@@ -131,6 +133,10 @@
         return vbillPay
       case ChannelEnum.ADA_PAY:
         return adapay
+      case ChannelEnum.ALLIN_YST2:
+        return allinPay
+      case ChannelEnum.HKRT_PAY:
+        return hkrtPay
       default:
         return ''
     }

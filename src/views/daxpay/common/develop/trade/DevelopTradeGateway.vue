@@ -10,6 +10,15 @@
         :wrapperCol="{ span: 18 }"
         :validate-trigger="['blur', 'change']"
       >
+        <a-form-item label="商户号" name="mchNo">
+          <a-select
+            :filter-option="search"
+            v-model:value="form.mchNo"
+            placeholder="请选择商户"
+            :options="mchNoOptions"
+            @change="merchantChange"
+          />
+        </a-form-item>
         <a-form-item label="应用号" name="appId">
           <a-select
             :filter-option="search"
@@ -45,20 +54,6 @@
             :min="0.01"
             :precision="2"
             placeholder="请输入支付金额"
-          />
-        </a-form-item>
-        <a-form-item label="是否分账" name="allocation">
-          <a-switch
-            checked-children="是"
-            un-checked-children="否"
-            v-model:checked="form.allocation"
-          />
-        </a-form-item>
-        <a-form-item label="是否自动分账" name="autoAllocation">
-          <a-switch
-            checked-children="是"
-            un-checked-children="否"
-            v-model:checked="form.autoAllocation"
           />
         </a-form-item>
         <a-form-item label="限制用户支付类型" name="limitPay">
@@ -141,7 +136,8 @@
   import XEUtils from 'xe-utils'
   import { buildShortUUID, buildUUID } from '@/utils/uuid'
   import { copyText } from '@/utils/copyTextToClipboard'
-  import { mchAppDropdownByEnable } from '@/views/daxpay/admin/merchant/app/MchAppAdmin.api'
+  import { dropdownByEnable as dropdownByEnable } from '@/views/daxpay/common/assist/basic/MerchantQuery.api'
+  import { dropdownEnableByMchNo as mchAppDropdownByEnable } from '@/views/daxpay/common/assist/basic/MchAppQuery.api'
 
   const { search } = useFormEdit()
   const { dictDropDown } = useDict()
@@ -156,6 +152,7 @@
   })
   const rules = computed(() => {
     return {
+      mchNo: [{ required: true, message: '商户号不可为空' }],
       appId: [{ required: true, message: '应用号不可为空' }],
       gatewayPayType: [{ required: true, message: '网关支付方式不可为空' }],
       bizOrderNo: [{ required: true, message: '订单号不可为空' }],
@@ -168,6 +165,7 @@
     } as Record<string, Rule[]>
   })
 
+  const mchNoOptions = ref<LabeledValue[]>([])
   const mchAppOptions = ref<LabeledValue[]>([])
   const gatewayTypeOptions = ref<LabeledValue[]>([])
 
@@ -180,10 +178,10 @@
    */
   async function initData() {
     confirmLoading.value = false
-    gatewayTypeOptions.value = await dictDropDown('gateway_pay_type')
-    mchAppDropdownByEnable().then(({ data }) => {
-      mchAppOptions.value = data
+    dropdownByEnable().then(({ data }) => {
+      mchNoOptions.value = data
     })
+    gatewayTypeOptions.value = await dictDropDown('gateway_pay_type')
     // 时间默认30M后
     form.expiredTime = XEUtils.toDateString(
       new Date(new Date().getTime() + 30 * 60 * 1000),
@@ -199,7 +197,9 @@
    */
   function merchantChange() {
     form.appId = undefined
-
+    mchAppDropdownByEnable(form.mchNo).then(({ data }) => {
+      mchAppOptions.value = data
+    })
   }
 
   /**

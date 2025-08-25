@@ -6,7 +6,7 @@ import { Result } from '#/axios'
  */
 export function payTradeReport(params) {
   return defHttp.get<Result<TradeReportResult>>({
-    url: '/report/index/pay',
+    url: '/admin/report/index/pay',
     params,
   })
 }
@@ -16,7 +16,7 @@ export function payTradeReport(params) {
  */
 export function rfdTradeReport(params) {
   return defHttp.get<Result<TradeReportResult>>({
-    url: '/report/index/refund',
+    url: '/admin/report/index/refund',
     params,
   })
 }
@@ -26,7 +26,7 @@ export function rfdTradeReport(params) {
  */
 export function payChannelReport(params) {
   return defHttp.get<Result<TradeReportResult[]>>({
-    url: '/report/index/payChannel',
+    url: '/admin/report/index/payChannel',
     params,
   })
 }
@@ -36,7 +36,7 @@ export function payChannelReport(params) {
  */
 export function refundChannelReport(params) {
   return defHttp.get<Result<TradeReportResult[]>>({
-    url: '/report/index/refundChannel',
+    url: '/admin/report/index/refundChannel',
     params,
   })
 }
@@ -46,14 +46,33 @@ export function refundChannelReport(params) {
  */
 export function payMethodReport(params) {
   return defHttp.get<Result<TradeReportResult[]>>({
-    url: '/report/index/payMethod',
+    url: '/admin/report/index/payMethod',
     params,
   })
 }
 
+/**
+ * 商户统计
+ */
+export function merchantCountReport(params) {
+  return defHttp.get<Result<MerchantReportResult>>({
+    url: '/admin/report/index/merchantCount',
+    params,
+  })
+}
 
 /**
- * 首页交易报表
+ * 交易统计报表
+ */
+export function tradeStatisticsReport(params) {
+  return defHttp.get<Result<TradeStatisticsReport[]>>({
+    url: '/admin/report/index/tradeStatisticsReport',
+    params,
+  })
+}
+
+/**
+ * 交易报表
  */
 export interface TradeReportResult {
   /** 标题 */
@@ -70,4 +89,32 @@ export interface TradeReportResult {
 
   /** 平均单笔金额 */
   avgAmount?: number
+}
+
+/**
+ * 交易统计报表
+ */
+export interface TradeStatisticsReport {
+  /** 日期 */
+  date?: string
+  /** 交易金额 */
+  payAmount?: number
+  /** 交易笔数 */
+  payCount?: number
+  /** 退款金额 */
+  refundAmount?: number
+  /** 退款笔数 */
+  refundCount?: number
+}
+
+/**
+ * 商户统计
+ */
+export interface MerchantReportResult {
+  /** 商户数量 */
+  normalCount?: number
+
+  /** 商户应用数量 */
+  normalAppCount?: number
+
 }

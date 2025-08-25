@@ -18,7 +18,7 @@
               <span class="inline-block mt-4 text-3xl"> 支付系统</span>
             </div>
             <div class="mt-5 font-normal text-white dark:text-gray-500 -enter-x"
-              >支持聚合支付、分账、商户进件、代理商、商户管理等功能
+              >支持聚合支付、服务商模式等功能
             </div>
           </div>
         </div>

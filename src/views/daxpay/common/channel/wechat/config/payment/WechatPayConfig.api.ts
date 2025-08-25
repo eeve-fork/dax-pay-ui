@@ -99,14 +99,16 @@ export interface WechatPayConfig extends MchEntity {
  * 特约商户服务商配置
  */
 export interface WechatPaySubConfig extends MchEntity {
-  // 服务商号
-  isvNo?: string
+  // 子商户商户号
+  subMchId?: string
   // 授权类型
   authType?: string
   // 子商户应用AppId
   subAppId?: string
-  // 子商户商户号
-  subMchId?: string
+  // 微信AppSecret
+  wxAppSecret?: string
+  // 微信授权认证地址
+  wxAuthUrl?: string
   // 是否启用
   enable?: boolean
   // 支付限额

@@ -48,8 +48,8 @@
               <a-tag>{{ dictConvert('merchant_notify_type', row.notifyType) || '空' }}</a-tag>
             </template>
           </vxe-column>
-          <vxe-column field="notifyUrl" title="通知地址" :min-width="220" />
-          <vxe-column field="createTime" title="创建时间" :min-width="170" />
+          <vxe-column field="mchName" title="商户名称" :min-width="170" />
+          <vxe-column field="createTime" title="创建时间" :min-width="140" />
           <vxe-column fixed="right" :width="200" :showOverflow="false" title="操作">
             <template #default="{ row }">
               <a-link @click="edit(row)">编辑</a-link>
@@ -64,13 +64,7 @@
                       <a-link @click="showNotifyConfig(row)">订阅配置</a-link>
                     </a-menu-item>
                     <a-menu-item>
-                      <a-link @click="showAllocConfig(row)">分账配置</a-link>
-                    </a-menu-item>
-                    <a-menu-item>
                       <a-link @click="showGatewayPay(row)">网关支付</a-link>
-                    </a-menu-item>
-                    <a-menu-item>
-                      <a-link @click="showTerminalDevice(row)">收款终端</a-link>
                     </a-menu-item>
                     <a-menu-item>
                       <a-link danger @click="remove(row)">删除</a-link>
@@ -93,8 +87,6 @@
       <mch-app-admin-edit ref="mchApp" @ok="queryPage" />
       <channel-config-list ref="channelSetup" />
       <MerchantNotifyConfigList ref="merchantNotifyConfigList" />
-      <AllocationConfigModel ref="allocationConfigModel" />
-      <TerminalDeviceList ref="terminalDeviceList" />
       <GatewayConfigModel ref="gatewayConfigModel" />
       <!-- 网关支付 -->
     </div>
@@ -107,17 +99,17 @@
   import useTablePage from '@/hooks/bootx/useTablePage'
   import MchAppAdminEdit from './MchAppAdminEdit.vue'
   import BQuery from '@/components/Bootx/Query/BQuery.vue'
-  import { QueryField, STRING } from '@/components/Bootx/Query/Query'
+  import { LIST, QueryField, STRING } from '@/components/Bootx/Query/Query'
   import { FormEditType } from '@/enums/formTypeEnum'
   import { useMessage } from '@/hooks/web/useMessage'
   import { VxeTableInstance, VxeToolbarInstance } from 'vxe-table'
   import ALink from '@/components/Link/Link.vue'
   import { useDict } from '@/hooks/bootx/useDict'
+  import { dropdown as merchantDropdown } from '@/views/daxpay/common/assist/basic/MerchantQuery.api'
+  import { LabeledValue } from 'ant-design-vue/lib/select'
   import ChannelConfigList from '@/views/daxpay/common/merchant/config/ChannelConfigList.vue'
   import MerchantNotifyConfigList from '@/views/daxpay/common/merchant/notify/MerchantNotifyConfigList.vue'
   import Icon from '@/components/Icon/Icon.vue'
-  import AllocationConfigModel from '@/views/daxpay/common/allocation/AllocationConfigModel.vue'
-  import TerminalDeviceList from '@/views/daxpay/common/assist/terminal/TerminalDeviceList.vue'
   import GatewayConfigModel from '@/views/daxpay/common/merchant/gateway/GatewayConfigModel.vue'
 
   // 使用hooks
@@ -136,17 +128,24 @@
   // 查询条件
   const fields = computed(() => {
     return [
+      {
+        field: 'mchNo',
+        type: LIST,
+        name: '商户',
+        selectList: mchNoOptions.value,
+        placeholder: '请选择商户',
+      },
       { field: 'appId', type: STRING, name: '应用号', placeholder: '请输入应用号' },
       { field: 'appName', type: STRING, name: '应用名称', placeholder: '请输入应用名称' },
     ] as QueryField[]
   })
+  const mchNoOptions = ref<LabeledValue[]>([])
+
   const xTable = ref<VxeTableInstance>()
   const xToolbar = ref<VxeToolbarInstance>()
   const mchApp = ref<any>()
   const channelSetup = ref<any>()
   const merchantNotifyConfigList = ref<any>()
-  const allocationConfigModel = ref<any>()
-  const terminalDeviceList = ref<any>()
   const gatewayConfigModel = ref<any>()
 
   onMounted(() => {
@@ -159,6 +158,9 @@
    * 初始化数据
    */
   async function initData() {
+    merchantDropdown().then(({ data }) => {
+      mchNoOptions.value = data
+    })
   }
 
   function vxeBind() {
@@ -203,24 +205,10 @@
   }
 
   /**
-   * 分账配置
-   */
-  function showAllocConfig(record) {
-    allocationConfigModel.value.init(record.appId)
-  }
-
-  /**
    * 网关支付配置
    */
   function showGatewayPay(record) {
-    gatewayConfigModel.value.init(record.appId)
-  }
-
-  /**
-   * 收银终端
-   */
-  function showTerminalDevice(record) {
-    terminalDeviceList.value.init(record.appId)
+    gatewayConfigModel.value.init(record)
   }
 
   /**

@@ -10,7 +10,7 @@
     <vxe-table ey-field="id" ref="xTable" :data="records" :loading="loading">
       <vxe-column type="seq" width="60" />
 
-      <vxe-column field="aggregateType" title="聚合类型" :min-width="110">
+      <vxe-column field="aggregateType" title="支付场景" :min-width="110">
         <template #default="{ row }">
           <a href="javascript:" @click="show(row)">{{
             dictConvert('aggregate_pay_type', row.aggregateType)
@@ -24,7 +24,12 @@
       </vxe-column>
       <vxe-column field="payMethod" title="支付方式" align="center" :min-width="150">
         <template #default="{ row }">
-          {{ dictConvert('pay_method', row.payMethod) }}
+          <template v-if="row.payMethod === PayMethodEnum.OTHER">
+            {{ dictConvert(`${row.channel}_method`, row.otherMethod) }}
+          </template>
+          <template v-else>
+            {{ dictConvert('pay_method', row.payMethod) }}
+          </template>
         </template>
       </vxe-column>
       <vxe-column field="callType" title="调用方式" :min-width="150">
@@ -44,7 +49,7 @@
           <a-tag color="red" v-else>否</a-tag>
         </template>
       </vxe-column>
-      <vxe-column field="createTime" title="创建时间" :min-width="170" />
+      <vxe-column field="createTime" title="创建时间" :min-width="140" />
       <vxe-column fixed="right" :width="180" :showOverflow="false" title="操作">
         <template #default="{ row }">
           <a href="javascript:" @click="edit(row)">编辑</a>
@@ -64,6 +69,7 @@
   import AggregateConfigEdit from './AggregateConfigEdit.vue'
   import { FormEditType } from '@/enums/formTypeEnum'
   import { useDict } from '@/hooks/bootx/useDict'
+  import { PayMethodEnum } from '@/enums/daxpay/daxpayEnum'
 
   const { createMessage, createConfirm } = useMessage()
   const { dictConvert } = useDict()

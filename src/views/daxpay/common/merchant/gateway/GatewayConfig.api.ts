@@ -38,6 +38,8 @@ export function updateConfig(data: GatewayConfig) {
  * 收银台配置
  */
 export interface GatewayConfig extends MchEntity {
+  /** 读取系统配置 */
+  readSystem?: boolean
   /** 收银台名称 */
   name?: string
   /** PC收银台是否同时显示聚合收银码 */
@@ -46,4 +48,12 @@ export interface GatewayConfig extends MchEntity {
   barPayShow?: boolean
   /** h5收银台自动升级聚合支付 */
   h5AutoUpgrade?: boolean
+  /** 小程序开启分账 */
+  miniAppAllocation?: boolean
+  /** 小程序自动分账 */
+  miniAppAutoAllocation?: boolean
+  /** 限制小程序支付方式 */
+  miniAppLimitPay?: string
+  /** 小程序关联终端号 */
+  miniAppTerminalNo?: string
 }

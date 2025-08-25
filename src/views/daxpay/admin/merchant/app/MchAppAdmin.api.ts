@@ -1,14 +1,13 @@
 import { defHttp } from '@/utils/http/axios'
 import { PageResult, Result } from '#/axios'
 import { BaseEntity } from '#/web'
-import { LabeledValue } from 'ant-design-vue/lib/select'
 
 /**
  * 分页
  */
 export const page = (params) => {
   return defHttp.get<Result<PageResult<MchApp>>>({
-    url: '/mch/app/page',
+    url: '/admin/mch/app/page',
     params,
   })
 }
@@ -17,7 +16,7 @@ export const page = (params) => {
  */
 export const get = (id) => {
   return defHttp.get<Result<MchApp>>({
-    url: '/mch/app/findById',
+    url: '/admin/mch/app/findById',
     params: { id },
   })
 }
@@ -26,7 +25,7 @@ export const get = (id) => {
  */
 export const add = (obj) => {
   return defHttp.post<Result<void>>({
-    url: '/mch/app/add',
+    url: '/admin/mch/app/add',
     data: obj,
   })
 }
@@ -35,7 +34,7 @@ export const add = (obj) => {
  */
 export const update = (obj) => {
   return defHttp.post<Result<void>>({
-    url: '/mch/app/update',
+    url: '/admin/mch/app/update',
     data: obj,
   })
 }
@@ -45,36 +44,8 @@ export const update = (obj) => {
  */
 export const del = (id) => {
   return defHttp.post<Result<void>>({
-    url: '/mch/app/delete',
+    url: '/admin/mch/app/delete',
     params: { id },
-  })
-}
-
-/**
- * 查询应用列表
- */
-export function mchAppDropdown() {
-  return defHttp.get<Result<LabeledValue[]>>({
-    url: '/mch/app/dropdown',
-  })
-}
-
-/**
- * 查询启用的应用列表
- */
-export function mchAppDropdownByEnable() {
-  return defHttp.get<Result<LabeledValue[]>>({
-    url: '/mch/app/dropdownByEnable',
-  })
-}
-
-/**
- * 根据应用AppId获取启用的通道
- */
-export function dropdownByEnable(appId) {
-  return defHttp.get<Result<LabeledValue[]>>({
-    url: '/channel/config/dropdownByEnable',
-    params: { appId },
   })
 }
 
@@ -82,6 +53,10 @@ export function dropdownByEnable(appId) {
  * 商户应用
  */
 export interface MchApp extends BaseEntity {
+  // 商户号
+  mchNo?: string
+  // 商户名称
+  mchName?: string
   // 应用号
   appId?: string
   // 应用名称

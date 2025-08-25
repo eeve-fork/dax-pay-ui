@@ -58,14 +58,11 @@
             placeholder="用于获取接口调用凭证时使用, 如OpenId/AccessToken等"
           />
         </a-form-item>
-        <a-form-item name="authUrl">
-          <template #label>
-            <basic-title
-              helpMessage="微信OAuth2认证服务地址, 需要将该地址转发或重定向到网关前端服务地址（置空将使用系统配置的网关前端服务地址进行拼接）"
-            >
-              OAuth2认证地址
-            </basic-title>
-          </template>
+        <a-form-item
+          name="authUrl"
+          label="OAuth2认证地址"
+          tooltip="该地址需要重定向或转发到网关前端的地址，用于进行微信认证（置空将读取平台配置中的网关前端地址）"
+        >
           <a-input
             v-model:value="form.authUrl"
             :disabled="showable"
@@ -101,20 +98,19 @@
             placeholder="请输入APIv3密钥"
           />
         </a-form-item>
-        <a-form-item name="privateCert">
-          <template #label>
-            <basic-title helpMessage="微信平台中的商户API证书(apiclient_cert.pem)">
-              商户API证书
-            </basic-title>
-          </template>
+        <a-form-item
+          name="privateCert"
+          label="商户API证书"
+          tooltip="微信平台中的商户API证书(apiclient_cert.pem)"
+        >
           <a-upload
             v-if="!form.privateCert"
             :disabled="showable"
             name="file"
             :multiple="false"
-            :action="uploadAction"
-            :headers="tokenHeader"
+            :before-upload="beforeUpload"
             :showUploadList="false"
+            accept=".pem"
             @change="(info) => handleChange(info, 'privateCert')"
           >
             <a-button type="primary" preIcon="carbon:cloud-upload"> API证书上传 </a-button>
@@ -132,20 +128,19 @@
             </template>
           </a-input>
         </a-form-item>
-        <a-form-item name="privateKey">
-          <template #label>
-            <basic-title helpMessage="微信平台中的商户API证书私钥(apiclient_key.pem)">
-              商户API证书私钥
-            </basic-title>
-          </template>
+        <a-form-item
+          name="privateKey"
+          label="商户API证书私钥"
+          tooltip="微信平台中的商户API证书私钥(apiclient_key.pem)"
+        >
           <a-upload
             v-if="!form.privateKey"
             :disabled="showable"
             name="file"
             :multiple="false"
-            :action="uploadAction"
-            :headers="tokenHeader"
+            :before-upload="beforeUpload"
             :showUploadList="false"
+            accept=".pem"
             @change="(info) => handleChange(info, 'privateKey')"
           >
             <a-button type="primary" preIcon="carbon:cloud-upload"> API证书私钥上传 </a-button>
@@ -170,18 +165,15 @@
             placeholder="请输入商户API证书序列号"
           />
         </a-form-item>
-        <a-form-item name="publicKey">
-          <template #label>
-            <basic-title helpMessage="微信平台中的支付公钥(pub_key.pem)"> 支付公钥 </basic-title>
-          </template>
+        <a-form-item name="publicKey" label="支付公钥" tooltip="微信平台中的支付公钥(pub_key.pem)">
           <a-upload
             v-if="!form.publicKey"
             :disabled="showable"
             name="file"
             :multiple="false"
-            :action="uploadAction"
-            :headers="tokenHeader"
+            :before-upload="beforeUpload"
             :showUploadList="false"
+            accept=".pem"
             @change="(info) => handleChange(info, 'publicKey')"
           >
             <a-button type="primary" preIcon="carbon:cloud-upload"> 支付公钥上传 </a-button>
@@ -206,20 +198,19 @@
             placeholder="请输入支付公钥ID"
           />
         </a-form-item>
-        <a-form-item name="p12">
-          <template #label>
-            <basic-title helpMessage="V2版本中例如退款、转账时，必须要配置p12证书才可以执行">
-              p12证书
-            </basic-title>
-          </template>
+        <a-form-item
+          name="p12"
+          label="p12证书"
+          tooltip="V2版本中例如退款、转账时，必须要配置p12证书才可以执行"
+        >
           <a-upload
             v-if="!form.p12"
             :disabled="showable"
             name="file"
             :multiple="false"
-            :action="uploadAction"
-            :headers="tokenHeader"
+            :before-upload="beforeUpload"
             :showUploadList="false"
+            accept=".p12"
             @change="(info) => handleChange(info, 'p12')"
           >
             <a-button type="primary" preIcon="carbon:cloud-upload"> p12证书上传 </a-button>
@@ -257,16 +248,13 @@
   import { getConfig, saveOrUpdate, WechatPayConfig } from './WechatPayConfig.api'
   import { FormInstance, Rule } from 'ant-design-vue/lib/form'
   import { BasicDrawer } from '@/components/Drawer'
-  import Icon from '../../../../../../../components/Icon/Icon.vue'
-  import { useUpload } from '@/hooks/bootx/useUpload'
+  import Icon from '@/components/Icon/Icon.vue'
   import { useMessage } from '@/hooks/web/useMessage'
-  import BasicTitle from '@/components/Basic/src/BasicTitle.vue'
   import { ChannelConfig } from '@/views/daxpay/common/merchant/config/ChannelConfig.api'
 
   const { handleCancel, diffForm, labelCol, wrapperCol, confirmLoading, visible, showable } =
     useFormEdit()
   // 文件上传
-  const { tokenHeader, uploadAction } = useUpload('/readBase64')
   const { createMessage } = useMessage()
   const isIsv = ref<boolean>(false)
 
@@ -278,7 +266,7 @@
     enable: true,
     limitAmount: 20000,
     apiVersion: 'apiV2',
-    authType: 'isv',
+    authType: 'sp',
   })
 
   const channelConfig = ref<ChannelConfig>({})
@@ -354,10 +342,11 @@
           'privateCert',
           'privateKey',
           'certSerialNo',
-          'publicKey',
           'publicKeyId',
+          'publicKey',
         ),
         isv: isIsv.value,
+        mchNo: channelConfig.value.mchNo,
         appId: channelConfig.value.appId,
       })
         .then(() => {
@@ -378,21 +367,26 @@
     })
   }
   /**
+   * 阻止自动上传
+   */
+  function beforeUpload() {
+    // 返回 false 可以阻止自动上传
+    return false
+  }
+  /**
    * 文件上传
    */
   function handleChange(info, fieldName) {
-    // 上传完毕
-    if (info.file.status === 'done') {
-      const res = info.file.response
-      if (!res.code) {
-        form.value[fieldName] = res.data
-        createMessage.success(`${info.file.name} 上传成功!`)
-      } else {
-        createMessage.error(`${res.msg}`)
-      }
-    } else if (info.file.status === 'error') {
-      createMessage.error('上传失败')
+    const file = info.file
+    const reader = new FileReader()
+    reader.onload = () => {
+      // 读取结果
+      form.value[fieldName] = (reader.result as string)?.split(',')[1]
+      createMessage.success(`${info.file.name} 上传成功!`)
+      formRef.value?.validateFields(fieldName)
     }
+    // 读取文件为base64文本
+    reader.readAsDataURL(file)
   }
   defineExpose({
     init,

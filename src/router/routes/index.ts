@@ -22,9 +22,6 @@ const redirectPage = () => {
   if (VITE_GLOB_APP_CLIENT === DaxPayClientEnum.ADMIN) {
     return PageEnum.ADMIN_HOME
   }
-  if (VITE_GLOB_APP_CLIENT === DaxPayClientEnum.AGENT) {
-    return PageEnum.AGENT_HOME
-  }
   return PageEnum.MERCHANT_HOME
 }
 

@@ -1,6 +1,6 @@
 <template>
   <basic-modal
-    title="聚合被扫配置"
+    title="聚合付款码支付配置"
     v-bind="$attrs"
     :loading="confirmLoading"
     :width="750"
@@ -21,29 +21,27 @@
         <a-form-item label="主键" name="id" :hidden="true">
           <a-input v-model:value="form.id" :disabled="showable" />
         </a-form-item>
-        <a-form-item label="付款码类型" validate-first name="barPayType">
+        <a-form-item label="支付场景" validate-first name="barPayType">
           <a-select
-            style="width: 15.625vw"
             v-model:value="form.barPayType"
             :disabled="showable"
             :options="aggregateCodeTypeList"
             allow-clear
-            placeholder="请选择聚合支付类型"
+            placeholder="请选择支付场景"
           />
         </a-form-item>
         <a-form-item label="支付通道" name="channel">
           <a-select
-            style="width: 15.625vw"
             v-model:value="form.channel"
             :disabled="showable"
             :options="channelList"
+            @change="changeChannel"
             allow-clear
             placeholder="请选择支付通道"
           />
         </a-form-item>
         <a-form-item label="支付方式" name="payMethod">
           <a-select
-            style="width: 15.625vw"
             v-model:value="form.payMethod"
             :disabled="showable"
             :options="methodList"
@@ -53,11 +51,12 @@
           />
         </a-form-item>
         <a-form-item label="其他支付方式" name="otherMethod" v-if="form.payMethod == 'other'">
-          <a-input
-            allowClear
-            style="width: 15.625vw"
-            placeholder="请输入其他支付方式"
+          <a-select
             v-model:value="form.otherMethod"
+            :disabled="showable"
+            :options="otherMethodList"
+            allow-clear
+            placeholder="请选择支付方式"
           />
         </a-form-item>
       </a-form>
@@ -94,6 +93,7 @@
   import { FormInstance, Rule } from 'ant-design-vue/lib/form'
   import { LabeledValue } from 'ant-design-vue/lib/select'
   import { useDict } from '@/hooks/bootx/useDict'
+  import { payMethodList } from '@/views/daxpay/common/assist/basic/ChannelBasic.api'
 
   const props = defineProps({
     appId: String,
@@ -115,6 +115,7 @@
   const aggregateCodeTypeList = ref<LabeledValue[]>([])
   const channelList = ref<LabeledValue[]>([])
   const methodList = ref<LabeledValue[]>([])
+  const otherMethodList = ref<LabeledValue[]>([])
 
   const formRef = ref<FormInstance>()
 
@@ -123,22 +124,17 @@
   const rules = computed(() => {
     return {
       barPayType: [
-        { required: true, message: '请选择付款码类型' },
+        { required: true, message: '请选择支付场景' },
         { validator: validateCode, trigger: 'blur' },
       ],
       channel: [{ required: true, message: '请选择支付通道类型' }],
       payMethod: [{ required: true, message: '请选择支付方式' }],
-      otherMethod: [{ required: form.value.payMethod == 'other', message: '请输入其他支付方式' }],
+      otherMethod: [{ required: true, message: '请选择其他付方式' }],
     } as Record<string, Rule[]>
   })
 
   // 事件
   const emits = defineEmits(['ok'])
-
-  //支付方式发生改变(只要切换，就将其他支付方式置空)
-  function changePayMethod() {
-    form.value.otherMethod = ''
-  }
 
   onMounted(() => {
     initData()
@@ -156,12 +152,41 @@
   }
 
   /**
+   * 支付通道切换
+   */
+  function changeChannel() {
+    form.value.payMethod = undefined
+    form.value.otherMethod = undefined
+    initPayMethod()
+  }
+
+  /**
+   * 获取支付方式
+   */
+  async function initPayMethod() {
+    if (form.value.channel) {
+      payMethodList(form.value.channel).then(({ data }) => {
+        methodList.value = data
+      })
+    } else {
+      methodList.value = []
+    }
+    otherMethodList.value = await dictDropDown(`${form.value.channel}_method`)
+  }
+
+  /**
+   * 支付方式发生改变(只要切换，就将其他支付方式置空)
+   */
+  function changePayMethod() {
+    form.value.otherMethod = undefined
+  }
+
+  /**
    * 初始化数据
    */
   async function initData() {
     aggregateCodeTypeList.value = await dictDropDown('aggregate_bar_pay_type')
     channelList.value = await dictDropDown('channel')
-    methodList.value = await dictDropDown('pay_method')
   }
 
   /**
@@ -173,6 +198,7 @@
       getAggregatePayCodeConfig(id).then(({ data }) => {
         form.value = data
         confirmLoading.value = false
+        initPayMethod()
       })
     } else {
       confirmLoading.value = false
@@ -204,10 +230,10 @@
     const { appId, barPayType, id } = form.value
     if (id) {
       const res = await existsAggregatePayCodeConfigNotId(appId, barPayType, id)
-      return res.data ? Promise.reject('该聚合支付类型已存在') : Promise.resolve()
+      return res.data ? Promise.reject('该支付场景已存在') : Promise.resolve()
     } else {
       const res = await existsAggregatePayCodeConfig(appId, barPayType)
-      return res.data ? Promise.reject('该聚合支付类型已存在') : Promise.resolve()
+      return res.data ? Promise.reject('该支付场景已存在') : Promise.resolve()
     }
   }
 

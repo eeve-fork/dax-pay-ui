@@ -1,11 +1,13 @@
 <template>
-  <basic-drawer
+  <basic-modal
+    :footer="null"
+    destroyOnClose
     v-bind="$attrs"
     width="70%"
     title="收银台配置项管理"
     :mask-closable="true"
     :open="visible"
-    @close="handleCancel"
+    @cancel="handleCancel"
   >
     <vxe-toolbar ref="xToolbar" custom :refresh="{ queryMethod: queryPage }">
       <template #buttons>
@@ -14,17 +16,17 @@
         </a-space>
       </template>
     </vxe-toolbar>
-    <div class="h-75vh">
-      <vxe-table height="auto" ey-field="id" ref="xTable" :data="records" :loading="loading">
+    <div>
+      <vxe-table key-field="id" ref="xTable" :data="records" :loading="loading">
         <vxe-column type="seq" width="60" />
         <vxe-column field="name" title="名称" :min-width="150" />
-        <vxe-column field="name" title="是否推荐" :min-width="150">
-          <template #default="{ row }">
-            <a-tag :color="row.recommend ? 'green' : 'red'">
-              {{ row.recommend ? '推荐' : '未推荐' }}
-            </a-tag>
-          </template>
-        </vxe-column>
+        <!--        <vxe-column field="name" title="是否推荐" :min-width="150">-->
+        <!--          <template #default="{ row }">-->
+        <!--            <a-tag :color="row.recommend ? 'green' : 'red'">-->
+        <!--              {{ row.recommend ? '推荐' : '未推荐' }}-->
+        <!--            </a-tag>-->
+        <!--          </template>-->
+        <!--        </vxe-column>-->
         <vxe-column field="channel" title="支付通道" :min-width="150">
           <template #default="{ row }">
             {{ dictConvert('channel', row.channel) }}
@@ -32,7 +34,12 @@
         </vxe-column>
         <vxe-column field="payMethod" title="支付方式" :min-width="150">
           <template #default="{ row }">
-            {{ dictConvert('pay_method', row.payMethod) }}
+            <template v-if="row.payMethod === PayMethodEnum.OTHER">
+              {{ dictConvert(`${row.channel}_method`, row.otherMethod) }}
+            </template>
+            <template v-else>
+              {{ dictConvert('pay_method', row.payMethod) }}
+            </template>
           </template>
         </vxe-column>
         <vxe-column field="callType" title="调用方式" :min-width="150">
@@ -41,7 +48,7 @@
           </template>
         </vxe-column>
         <vxe-column field="sortNo" title="排序" :min-width="50" />
-        <vxe-column field="createTime" title="创建时间" :min-width="170" />
+        <vxe-column field="createTime" title="创建时间" :min-width="140" />
         <vxe-column fixed="right" :width="150" :showOverflow="false" title="操作">
           <template #default="{ row }">
             <a href="javascript:" @click="show(row)">查看</a>
@@ -54,7 +61,7 @@
       </vxe-table>
     </div>
     <CashierItemConfigEdit ref="cashierItemConfigEdit" @ok="queryPage" :appId="appId" />
-  </basic-drawer>
+  </basic-modal>
 </template>
 <script setup lang="ts">
   import { BasicDrawer } from '@/components/Drawer'
@@ -64,6 +71,8 @@
   import { useMessage } from '@/hooks/web/useMessage'
   import { useDict } from '@/hooks/bootx/useDict'
   import CashierItemConfigEdit from './CashierItemConfigEdit.vue'
+  import BasicModal from '@/components/Modal/src/BasicModal.vue'
+  import { PayMethodEnum } from '@/enums/daxpay/daxpayEnum'
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const props = defineProps({

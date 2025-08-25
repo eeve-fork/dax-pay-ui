@@ -39,6 +39,16 @@
               {{ dictConvert('channel', row.channel) }}
             </template>
           </vxe-column>
+          <vxe-column field="payMethod" title="支付方式" align="center" :min-width="150">
+            <template #default="{ row }">
+              <template v-if="row.method === PayMethodEnum.OTHER">
+                {{ dictConvert(`${row.channel}_method`, row.otherMethod) }}
+              </template>
+              <template v-else>
+                {{ dictConvert('pay_method', row.method) }}
+              </template>
+            </template>
+          </vxe-column>
           <vxe-column field="bizOrderNo" title="商户订单号" :min-width="230" />
           <vxe-column field="amount" title="金额(元)" :min-width="120" sortable>
             <template #default="{ row }">
@@ -71,7 +81,8 @@
               {{ dictConvert('pay_alloc_status', row.allocStatus) || '无' }}
             </template>
           </vxe-column>
-          <vxe-column field="createTime" title="创建时间" sortable :min-width="230" />
+          <vxe-column field="createTime" title="创建时间" sortable :min-width="140" />
+          <vxe-column field="mchName" title="商户" :min-width="150" />
           <vxe-column field="appName" title="应用" :min-width="150" />
           <vxe-column fixed="right" width="120" :showOverflow="false" title="操作">
             <template #default="{ row }">
@@ -135,7 +146,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { computed, onMounted, ref } from 'vue'
+  import { computed, onMounted, ref, watch } from 'vue'
   import {
     allocation,
     close,
@@ -161,7 +172,9 @@
     PayRefundStatusEnum,
     PayStatusEnum,
   } from '@/enums/daxpay/tradeStatusEnum'
-  import { mchAppDropdown } from '@/views/daxpay/admin/merchant/app/MchAppAdmin.api'
+  import { dropdown as merchantDropdown } from '@/views/daxpay/common/assist/basic/MerchantQuery.api'
+  import { dropdownByMchNo as mchAppDropdown } from '@/views/daxpay/common/assist/basic/MchAppQuery.api'
+  import { PayMethodEnum } from '@/enums/daxpay/daxpayEnum'
 
   // 使用hooks
   const {
@@ -178,6 +191,7 @@
   const { createMessage, createConfirm } = useMessage()
   const { dictConvert, dictDropDown } = useDict()
 
+  const mchNoOptions = ref<LabeledValue[]>([]) //查询的商户号下拉列表
   const mchAppOptions = ref<LabeledValue[]>([])
   const channelList = ref<LabeledValue[]>([])
   const methodList = ref<LabeledValue[]>([])
@@ -217,10 +231,17 @@
       },
       { field: 'allocStatus', name: '分账状态', type: LIST, selectList: payAllocStatusList.value },
       {
+        field: 'mchNo',
+        type: LIST,
+        name: '商户号',
+        placeholder: '请选择商户号',
+        selectList: mchNoOptions.value,
+      },
+      {
         field: 'appId',
         type: LIST,
         name: '应用号',
-        placeholder: '请选择商户应用',
+        placeholder: '请先选择商户后选择应用号',
         selectList: mchAppOptions.value,
       },
     ] as QueryField[]
@@ -231,6 +252,12 @@
   const payOrderInfo = ref<any>()
   const refundModel = ref<any>()
   const totalAmount = ref<number>(0.0)
+
+  // 提供一个 getter 函数
+  watch(
+    () => model.queryParam?.mchNo,
+    (value) => changeMch(value),
+  )
 
   onMounted(() => {
     initData() //初始化数据
@@ -245,14 +272,28 @@
    * 初始化数据
    */
   async function initData() {
-    mchAppDropdown().then(({ data }) => {
-      mchAppOptions.value = data //更新应用号
+    merchantDropdown().then(({ data }) => {
+      mchNoOptions.value = data //获取查询商户号下拉列表
     })
     channelList.value = await dictDropDown('channel') //获取查询支付通道下拉列表
     methodList.value = await dictDropDown('pay_method') //获取查询支付方式下拉列表
     payStatusList.value = await dictDropDown('pay_status') //获取查询支付状态下拉列表
     payRefundStatusList.value = await dictDropDown('pay_refund_status') //获取查询退款状态下拉列表
     payAllocStatusList.value = await dictDropDown('pay_alloc_status') //获取分账状态状态下拉列表
+  }
+
+  /**
+   * 商户变动后更新应用列表
+   */
+  function changeMch(mchNo) {
+    if (mchNo) {
+      mchAppDropdown(mchNo).then(({ data }) => {
+        mchAppOptions.value = data //更新应用号
+      })
+    } else {
+      mchAppOptions.value = []
+      model.queryParam.appId = undefined
+    }
   }
 
   /**

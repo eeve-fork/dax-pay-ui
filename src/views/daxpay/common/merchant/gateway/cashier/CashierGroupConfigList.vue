@@ -4,11 +4,18 @@
       <template #buttons>
         <a-space>
           <a-button
-            v-if="records.length === 0 || type !== 'h5'"
+            v-if="type !== 'h5'"
             type="primary"
             pre-icon="ant-design:plus-outlined"
             @click="add"
             >新建</a-button
+          >
+          <a-button
+            v-if="records.length === 0 && type === 'h5'"
+            type="primary"
+            pre-icon="ant-design:plus-outlined"
+            @click="createDefault"
+            >创建默认分组</a-button
           >
         </a-space>
       </template>
@@ -20,20 +27,19 @@
           <a href="javascript:" @click="show(row)">{{ row.name }}</a>
         </template>
       </vxe-column>
-      <vxe-column field="name" title="是否推荐" :min-width="150">
-        <template #default="{ row }">
-          <a-tag :color="row.recommend ? 'green' : 'red'">
-            {{ row.recommend ? '推荐' : '未推荐' }}
-          </a-tag>
-        </template>
-      </vxe-column>
-      <vxe-column field="sortNo" title="排序" :min-width="150" />
-      <vxe-column field="createTime" title="创建时间" :min-width="170" />
-      <vxe-column fixed="right" :width="180" :showOverflow="false" title="操作">
+      <!--      <vxe-column field="name" title="是否推荐" :min-width="150">-->
+      <!--        <template #default="{ row }">-->
+      <!--          <a-tag :color="row.recommend ? 'green' : 'red'">-->
+      <!--            {{ row.recommend ? '推荐' : '未推荐' }}-->
+      <!--          </a-tag>-->
+      <!--        </template>-->
+      <!--      </vxe-column>-->
+      <vxe-column field="sortNo" title="排序" :min-width="70" />
+      <vxe-column fixed="right" :width="200" :showOverflow="false" title="操作">
         <template #default="{ row }">
           <a href="javascript:" @click="edit(row)">编辑</a>
           <a-divider type="vertical" />
-          <a href="javascript:" @click="list(row)">配置项</a>
+          <a href="javascript:" @click="list(row)">支付配置项</a>
           <a-divider type="vertical" />
           <a href="javascript:" style="color: red" @click="del(row)">删除</a>
         </template>
@@ -51,7 +57,12 @@
 
 <script setup lang="ts">
   import { onMounted, ref } from 'vue'
-  import { CashierGroupConfig, delGroupConfig, getGroupConfigs } from './Cashier.api'
+  import {
+    CashierGroupConfig,
+    delGroupConfig,
+    getGroupConfigs,
+    saveDefaultGroup,
+  } from './Cashier.api'
   import { useMessage } from '@/hooks/web/useMessage'
   import CashierItemConfigList from './CashierItemConfigList.vue'
   import CashierGroupConfigEdit from '@/views/daxpay/common/merchant/gateway/cashier/CashierGroupConfigEdit.vue'
@@ -88,6 +99,24 @@
    */
   function add() {
     cashierGroupConfigEdit.value.init(null, FormEditType.Add)
+  }
+
+  /**
+   * 创建默认分组
+   */
+  function createDefault() {
+    createConfirm({
+      iconType: 'info',
+      title: '提醒',
+      content: '是否创建默认分组',
+      onOk: () => {
+        loading.value = true
+        saveDefaultGroup(props.appId).then(() => {
+          createMessage.success('创建成功')
+          queryPage()
+        })
+      },
+    })
   }
 
   /**

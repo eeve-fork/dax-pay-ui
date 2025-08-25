@@ -10,6 +10,15 @@
         :wrapperCol="{ span: 18 }"
         :validate-trigger="['blur', 'change']"
       >
+        <a-form-item label="商户号" name="mchNo">
+          <a-select
+            :filter-option="search"
+            v-model:value="form.mchNo"
+            placeholder="请选择商户"
+            :options="mchNoOptions"
+            @change="merchantChange"
+          />
+        </a-form-item>
         <a-form-item label="应用号" name="appId">
           <a-select
             :filter-option="search"
@@ -113,8 +122,9 @@
   import { Modal } from 'ant-design-vue'
   import { transferSign, TransferParam, tradeTransfer } from './DevelopTrade.api'
   import { LabeledValue } from 'ant-design-vue/lib/select'
+  import { dropdownByEnable as dropdownByEnable } from '@/views/daxpay/common/assist/basic/MerchantQuery.api'
   import useFormEdit from '@/hooks/bootx/useFormEdit'
-  import { mchAppDropdownByEnable } from '@/views/daxpay/admin/merchant/app/MchAppAdmin.api'
+  import { dropdownEnableByMchNo as mchAppDropdownByEnable } from '@/views/daxpay/common/assist/basic/MchAppQuery.api'
   import XEUtils from 'xe-utils'
   import { buildShortUUID, buildUUID } from '@/utils/uuid'
   import { useDict } from '@/hooks/bootx/useDict'
@@ -130,6 +140,7 @@
   })
   const rules = computed(() => {
     return {
+      mchNo: [{ required: true, message: '商户号不可为空' }],
       appId: [{ required: true, message: '应用号不可为空' }],
       channel: [{ required: true, message: '支付通道不可为空' }],
       bizTransferNo: [{ required: true, message: '商户转账号不可为空' }],
@@ -143,6 +154,7 @@
     } as Record<string, Rule[]>
   })
 
+  const mchNoOptions = ref<LabeledValue[]>([])
   const mchAppOptions = ref<LabeledValue[]>([])
   const channelOptions = ref<LabeledValue[]>([])
   const payeeTypeOptions = ref<LabeledValue[]>([])
@@ -158,14 +170,23 @@
     confirmLoading.value = false
     channelOptions.value = await dictDropDown('channel')
     payeeTypeOptions.value = await dictDropDown('transfer_payee_type')
-    mchAppDropdownByEnable().then(({ data }) => {
-      mchAppOptions.value = data
+    dropdownByEnable().then(({ data }) => {
+      mchNoOptions.value = data
     })
     genNonceStr()
     genBizOrderNo()
     updateReqTime()
   }
 
+  /**
+   * 商户变动时刷新应用列表
+   */
+  function merchantChange() {
+    form.appId = undefined
+    mchAppDropdownByEnable(form.mchNo).then(({ data }) => {
+      mchAppOptions.value = data
+    })
+  }
 
   /**
    * 生成订单号

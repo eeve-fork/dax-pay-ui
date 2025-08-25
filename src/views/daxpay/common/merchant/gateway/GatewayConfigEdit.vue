@@ -12,27 +12,26 @@
       <a-form-item label="主键" name="id" :hidden="true">
         <a-input v-model:value="form.id" :disabled="showable" />
       </a-form-item>
-      <!--      <a-form-item label="收银台名称" name="name">-->
-      <!--        <a-input v-model:value="form.name" :disabled="!edit" placeholder="请输入收银台名称" />-->
-      <!--      </a-form-item>-->
-      <a-form-item label="同时显示聚合收银码" name="aggregateShow">
-        <a-radio-group v-model:value="form.aggregateShow" :disabled="!edit" button-style="solid">
-          <a-radio-button :value="false">不显示</a-radio-button>
-          <a-radio-button :value="true">显示</a-radio-button>
+      <a-form-item label="读取系统配置" name="readSystem">
+        <a-radio-group v-model:value="form.readSystem" :disabled="!edit" button-style="solid">
+          <a-radio-button :value="true">读取</a-radio-button>
+          <a-radio-button :value="false">自定义</a-radio-button>
         </a-radio-group>
       </a-form-item>
-      <!--      <a-form-item label="同时显示聚合条码支付" name="barPayShow">-->
-      <!--        <a-radio-group v-model:value="form.barPayShow" :disabled="!edit" button-style="solid">-->
-      <!--          <a-radio-button :value="false">不显示</a-radio-button>-->
-      <!--          <a-radio-button :value="true">显示</a-radio-button>-->
-      <!--        </a-radio-group>-->
-      <!--      </a-form-item>-->
-      <a-form-item label="H5收银台自动升级聚合支付" name="h5AutoUpgrade">
-        <a-radio-group v-model:value="form.h5AutoUpgrade" :disabled="!edit" button-style="solid">
-          <a-radio-button :value="false">不升级</a-radio-button>
-          <a-radio-button :value="true">升级</a-radio-button>
-        </a-radio-group>
-      </a-form-item>
+      <template v-if="readSystem === false">
+        <a-form-item label="同时显示聚合收银码" name="aggregateShow">
+          <a-radio-group v-model:value="form.aggregateShow" :disabled="!edit" button-style="solid">
+            <a-radio-button :value="false">不显示</a-radio-button>
+            <a-radio-button :value="true">显示</a-radio-button>
+          </a-radio-group>
+        </a-form-item>
+        <a-form-item label="H5收银台自动升级聚合支付" name="h5AutoUpgrade">
+          <a-radio-group v-model:value="form.h5AutoUpgrade" :disabled="!edit" button-style="solid">
+            <a-radio-button :value="false">不升级</a-radio-button>
+            <a-radio-button :value="true">升级</a-radio-button>
+          </a-radio-group>
+        </a-form-item>
+      </template>
     </a-form>
     <a-space :size="55" class="flex justify-center">
       <a-button v-if="edit" @click="initData">取消</a-button>
@@ -46,11 +45,12 @@
 
 <script setup lang="ts">
   import useFormEdit from '@/hooks/bootx/useFormEdit'
-  import { onMounted, ref } from 'vue'
+  import { onMounted, ref, watch } from 'vue'
   import { FormInstance, Rule } from 'ant-design-vue/lib/form'
   import { GatewayConfig, getConfig, saveConfig, updateConfig } from './GatewayConfig.api'
   import { useMessage } from '@/hooks/web/useMessage'
   import { LabeledValue } from 'ant-design-vue/lib/select'
+  import { dropdownByAppId as dropdown } from '@/views/daxpay/common/device/terminal/TerminalDevice.api'
 
   const { labelCol, wrapperCol, confirmLoading, showable } = useFormEdit()
   const { createMessage } = useMessage()
@@ -61,23 +61,31 @@
     appId: String,
   })
 
+  const readSystem = defineModel<boolean>('readSystem')
+
   onMounted(() => {
     initData()
   })
 
+  const terminalOptions = ref<LabeledValue[]>([])
   // 表单
   const formRef = ref<FormInstance>()
-  const form = ref<GatewayConfig>({
-    aggregateShow: false,
-    barPayShow: false,
-    h5AutoUpgrade: false,
-  })
+  const form = ref<GatewayConfig>({})
 
   const rules = {
+    readSystem: [{ required: true, message: '是否读取系统配置必选' }],
     aggregateShow: [{ required: true, message: '是否显示显示聚合收银码必选' }],
     h5AutoUpgrade: [{ required: true, message: 'H5收银台自动升级聚合支付必选' }],
     barPayShow: [{ required: true, message: '是否显示聚合条码支付必选' }],
   } as Record<string, Rule[]>
+
+  watch(
+    () => form.value?.readSystem,
+    async (n) => {
+      readSystem.value = n
+    },
+    { immediate: true },
+  )
 
   /**
    * 重置信息
@@ -92,6 +100,9 @@
       form.value.appId = props.appId
     })
     // 终端下拉
+    dropdown(props.appId).then(({ data }) => {
+      terminalOptions.value = data
+    })
   }
 
   /**

@@ -33,6 +33,19 @@ export function saveGroupConfig(data: CashierGroupConfig) {
     data,
   })
 }
+
+/**
+ * 创建默认分组(h5)
+ */
+export function saveDefaultGroup(appId) {
+  return defHttp.post<Result<CashierGroupConfig>>({
+    url: '/cashier/config/saveDefaultGroup',
+    params: {
+      appId,
+    },
+  })
+}
+
 /**
  * 更新分组配置
  */

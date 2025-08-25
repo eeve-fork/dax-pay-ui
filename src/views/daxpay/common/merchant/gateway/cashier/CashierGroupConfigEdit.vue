@@ -24,14 +24,14 @@
         <a-form-item label="分类名称" name="name">
           <a-input v-model:value="form.name" :disabled="showable" placeholder="请输入分类名称" />
         </a-form-item>
-        <a-form-item label="是否推荐" name="recommend">
-          <a-switch
-            :disabled="showable"
-            v-model:checked="form.recommend"
-            checked-children="是"
-            un-checked-children="否"
-          />
-        </a-form-item>
+<!--        <a-form-item label="是否推荐" name="recommend">-->
+<!--          <a-switch-->
+<!--            :disabled="showable"-->
+<!--            v-model:checked="form.recommend"-->
+<!--            checked-children="是"-->
+<!--            un-checked-children="否"-->
+<!--          />-->
+<!--        </a-form-item>-->
         <a-form-item label="显示图标" name="icon">
           <a-select
             v-model:value="form.icon"
@@ -108,6 +108,7 @@
     code: [{ required: true, message: '' }],
     name: [{ required: true, message: '请输入分类名称' }],
     enable: [{ required: true, message: '是否启用' }],
+    icon: [{ required: true, message: '请选择要显示的图标' }],
   } as Record<string, Rule[]>
 
   // 事件

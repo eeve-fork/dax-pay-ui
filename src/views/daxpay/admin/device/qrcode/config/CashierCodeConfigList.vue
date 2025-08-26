@@ -32,20 +32,6 @@
               <a href="javascript:" @click="show(row)">{{ row.name }}</a>
             </template>
           </vxe-column>
-          <vxe-column field="allocation" title="分账" align="center" :min-width="100">
-            <template #default="{ row }">
-              <a-tag :color="row.allocation ? 'green' : 'red'">
-                {{ row.allocation ? '开启' : '关闭' }}
-              </a-tag>
-            </template>
-          </vxe-column>
-          <vxe-column field="autoAllocation" title="自动分账" align="center" :min-width="100">
-            <template #default="{ row }">
-              <a-tag :color="row.autoAllocation ? 'green' : 'red'">
-                {{ row.autoAllocation ? '开启' : '关闭' }}
-              </a-tag>
-            </template>
-          </vxe-column>
           <vxe-column field="remark" title="备注" :min-width="150" />
           <vxe-column field="createTime" title="创建时间" :min-width="140" />
           <vxe-column fixed="right" :width="200" :showOverflow="false" title="操作">

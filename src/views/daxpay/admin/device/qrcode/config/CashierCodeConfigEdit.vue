@@ -24,30 +24,6 @@
         <a-form-item label="配置名称" name="name">
           <a-input v-model:value="form.name" :disabled="showable" placeholder="请输入配置名称" />
         </a-form-item>
-<!--        <a-form-item label="是否启用" name="enable">-->
-<!--          <a-switch-->
-<!--            :disabled="showable"-->
-<!--            v-model:checked="form.enable"-->
-<!--            checked-children="是"-->
-<!--            un-checked-children="否"-->
-<!--          />-->
-<!--        </a-form-item>-->
-        <a-form-item label="开启分账" name="allocation">
-          <a-switch
-            :disabled="showable"
-            v-model:checked="form.allocation"
-            checked-children="是"
-            un-checked-children="否"
-          />
-        </a-form-item>
-        <a-form-item label="自动分账" name="autoAllocation">
-          <a-switch
-            :disabled="showable"
-            v-model:checked="form.autoAllocation"
-            checked-children="是"
-            un-checked-children="否"
-          />
-        </a-form-item>
         <a-form-item label="限制用户支付类型" name="limitPay">
           <a-select
             allow-clear
@@ -114,7 +90,6 @@
     code: [{ required: true, message: '' }],
     name: [{ required: true, message: '请输入配置名称' }],
     enable: [{ required: true, message: '请选择码牌是否启用' }],
-    allocation: [{ required: true, message: '请选择是否开启分账' }],
     autoAllocation: [{ required: true, message: '请选择是否自动分账' }],
   } as Record<string, Rule[]>
 

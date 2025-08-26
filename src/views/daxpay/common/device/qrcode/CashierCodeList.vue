@@ -19,12 +19,6 @@
               <a-button post-icon="ant-design:down-outlined"> 批量操作 </a-button>
               <template #overlay>
                 <a-menu>
-                  <a-menu-item v-if="isAdmin()">
-                    <a-link @click="assistAgent()">代理商划拨</a-link>
-                  </a-menu-item>
-                  <a-menu-item v-if="isAdmin()">
-                    <a-link @click="recoverAgentInfo()">代理商回收</a-link>
-                  </a-menu-item>
                   <a-menu-item v-if="isAgent() || isAdmin()">
                     <a-link @click="bindMchApp()">商户应用绑定</a-link>
                   </a-menu-item>
@@ -131,7 +125,6 @@
     </a-modal>
     <CashierCodeCreate ref="cashierCodeCreate" @ok="queryPage" />
     <CashierCodeEdit ref="cashierCodeEdit" @ok="queryPage" />
-    <AssistAgentModel ref="assistAgentModel" @ok="queryPage" />
     <BindMchAppModel ref="bindMchAppModel" @ok="queryPage" />
     <BindAppModel ref="bindAppModel" @ok="queryPage" />
   </div>
@@ -149,7 +142,6 @@
   import CashierCodeCreate from './CashierCodeCreate.vue'
   import CashierCodeEdit from './CashierCodeEdit.vue'
   import ALink from '@/components/Link/Link.vue'
-  import AssistAgentModel from './AssistAgentModel.vue'
   import BindMchAppModel from './BindMchAppModel.vue'
   import BindAppModel from './BindAppModel.vue'
   import { isAdmin, isAgent, isMerchant } from '@/utils/env'
@@ -196,7 +188,6 @@
   const xToolbar = ref<VxeToolbarInstance>()
   const cashierCodeCreate = ref<any>()
   const cashierCodeEdit = ref<any>()
-  const assistAgentModel = ref<any>()
   const bindMchAppModel = ref<any>()
   const bindAppModel = ref<any>()
 
@@ -268,31 +259,6 @@
     cashierCodeEdit.value.init(record.id, FormEditType.Show)
   }
 
-  /**
-   * 分配代理商
-   */
-  function assistAgent() {
-    const ids = xTable.value?.getCheckboxRecords().map((o) => o.id)
-    assistAgentModel.value.init(ids)
-  }
-
-  /**
-   * 回收代理商
-   */
-  function recoverAgentInfo() {
-    createConfirm({
-      iconType: 'warning',
-      title: '警告',
-      content: '是否从代理商中回收选中的码牌',
-      onOk: () => {
-        const ids = xTable.value?.getCheckboxRecords().map((o) => o.id)
-        recoverAgent({ ids }).then(() => {
-          createMessage.success('回收成功')
-          queryPage()
-        })
-      },
-    })
-  }
   /**
    * 绑定商户和应用
    */

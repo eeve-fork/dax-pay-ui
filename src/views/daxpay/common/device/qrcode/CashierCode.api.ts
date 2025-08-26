@@ -43,26 +43,6 @@ export function update(data) {
 }
 
 /**
- * 分配代理商
- */
-export function assignAgent(data) {
-  return defHttp.post<Result<void>>({
-    url: '/cashier/code/assignAgent',
-    data,
-  })
-}
-
-/**
- * 取消分配代理商
- */
-export function recoverAgent(data){
-  return defHttp.post<Result<void>>({
-    url: '/cashier/code/recoverAgent',
-    data,
-  })
-}
-
-/**
  * 绑定商户和应用
  */
 export function bindMch(data) {

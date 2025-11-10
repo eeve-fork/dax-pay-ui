@@ -64,18 +64,7 @@
             <a-radio :value="false">自定义</a-radio>
           </a-radio-group>
         </a-form-item>
-        <a-form-item label="是否开启分账" name="allocation">
-          <a-radio-group v-model:value="form.allocation">
-            <a-radio :value="true">开启</a-radio>
-            <a-radio :value="false">关闭</a-radio>
-          </a-radio-group>
-        </a-form-item>
-        <a-form-item label="自动分账" name="autoAllocation" v-if="form.allocation">
-          <a-radio-group v-model:value="form.autoAllocation">
-            <a-radio :value="true">开启</a-radio>
-            <a-radio :value="false">关闭</a-radio>
-          </a-radio-group>
-        </a-form-item>
+
         <template v-if="!form.readSystem">
           <a-form-item label="微信支付对应通道" name="wxChannel">
             <a-select
@@ -171,7 +160,6 @@
   let form = ref<CashierCodeBatch>({
     enable: true,
     readSystem: true,
-    allocation: false,
     count: 1,
     amountType: 'random',
   })
@@ -249,8 +237,6 @@
       readSystem: [{ required: true, message: '请选择码牌是否读取系统配置' }],
       amountType: [{ required: true, message: '请选择金额类型' }],
       amount: [{ required: true, message: '请输入收款金额' }],
-      allocation: [{ required: true, message: '请选择是否开启分账' }],
-      autoAllocation: [{ required: true, message: '请选择是否开启自动分账' }],
     } as Record<string, Rule[]>
   })
 

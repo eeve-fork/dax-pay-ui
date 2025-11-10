@@ -33,12 +33,6 @@
               <a-tag v-else color="red">不支持</a-tag>
             </template>
           </vxe-column>
-          <vxe-column field="allocatable" title="分账" :min-width="90" align="center">
-            <template #default="{ row }">
-              <a-tag v-if="row.allocatable" color="green">支持</a-tag>
-              <a-tag v-else color="red">不支持</a-tag>
-            </template>
-          </vxe-column>
           <vxe-column field="terminal" title="终端报送" :min-width="90" align="center">
             <template #default="{ row }">
               <a-tag v-if="row.terminal" color="green">支持</a-tag>

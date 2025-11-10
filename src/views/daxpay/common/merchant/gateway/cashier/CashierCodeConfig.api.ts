@@ -30,10 +30,6 @@ export function update(data: CashierCodeConfig) {
 export interface CashierCodeConfig extends MchEntity {
   /** 应用ID */
   appId?: string
-  /** 是否开启分账 */
-  allocation?: boolean
-  /** 自动分账 */
-  autoAllocation?: boolean
   /** 限制用户支付方式 */
   limitPay?: string
   /** 微信通道 */

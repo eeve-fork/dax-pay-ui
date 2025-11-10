@@ -15,18 +15,6 @@
       <a-form-item label="应用ID" name="appId" :hidden="true">
         <a-input v-model:value="form.appId" :disabled="showable" />
       </a-form-item>
-      <a-form-item label="是否开启分账" name="allocation" v-if="!props.miniQuicklyReadSystem">
-        <a-radio-group v-model:value="form.allocation" :disabled="!edit" button-style="solid">
-          <a-radio :value="false">不开启</a-radio>
-          <a-radio :value="true">开启</a-radio>
-        </a-radio-group>
-      </a-form-item>
-      <a-form-item label="自动分账" name="autoAllocation" v-if="!props.miniQuicklyReadSystem">
-        <a-radio-group v-model:value="form.autoAllocation" :disabled="!edit" button-style="solid">
-          <a-radio :value="false">不自动</a-radio>
-          <a-radio :value="true">自动</a-radio>
-        </a-radio-group>
-      </a-form-item>
       <a-form-item label="限制支付方式" name="limitPay" v-if="!props.miniQuicklyReadSystem">
         <a-select
           style="width: 250px"
@@ -85,21 +73,11 @@
 
   // 表单
   const formRef = ref<FormInstance>()
-  const form = ref<MchMiniQuicklyConfigParam>({
-    allocation: false,
-    autoAllocation: false,
-  })
+  const form = ref<MchMiniQuicklyConfigParam>({})
 
   // 表单验证规则
   const rules = computed(() => {
-    if (props.miniQuicklyReadSystem) {
-      // 当为只读系统时，不需要验证分账相关字段
-      return {} as Record<string, Rule[]>
-    }
-    return {
-      allocation: [{ required: true, message: '是否开启分账必选' }],
-      autoAllocation: [{ required: true, message: '是否自动分账必选' }],
-    } as Record<string, Rule[]>
+    return {} as Record<string, Rule[]>
   })
 
   /**

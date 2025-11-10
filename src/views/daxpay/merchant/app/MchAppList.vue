@@ -24,12 +24,6 @@
                     <a> 更多 <Icon icon="ant-design:down-outlined" :size="12" /> </a>
                     <template #overlay>
                       <a-menu>
-                        <!--                        <a-menu-item>-->
-                        <!--                          <a-link @click="showNotifyConfig(item)">订阅配置</a-link>-->
-                        <!--                        </a-menu-item>-->
-                        <!--                        <a-menu-item>-->
-                        <!--                          <a-link @click="showAllocConfig(item)">分账配置</a-link>-->
-                        <!--                        </a-menu-item>-->
                         <a-menu-item>
                           <a-link @click="showGatewayPay(item)">网关支付</a-link>
                         </a-menu-item>

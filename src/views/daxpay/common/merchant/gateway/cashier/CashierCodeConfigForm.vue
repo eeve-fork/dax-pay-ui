@@ -12,18 +12,6 @@
       <a-form-item label="主键" name="id" :hidden="true">
         <a-input v-model:value="form.id" :disabled="showable" />
       </a-form-item>
-      <a-form-item label="是否开启分账" name="allocation">
-        <a-radio-group v-model:value="form.allocation" :disabled="!edit" button-style="solid">
-          <a-radio :value="false">否</a-radio>
-          <a-radio :value="true">是</a-radio>
-        </a-radio-group>
-      </a-form-item>
-      <a-form-item label="自动分账" name="autoAllocation">
-        <a-radio-group v-model:value="form.autoAllocation" :disabled="!edit" button-style="solid">
-          <a-radio :value="false">否</a-radio>
-          <a-radio :value="true">是</a-radio>
-        </a-radio-group>
-      </a-form-item>
       <a-form-item label="限制支付方式" name="limitPay">
         <a-select
           style="width: 250px"
@@ -135,15 +123,10 @@
 
   // 表单
   const formRef = ref<FormInstance>()
-  const form = ref<CashierCodeConfig>({
-    autoAllocation: false,
-  })
+  const form = ref<CashierCodeConfig>({})
 
   // 表单验证规则
-  const rules = {
-    allocation: [{ required: true, message: '分账必填' }],
-    autoAllocation: [{ required: true, message: '自动分账必选' }],
-  } as Record<string, Rule[]>
+  const rules = {} as Record<string, Rule[]>
 
   /**
    * 初始化通道
@@ -211,13 +194,9 @@
    * 初始化数据
    */
   function initData() {
-    confirmLoading.value = true
     edit.value = false
-    // 根据应用ID查询配置
     findByAppId(props.appId).then(({ data }) => {
       form.value = data
-      confirmLoading.value = false
-      form.value.appId = props.appId
     })
   }
 
@@ -225,17 +204,19 @@
    * 更新配置
    */
   function updateConfig() {
-    formRef.value?.validate().then(async () => {
+    formRef.value?.validate().then(() => {
       confirmLoading.value = true
       update(form.value)
         .then(() => {
-          edit.value = false
           createMessage.success('更新成功')
+          edit.value = false
           initData()
         })
-        .finally(() => (confirmLoading.value = false))
+        .finally(() => {
+          confirmLoading.value = false
+        })
     })
   }
 </script>
 
-<style scoped lang="less"></style>
+<style scoped></style>

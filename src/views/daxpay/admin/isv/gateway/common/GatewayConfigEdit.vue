@@ -66,8 +66,6 @@
     aggregateShow: [{ required: true, message: '是否显示显示聚合收银码必选' }],
     h5AutoUpgrade: [{ required: true, message: 'H5收银台自动升级聚合支付必选' }],
     barPayShow: [{ required: true, message: '是否显示聚合条码支付必选' }],
-    miniAppAllocation: [{ required: true, message: '小程序是否分账必选' }],
-    miniAppAutoAllocation: [{ required: true, message: '小程序是否自动分账必选' }],
   } as Record<string, Rule[]>
 
   /**

@@ -163,22 +163,6 @@
       <a-row :gutter="[16, 24]">
         <a-col class="gutter-row" :span="8">
           <div class="gutterItem">
-            <div class="leftTitle">自动分账</div>
-            <div class="rightContent"> {{ order.autoAllocation || '无' }}</div>
-          </div>
-        </a-col>
-        <a-col class="gutter-row" :span="8">
-          <div class="gutterItem">
-            <div class="leftTitle">分账状态</div>
-            <div class="rightContent">{{
-              dictConvert('pay_alloc_status', order.allocStatus) || '无'
-            }}</div>
-          </div>
-        </a-col>
-      </a-row>
-      <a-row :gutter="[16, 24]">
-        <a-col class="gutter-row" :span="8">
-          <div class="gutterItem">
             <div class="leftTitle">付款用户ID</div>
             <div class="rightContent"> {{ orderExtend.buyerId || '无' }}</div>
           </div>

@@ -1,11 +1,7 @@
 import { defHttp } from '@/utils/http/axios'
 import { PageResult, Result } from '#/axios'
 import { MchEntity } from '#/web'
-import {
-  PayAllocStatusEnum,
-  PayRefundStatusEnum,
-  PayStatusEnum,
-} from '@/enums/daxpay/tradeStatusEnum'
+import { PayRefundStatusEnum, PayStatusEnum } from '@/enums/daxpay/tradeStatusEnum'
 
 /**
  * 分页
@@ -78,16 +74,6 @@ export function cancel(id) {
 }
 
 /**
- * 触发分账
- */
-export function allocation(id) {
-  return defHttp.post<Result<void>>({
-    url: '/order/pay/allocation',
-    params: { id },
-  })
-}
-
-/**
  * 获取汇总金额
  */
 export function getTotalAmount(param) {
@@ -114,17 +100,6 @@ export function cellStyle({ row, column }) {
         return { color: 'gray' }
       case PayStatusEnum.CANCEL:
         return { color: 'gray' }
-      default:
-        return { color: 'red' }
-    }
-  }
-  // 分账状态
-  if (column.field == 'allocStatus') {
-    switch (row.allocStatus) {
-      case PayAllocStatusEnum.WAITING:
-        return { color: 'orange' }
-      case PayAllocStatusEnum.ALLOCATION:
-        return { color: 'green' }
       default:
         return { color: 'red' }
     }
@@ -160,10 +135,6 @@ export interface PayOrder extends MchEntity {
   outOrderNo?: string
   // 描述
   description?: any
-  // 是否支持分账
-  allocation?: boolean
-  // 自动分账
-  autoAllocation?: boolean
   // 支付通道
   channel?: string
   // 支付方式
@@ -180,8 +151,6 @@ export interface PayOrder extends MchEntity {
   status?: string
   // 退款状态
   refundStatus?: string
-  // 分账状态
-  allocStatus?: string
   // 结算状态
   settleStatus?: string
   // 支付时间

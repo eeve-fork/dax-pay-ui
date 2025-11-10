@@ -51,8 +51,6 @@ export interface ChannelConst extends BaseEntity {
   remark?: string
   /** 是否支持服务商 */
   isv?: boolean
-  /** 是否支持分账 */
-  allocatable?: boolean
   /** 是否支持支付终端报送 */
   terminal?: boolean
 }

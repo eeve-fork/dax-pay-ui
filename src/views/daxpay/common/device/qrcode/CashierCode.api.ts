@@ -182,10 +182,6 @@ export interface CashierCode extends MchEntity {
   batchNo?: string
   /** 读取系统配置 */
   readSystem?: boolean
-  /** 是否开启分账 */
-  allocation?: boolean
-  /** 自动分账 */
-  autoAllocation?: boolean
   /** 微信通道 */
   wxChannel?: string
   /** 微信支付方式 */
@@ -220,10 +216,6 @@ export interface CashierCodeBatch {
   enable?: boolean
   /** 读取系统配置 */
   readSystem?: boolean
-  /** 是否开启分账 */
-  allocation?: boolean
-  /** 自动分账 */
-  autoAllocation?: boolean
   /** 微信通道 */
   wxChannel?: string
   /** 微信支付方式 */

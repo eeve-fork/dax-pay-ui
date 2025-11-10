@@ -88,20 +88,6 @@
         <a-form-item label="终端设备编码" name="terminalNo">
           <a-input v-model:value="form.terminalNo" placeholder="请输入终端设备编码" />
         </a-form-item>
-        <a-form-item label="是否分账" name="allocation">
-          <a-switch
-            checked-children="是"
-            un-checked-children="否"
-            v-model:checked="form.allocation"
-          />
-        </a-form-item>
-        <a-form-item label="是否自动分账" name="autoAllocation">
-          <a-switch
-            checked-children="是"
-            un-checked-children="否"
-            v-model:checked="form.autoAllocation"
-          />
-        </a-form-item>
         <a-form-item label="限制用户支付类型" name="limitPay">
           <a-select
             allow-clear
@@ -216,8 +202,6 @@
     title: '测试支付',
     clientIp: '127.0.0.1',
     amount: 0.01,
-    allocation: false,
-    autoAllocation: false,
   })
   const rules = computed(() => {
     return {
@@ -231,8 +215,6 @@
         { required: form.method === PayMethodEnum.OTHER, message: '其他支付方式不可为空' },
       ],
       authCode: [{ required: form.method === PayMethodEnum.BARCODE, message: '付款码不可为空' }],
-      allocation: [{ required: true, message: '分账不可为空' }],
-      autoAllocation: [{ required: true, message: '自动分账不可为空' }],
       clientIp: [{ required: true, message: '终端IP不可为空' }],
       nonceStr: [{ required: true, message: '随机数不可为空' }],
       reqTime: [{ required: true, message: '请求时间不可为空' }],

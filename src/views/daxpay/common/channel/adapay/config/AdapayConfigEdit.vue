@@ -35,12 +35,6 @@
         <a-form-item label="沙箱环境" name="sandbox">
           <a-switch checked-children="是" un-checked-children="否" v-model:checked="form.sandbox" />
         </a-form-item>
-        <!--        <a-form-item label="分账类型" name="allocType">-->
-        <!--          <a-radio-group v-model:value="form.allocType" button-style="solid">-->
-        <!--            <a-radio-button value="realtime">实时分账</a-radio-button>-->
-        <!--            <a-radio-button value="delay">延时分账</a-radio-button>-->
-        <!--          </a-radio-group>-->
-        <!--        </a-form-item>-->
         <a-form-item label="交易密钥" name="apiKey">
           <a-input v-model:value="form.apiKey" placeholder="请输入汇付交易密钥" />
         </a-form-item>
@@ -121,7 +115,6 @@
   const form = ref<AdaPayConfig>({
     enable: true,
     sandbox: false,
-    allocType: 'realtime',
   })
   let rawForm: any = {}
   // 校验
@@ -130,7 +123,6 @@
       adaPayAppId: [{ required: true, message: '请输入汇付AppId' }],
       enable: [{ required: true, message: '请选择是否启用' }],
       sandbox: [{ required: true, message: '请选择是否为沙箱环境' }],
-      allocType: [{ required: true, message: '请选择是分账类型' }],
       apiKey: [{ required: true, message: '请输入汇付交易密钥' }],
       mchPrivateKey: [{ required: true, message: '请输入汇付商户RSA私钥' }],
       // adaPayPublicKey: [{ required: true, message: '请输入汇平台RSA公钥' }],

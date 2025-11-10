@@ -1,12 +1,7 @@
 import { defHttp } from '@/utils/http/axios'
 import { PageResult, Result } from '#/axios'
 import { MchEntity } from '#/web'
-import {
-  PayAllocStatusEnum,
-  PayRefundStatusEnum,
-  PayStatusEnum,
-  RefundStatusEnum,
-} from '@/enums/daxpay/tradeStatusEnum'
+import { RefundStatusEnum } from '@/enums/daxpay/tradeStatusEnum'
 
 /**
  * 分页

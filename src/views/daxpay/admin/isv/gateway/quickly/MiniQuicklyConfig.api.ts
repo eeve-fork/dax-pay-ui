@@ -32,10 +32,6 @@ export interface IsvMiniQuicklyConfigParam extends BaseEntity {
   isvNo?: string
   /** 限制支付方式 */
   limitPay?: string
-  /** 是否开启分账 */
-  allocation?: boolean
-  /** 自动分账 */
-  autoAllocation?: boolean
   /** 关联终端号 */
   terminalNo?: string
 }
@@ -48,10 +44,6 @@ export interface IsvMiniQuicklyConfigResult extends BaseEntity {
   isvNo?: string
   /** 限制支付方式 */
   limitPay?: string
-  /** 是否开启分账 */
-  allocation?: boolean
-  /** 自动分账 */
-  autoAllocation?: boolean
   /** 关联终端号 */
   terminalNo?: string
 }

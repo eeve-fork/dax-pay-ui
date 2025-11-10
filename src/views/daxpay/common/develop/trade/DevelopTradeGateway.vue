@@ -56,20 +56,6 @@
             placeholder="请输入支付金额"
           />
         </a-form-item>
-        <a-form-item label="是否分账" name="allocation">
-          <a-switch
-            checked-children="是"
-            un-checked-children="否"
-            v-model:checked="form.allocation"
-          />
-        </a-form-item>
-        <a-form-item label="是否自动分账" name="autoAllocation">
-          <a-switch
-            checked-children="是"
-            un-checked-children="否"
-            v-model:checked="form.autoAllocation"
-          />
-        </a-form-item>
         <a-form-item label="限制用户支付类型" name="limitPay">
           <a-select
             allow-clear
@@ -162,7 +148,6 @@
     title: '测试收网关支付',
     clientIp: '127.0.0.1',
     amount: 0.1,
-    allocation: false,
   })
   const rules = computed(() => {
     return {
@@ -172,7 +157,6 @@
       bizOrderNo: [{ required: true, message: '订单号不可为空' }],
       title: [{ required: true, message: '支付标题不可为空' }],
       amount: [{ required: true, message: '支付金额不可为空' }],
-      allocation: [{ required: true, message: '分账不可为空' }],
       clientIp: [{ required: true, message: '终端IP不可为空' }],
       nonceStr: [{ required: true, message: '随机数不可为空' }],
       reqTime: [{ required: true, message: '请求时间不可为空' }],

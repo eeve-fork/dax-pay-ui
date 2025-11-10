@@ -51,20 +51,6 @@ export enum PayRefundStatusEnum {
 }
 
 /**
- * 支付订单的分账状态
- */
-export enum PayAllocStatusEnum {
-  /**
-   * 待分账
-   */
-  WAITING = 'waiting',
-  /**
-   * 已分账
-   */
-  ALLOCATION = 'allocation',
-}
-
-/**
  * 退款状态枚举
  */
 export enum RefundStatusEnum {

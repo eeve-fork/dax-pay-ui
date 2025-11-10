@@ -70,17 +70,6 @@
               dictConvert('pay_refund_status', row.refundStatus) || ''
             }}</template>
           </vxe-column>
-          <vxe-column field="allocation" title="分账" :min-width="160">
-            <template #default="{ row }">
-              <a-tag v-if="row.allocation" color="green">支持</a-tag>
-              <a-tag v-else color="red">不支持</a-tag>
-            </template>
-          </vxe-column>
-          <vxe-column field="allocStatus" title="分账状态" :min-width="160">
-            <template #default="{ row }">
-              {{ dictConvert('pay_alloc_status', row.allocStatus) || '无' }}
-            </template>
-          </vxe-column>
           <vxe-column field="createTime" title="创建时间" sortable :min-width="140" />
           <vxe-column field="mchName" title="商户" :min-width="150" />
           <vxe-column field="appName" title="应用" :min-width="150" />
@@ -104,14 +93,6 @@
                       </a-menu-item>
                       <a-menu-item v-if="[PayStatusEnum.PROGRESS].includes(row.status)">
                         <a-link @click="cancelOrder(row)" danger>撤销</a-link>
-                      </a-menu-item>
-                      <a-menu-item
-                        v-if="
-                          row.allocStatus === PayAllocStatusEnum.WAITING &&
-                          PayStatusEnum.SUCCESS === row.status
-                        "
-                      >
-                        <a-link @click="allocationOrder(row)">分账</a-link>
                       </a-menu-item>
                       <a-menu-item
                         v-if="
@@ -149,15 +130,7 @@
 
 <script lang="ts" setup>
   import { computed, onMounted, ref, watch } from 'vue'
-  import {
-    allocation,
-    close,
-    getTotalAmount,
-    page,
-    syncOrder,
-    cellStyle,
-    cancel,
-  } from './PayOrder.api'
+  import { close, getTotalAmount, page, syncOrder, cellStyle, cancel } from './PayOrder.api'
   import useTablePage from '@/hooks/bootx/useTablePage'
   import PayOrderInfo from './PayOrderInfo.vue'
   import BQuery from '@/components/Bootx/Query/BQuery.vue'
@@ -169,11 +142,7 @@
   import ALink from '@/components/Link/Link.vue'
   import { LabeledValue } from 'ant-design-vue/lib/select'
   import { Icon } from '@/components/Icon'
-  import {
-    PayAllocStatusEnum,
-    PayRefundStatusEnum,
-    PayStatusEnum,
-  } from '@/enums/daxpay/tradeStatusEnum'
+  import { PayRefundStatusEnum, PayStatusEnum } from '@/enums/daxpay/tradeStatusEnum'
   import { dropdown as merchantDropdown } from '@/views/daxpay/common/assist/basic/MerchantQuery.api'
   import { dropdownByMchNo as mchAppDropdown } from '@/views/daxpay/common/assist/basic/MchAppQuery.api'
   import { PayMethodEnum } from '@/enums/daxpay/daxpayEnum'
@@ -201,7 +170,6 @@
   const methodList = ref<LabeledValue[]>([])
   const payStatusList = ref<LabeledValue[]>([])
   const payRefundStatusList = ref<LabeledValue[]>([])
-  const payAllocStatusList = ref<LabeledValue[]>([])
 
   // 查询条件
   const fields = computed(() => {
@@ -215,15 +183,6 @@
         placeholder: '请输入外部三方支付系统中的订单号',
       },
       { field: 'title', type: STRING, name: '标题', placeholder: '请输入标题' },
-      {
-        field: 'allocation',
-        name: '支持分账',
-        type: LIST,
-        selectList: [
-          { label: '支持', value: 'true' },
-          { label: '不支持', value: 'false' },
-        ],
-      },
       { field: 'channel', name: '支付通道', type: LIST, selectList: channelList.value },
       { field: 'method', name: '支付方式', type: LIST, selectList: methodList.value },
       { field: 'status', name: '支付状态', type: LIST, selectList: payStatusList.value },
@@ -233,7 +192,6 @@
         type: LIST,
         selectList: payRefundStatusList.value,
       },
-      { field: 'allocStatus', name: '分账状态', type: LIST, selectList: payAllocStatusList.value },
       {
         field: 'mchNo',
         type: LIST,
@@ -290,7 +248,6 @@
     methodList.value = await dictDropDown('pay_method') //获取查询支付方式下拉列表
     payStatusList.value = await dictDropDown('pay_status') //获取查询支付状态下拉列表
     payRefundStatusList.value = await dictDropDown('pay_refund_status') //获取查询退款状态下拉列表
-    payAllocStatusList.value = await dictDropDown('pay_alloc_status') //获取分账状态状态下拉列表
   }
 
   /**
@@ -390,23 +347,6 @@
    */
   function refund(record) {
     refundModel.value.init(record.id)
-  }
-
-  /**
-   * 触发分账
-   */
-  function allocationOrder(record) {
-    createConfirm({
-      iconType: 'warning',
-      title: '警告',
-      content: '是否触发该订单的分账操作',
-      onOk: () => {
-        allocation(record.id).then(() => {
-          createMessage.success('分账请求已发送')
-          queryPage()
-        })
-      },
-    })
   }
 </script>
 

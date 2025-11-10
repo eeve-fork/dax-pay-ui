@@ -107,8 +107,6 @@
                     </a-button>
                     <template #overlay>
                       <a-menu>
-<!--                        <a-menu-item @click="showNotifyConfig(item)">订阅配置</a-menu-item>-->
-<!--                        <a-menu-item @click="showAllocConfig(item)">分账配置</a-menu-item>-->
                         <a-menu-item @click="showGatewayPay(item)">网关支付</a-menu-item>
                         <a-menu-item @click="toggleDefaultApp(item)">
                           {{ item?.defaultApp ? '清除默认' : '设为默认' }}

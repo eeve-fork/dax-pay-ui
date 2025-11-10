@@ -40,8 +40,6 @@ export interface AdaPayConfig extends MchEntity {
   enable: boolean
   // 是否沙箱环境
   sandbox?: boolean
-  // 分账类型
-  allocType?: string
   // 微信AppId
   wxAppId?: string
   // 微信AppSecret

@@ -88,10 +88,6 @@ export interface PayParam {
   title?: string
   /** 支付描述 */
   description?: string
-  /** 是否开启分账 */
-  allocation?: boolean
-  /** 自动分账 */
-  autoAllocation?: boolean
   /** 限制用户支付类型 */
   limitPay?: string
   /** 过期时间 */
@@ -283,10 +279,6 @@ export interface GatewayPayParam {
   title?: string
   /** 支付描述 */
   description?: string
-  /** 是否开启分账 */
-  allocation?: boolean
-  /** 自动分账 */
-  autoAllocation?: boolean
   /** 限制用户支付类型 */
   limitPay?: string
   /** 过期时间 */

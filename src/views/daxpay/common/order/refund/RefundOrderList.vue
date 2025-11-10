@@ -66,45 +66,43 @@
           <vxe-column fixed="right" width="120" :showOverflow="false" title="操作">
             <template #default="{ row }">
               <a-link @click="show(row)">查看</a-link>
-              <template v-if="!isAgent() || agentPerm.createOrder">
-                <a-divider type="vertical" />
-                <a-dropdown>
-                  <a>
-                    更多
-                    <icon icon="ant-design:down-outlined" :size="12" />
-                  </a>
-                  <template #overlay>
-                    <a-menu>
-                      <a-menu-item>
-                        <a-link
-                          :disabled="
-                            ![RefundStatusEnum.PROGRESS, RefundStatusEnum.FAIL].includes(row.status)
-                          "
-                          @click="sync(row)"
-                          >同步</a-link
-                        >
-                      </a-menu-item>
-                      <a-menu-item>
-                        <a-link
-                          :disabled="
-                            ![RefundStatusEnum.PROGRESS, RefundStatusEnum.FAIL].includes(row.status)
-                          "
-                          @click="reset(row)"
-                          >重试</a-link
-                        >
-                      </a-menu-item>
-                      <a-menu-item>
-                        <a-link
-                          :disabled="![RefundStatusEnum.FAIL].includes(row.status)"
-                          @click="closeOrder(row)"
-                          danger
-                          >关闭</a-link
-                        >
-                      </a-menu-item>
-                    </a-menu>
-                  </template>
-                </a-dropdown>
-              </template>
+              <a-divider type="vertical" />
+              <a-dropdown>
+                <a>
+                  更多
+                  <icon icon="ant-design:down-outlined" :size="12" />
+                </a>
+                <template #overlay>
+                  <a-menu>
+                    <a-menu-item>
+                      <a-link
+                        :disabled="
+                          ![RefundStatusEnum.PROGRESS, RefundStatusEnum.FAIL].includes(row.status)
+                        "
+                        @click="sync(row)"
+                        >同步</a-link
+                      >
+                    </a-menu-item>
+                    <a-menu-item>
+                      <a-link
+                        :disabled="
+                          ![RefundStatusEnum.PROGRESS, RefundStatusEnum.FAIL].includes(row.status)
+                        "
+                        @click="reset(row)"
+                        >重试</a-link
+                      >
+                    </a-menu-item>
+                    <a-menu-item>
+                      <a-link
+                        :disabled="![RefundStatusEnum.FAIL].includes(row.status)"
+                        @click="closeOrder(row)"
+                        danger
+                        >关闭</a-link
+                      >
+                    </a-menu-item>
+                  </a-menu>
+                </template>
+              </a-dropdown>
             </template>
           </vxe-column>
         </vxe-table>
@@ -147,8 +145,6 @@
   import { Icon } from '@/components/Icon'
   import { dropdown as merchantDropdown } from '@/views/daxpay/common/assist/basic/MerchantQuery.api'
   import { dropdownByMchNo as mchAppDropdown } from '@/views/daxpay/common/assist/basic/MchAppQuery.api'
-  import { isAgent } from '@/utils/env'
-  import { AgentPermConfig, getAgentPermConfig } from '@/api/daxpay/DaxpayPerm.api'
 
   // 使用hooks
   const {
@@ -170,7 +166,6 @@
   const channelList = ref<LabeledValue[]>([])
   const refundStatusList = ref<LabeledValue[]>([])
   const totalAmount = ref<number>(0.0)
-  const agentPerm = ref<AgentPermConfig>({})
 
   // 查询条件
   const fields = computed(() => {
@@ -242,12 +237,6 @@
     merchantDropdown().then(({ data }) => {
       mchNoOptions.value = data
     })
-    if (isAgent()) {
-      // 代理商权限
-      getAgentPermConfig().then(({ data }) => {
-        agentPerm.value = data
-      })
-    }
     refundStatusList.value = await dictDropDown('RefundStatus')
     channelList.value = await dictDropDown('channel')
   }

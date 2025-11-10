@@ -56,18 +56,6 @@
               </a-form-item>
             </a-col>
             <a-col :span="12">
-              <a-form-item label="默认代理商" tooltip="注册商户时，默认的代理商">
-                <a-select
-                  style="width: 100%"
-                  v-model:value="form.defaultAgentNo"
-                  :disabled="!edit"
-                  :options="agentOptions"
-                  allow-clear
-                  placeholder="请选择默认代理商"
-                />
-              </a-form-item>
-            </a-col>
-            <a-col :span="12">
               <a-form-item label="默认服务商" tooltip="注册代理商时，默认的服务商">
                 <a-select
                   style="width: 100%"
@@ -101,7 +89,6 @@
   } from '@/views/daxpay/admin/config/platform/PlatformConfig.api'
   import { FormInstance } from 'ant-design-vue/lib/form'
   import { LabeledValue } from 'ant-design-vue/lib/select'
-  import { dropdown as agentDropdown } from '@/views/daxpay/common/assist/basic/AgentQuery.api'
   import { dropdown as isvDropdown } from '@/views/daxpay/common/assist/basic/IsvQuery.api'
 
   const { createMessage } = useMessage()
@@ -117,8 +104,7 @@
    */
   function initData() {
     confirmLoading.value = true
-    // 初始化代理商服务商
-    agentDropdown().then(({ data }) => (agentOptions.value = data))
+    // 初始化服务商
     isvDropdown().then(({ data }) => (isvOptions.value = data))
     getBasic().then(({ data }) => {
       form.value = data

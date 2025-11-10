@@ -51,7 +51,6 @@
             </template>
           </vxe-column>
           <vxe-column field="mchName" title="商户名称" :min-width="150" />
-          <vxe-column field="agentName" title="代理商名称" :min-width="150" />
           <vxe-column field="isvName" title="服务商名称" :min-width="150" />
           <vxe-column fixed="right" width="170" align="center" :showOverflow="false" title="操作">
             <template #default="{ row }">

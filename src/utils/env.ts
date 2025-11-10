@@ -83,13 +83,6 @@ export function isAdmin() {
 }
 
 /**
- * 是否为代理商端
- */
-export function isAgent() {
-  return import.meta.env.VITE_GLOB_APP_CLIENT === DaxPayClientEnum.AGENT
-}
-
-/**
  * 是否为商户端
  */
 export function isMerchant() {

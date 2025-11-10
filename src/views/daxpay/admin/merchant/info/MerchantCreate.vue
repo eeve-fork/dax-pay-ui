@@ -19,13 +19,13 @@
         :wrapper-col="wrapperCol"
       >
         <template v-if="isAdmin()">
-          <a-form-item label="代理商" name="agentNo">
+          <a-form-item label="服务商" name="providerNo">
             <a-select
               style="width: 100%"
-              v-model:value="form.agentNo"
-              :options="agentOptions"
+              v-model:value="form.isvNo"
+              :options="isvOptions"
               allow-clear
-              placeholder="请选择所属代理商"
+              placeholder="请选择所属服务商"
             />
           </a-form-item>
         </template>
@@ -84,8 +84,8 @@
   import { useMessage } from '@/hooks/web/useMessage'
   import { add, MerchantCreate } from './Merchant.api'
   import { LabeledValue } from 'ant-design-vue/lib/select'
-  import { dropdown as agentDropdown } from '@/views/daxpay/common/assist/basic/AgentQuery.api'
   import { isAdmin } from '@/utils/env'
+  import { dropdown as isvDropdown } from '@/views/daxpay/common/assist/basic/IsvQuery.api'
 
   const { handleCancel, labelCol, wrapperCol, modalWidth, confirmLoading, visible } = useFormEdit()
   const { createMessage } = useMessage()
@@ -95,12 +95,12 @@
     status: 'enable',
     createDefaultApp: true,
   })
-  const agentOptions = ref<LabeledValue[]>([])
+  const isvOptions = ref<LabeledValue[]>([])
 
   // 校验
   const rules = reactive({
     createDefaultApp: [{ required: true, message: '请是否创建默认商户应用' }],
-    agentNo: [{ required: true, message: '请选择所属代理商' }],
+    isvNo: [{ required: true, message: '请选择所属服务商' }],
     mchName: [{ required: true, message: '请输入商户名称' }],
     status: [{ required: true, message: '请选择商户状态' }],
     account: [
@@ -135,9 +135,9 @@
    * 初始化数据
    */
   function initData() {
-    // 初始化所属代理商列表
+    // 初始化所属服务商列表
     if (isAdmin()) {
-      agentDropdown().then(({ data }) => (agentOptions.value = data))
+      isvDropdown().then(({ data }) => (isvOptions.value = data))
     }
   }
 

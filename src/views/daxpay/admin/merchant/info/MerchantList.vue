@@ -50,7 +50,6 @@
               <a-tag v-else>未认证</a-tag>
             </template>
           </vxe-column>
-          <vxe-column field="agentName" title="代理商名称" :min-width="150" />
           <vxe-column field="isvName" title="服务商名称" :min-width="150" />
           <vxe-column field="createTime" title="创建时间" :min-width="140" />
           <vxe-column fixed="right" :width="120" :showOverflow="false" title="操作" align="center">

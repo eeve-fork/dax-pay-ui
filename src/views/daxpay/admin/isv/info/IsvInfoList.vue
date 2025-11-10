@@ -104,8 +104,6 @@
   import { IsvStatusEnum } from '@/enums/daxpay/daxpayEnum'
   import Icon from '@/components/Icon/Icon.vue'
   import GatewayConfigModel from '@/views/daxpay/admin/isv/gateway/GatewayConfigModel.vue'
-  import IsvPermConfigModel from '@/views/daxpay/admin/isv/config/perm/IsvPermConfigModel.vue'
-  import IsvDefaultPermConfigModel from '@/views/daxpay/admin/isv/config/default/IsvDefaultPermConfigModel.vue'
 
   // 使用hooks
   const {

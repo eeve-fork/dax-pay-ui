@@ -115,15 +115,6 @@ export enum MerchantStatusEnum {
   ENABLED = 'enable',
 }
 
-/**
- * 代理商状态枚举
- */
-export enum AgentStatusEnum {
-  /** 启用 */
-  DISABLED = 'disabled',
-  /** 禁用 */
-  ENABLED = 'enable',
-}
 
 
 /**

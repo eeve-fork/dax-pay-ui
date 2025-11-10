@@ -7,8 +7,6 @@ export enum PageEnum {
   ADMIN_HOME = '/admin/dashboard',
   // 商户端登录后首页
   MERCHANT_HOME = '/merchant/dashboard',
-  // 代理商端登录后首页
-  AGENT_HOME = '/agent/dashboard',
   // 错误页
   ERROR_PAGE = '/exception',
 }

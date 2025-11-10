@@ -23,15 +23,9 @@
               <template #overlay>
                 <a-menu>
                   <a-menu-item v-if="isAdmin()">
-                    <a-link @click="assistAgent()">代理商划拨</a-link>
-                  </a-menu-item>
-                  <a-menu-item v-if="isAdmin()">
-                    <a-link @click="recoverAgentInfo()">代理商回收</a-link>
-                  </a-menu-item>
-                  <a-menu-item v-if="isAgent() || isAdmin()">
                     <a-link @click="bindMchApp()">商户应用绑定</a-link>
                   </a-menu-item>
-                  <a-menu-item v-if="isAgent() || isAdmin()">
+                  <a-menu-item v-if="isAdmin()">
                     <a-link @click="unbindMchApp()">商户应用解绑</a-link>
                   </a-menu-item>
                   <a-menu-item v-if="isMerchant()">
@@ -77,12 +71,7 @@
               <a-tag :color="row.gps ? 'green' : 'red'">{{ row.gps ? '支持' : '不支持' }}</a-tag>
             </template>
           </vxe-column>
-          <vxe-column field="agentName" title="代理商" v-if="isAdmin()" :min-width="150">
-            <template #default="{ row }">
-              {{ row.agentName }}
-            </template>
-          </vxe-column>
-          <vxe-column field="mchName" title="商户" v-if="isAdmin() || isAgent()" :min-width="150">
+          <vxe-column field="mchName" title="商户" v-if="isAdmin()" :min-width="150">
             <template #default="{ row }">
               {{ row.mchName || '未绑定' }}
             </template>
@@ -115,7 +104,6 @@
     </div>
     <TerminalDeviceEdit :app-id="currentAppId" ref="terminalDeviceEdit" @ok="queryPage" />
     <ChannelTerminalList ref="channelTerminalList" />
-    <AssistAgentModel ref="assistAgentModel" @ok="queryPage" />
     <BindMchAppModel ref="bindMchAppModel" @ok="queryPage" />
     <BindAppModel ref="bindAppModel" @ok="queryPage" />
   </div>
@@ -135,9 +123,8 @@
   import { LabeledValue } from 'ant-design-vue/lib/select'
   import TerminalDeviceEdit from './TerminalDeviceEdit.vue'
   import ChannelTerminalList from './channel/ChannelTerminalList.vue'
-  import AssistAgentModel from './AssistAgentModel.vue'
   import BindMchAppModel from './BindMchAppModel.vue'
-  import { isAdmin, isAgent, isMerchant } from '@/utils/env'
+  import { isAdmin, isMerchant } from '@/utils/env'
   import BindAppModel from './BindAppModel.vue'
 
   // 使用hooks
@@ -179,7 +166,6 @@
   const xToolbar = ref<VxeToolbarInstance>()
   const terminalDeviceEdit = ref<any>()
   const channelTerminalList = ref<any>()
-  const assistAgentModel = ref<any>()
   const bindMchAppModel = ref<any>()
   const bindAppModel = ref<any>()
 
@@ -270,31 +256,6 @@
     channelTerminalList.value.init(record.id)
   }
 
-  /**
-   * 分配代理商
-   */
-  function assistAgent() {
-    const ids = xTable.value?.getCheckboxRecords().map((o) => o.id)
-    assistAgentModel.value.init(ids)
-  }
-
-  /**
-   * 回收代理商
-   */
-  function recoverAgentInfo() {
-    createConfirm({
-      iconType: 'warning',
-      title: '警告',
-      content: '是否从代理商中回收选中的码牌',
-      onOk: () => {
-        const ids = xTable.value?.getCheckboxRecords().map((o) => o.id)
-        recoverAgent({ ids }).then(() => {
-          createMessage.success('回收成功')
-          queryPage()
-        })
-      },
-    })
-  }
   /**
    * 绑定商户和应用
    */

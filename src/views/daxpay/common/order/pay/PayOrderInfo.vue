@@ -240,12 +240,6 @@
             <div class="rightContent"> {{ order.mchNo || '无' }}</div>
           </div>
         </a-col>
-        <a-col class="gutter-row" :span="8" v-if="order.agentNo">
-          <div class="gutterItem">
-            <div class="leftTitle">代理商号</div>
-            <div class="rightContent"> {{ order.agentNo || '无' }}</div>
-          </div>
-        </a-col>
         <a-col class="gutter-row" :span="8" v-if="order.isvNo">
           <div class="gutterItem">
             <div class="leftTitle">服务商号</div>
@@ -258,12 +252,6 @@
           <div class="gutterItem">
             <div class="leftTitle">商户名称</div>
             <div class="rightContent"> {{ order.mchName || '无' }}</div>
-          </div>
-        </a-col>
-        <a-col class="gutter-row" :span="8" v-if="order.agentName">
-          <div class="gutterItem">
-            <div class="leftTitle">代理商名称</div>
-            <div class="rightContent"> {{ order.agentName || '无' }}</div>
           </div>
         </a-col>
         <a-col class="gutter-row" :span="8" v-if="order.isvName">

@@ -10,6 +10,7 @@ export function dropdown() {
     url: '/isv/query/dropdown',
   })
 }
+
 /**
  * 查询启用的服务商下拉列表
  */

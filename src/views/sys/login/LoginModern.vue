@@ -109,7 +109,7 @@
     CustomerServiceOutlined,
   } from '@ant-design/icons-vue'
   import LoginForm from './LoginForm.vue'
-  import { isAdmin, isAgent } from '@/utils/env'
+  import { isAdmin } from '@/utils/env'
   import {
     getCopyright,
     getCopyrightLink,
@@ -137,9 +137,6 @@
   const loginTitle = () => {
     if (isAdmin()) {
       return '运营端登录'
-    }
-    if (isAgent()) {
-      return '代理商登录'
     }
     return '商户登录'
   }

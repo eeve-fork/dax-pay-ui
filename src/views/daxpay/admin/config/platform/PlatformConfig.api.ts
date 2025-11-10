@@ -68,8 +68,6 @@ export interface PlatformBasicConfig {
   dailyLimitAmount?: number
   /** 订单超时时间(分钟) */
   orderTimeout?: number
-  /** 默认代理商 */
-  defaultAgentNo?: string
   /** 默认服务商 */
   defaultIsvNo?: string
 }

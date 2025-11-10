@@ -24,9 +24,6 @@
         <a-form-item label="所属服务商" name="isvName">
           {{ form.isvName }}({{ form.isvNo }})
         </a-form-item>
-        <a-form-item label="所属代理商" name="agentName">
-          {{ form.agentName }}({{ form.agentNo }})
-        </a-form-item>
         <a-form-item label="商户号" name="mchNo">
           <a-input v-model:value="form.mchNo" disabled />
         </a-form-item>

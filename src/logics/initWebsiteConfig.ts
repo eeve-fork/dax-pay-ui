@@ -1,5 +1,5 @@
 import { getWebsite } from '@/views/daxpay/admin/config/platform/PlatformConfig.api'
-import { isAdmin, isAgent } from '@/utils/env'
+import { isAdmin } from '@/utils/env'
 import { ref } from 'vue'
 
 export const WEBSITE_CONFIG = ref<WebsiteConfig>({})
@@ -31,8 +31,6 @@ export function getSystemTitle() {
   const title = WEBSITE_CONFIG.value?.systemName || ''
   if (isAdmin()) {
     return title + '运营端'
-  } else if (isAgent()) {
-    return title + '代理端'
   } else {
     return title + '商户端'
   }

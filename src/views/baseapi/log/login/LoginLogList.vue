@@ -9,7 +9,7 @@
       />
     </div>
     <div class="m-3 p-3 bg-white">
-      <vxe-toolbar ref="xToolbar" custom :refresh="{ queryMethod: queryPage }">
+      <vxe-toolbar ref="xToolbar" custom refresh :refresh-options="{ queryMethod: queryPage }">
         <template #buttons>
           <a-space>
             <a-select
@@ -26,12 +26,12 @@
       <div class="h-65vh">
         <vxe-table
           height="auto"
-          key-field="id"
+          :row-config="{ keyField: 'id' }"
           ref="xTable"
           :data="pagination.records"
           :loading="loading"
         >
-          <vxe-column type="seq" :width="60" />
+          <vxe-column type="seq" title="序号" width="60" align="center" />
           <vxe-column field="userId" title="用户ID" :min-width="100" />
           <vxe-column field="account" title="用户账号" :min-width="120" />
           <vxe-column field="login" title="登录成功" align="center" :min-width="90">
@@ -153,7 +153,7 @@
   }
 
   function vxeBind() {
-    xTable.value?.connect(xToolbar.value as VxeToolbarInstance)
+    xTable.value?.connectToolbar(xToolbar.value as VxeToolbarInstance)
   }
 
   /**

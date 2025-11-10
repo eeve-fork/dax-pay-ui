@@ -1,24 +1,23 @@
 import { defHttp } from '@/utils/http/axios'
 import { Result } from '#/axios'
 import { MchEntity } from '#/web'
-import { unref } from 'vue'
 
 /**
  * 获取单条
  */
-export function getConfig(id) {
+export function getConfig(isvNo) {
   return defHttp.get<Result<AlipayConfig>>({
-    url: '/isv/alipay/config/findById',
-    params: { id: unref(id) },
+    url: '/alipay/config/isv/findByIsvNo',
+    params: { isvNo },
   })
 }
 
 /**
  * 保存或更新
  */
-export function saveOrUpdate(obj: AlipayConfig) {
+export function update(obj: AlipayConfig) {
   return defHttp.post({
-    url: '/isv/alipay/config/saveOrUpdate',
+    url: '/alipay/config/isv/update',
     data: obj,
   })
 }

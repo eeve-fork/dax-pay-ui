@@ -1,60 +1,60 @@
 import { defHttp } from '@/utils/http/axios'
 import { Result } from '#/axios'
 import { MchEntity } from '#/web'
-import { unref } from 'vue'
 
 /**
- * 获取单条
+ * 获取单条商户
  */
-export function getConfig(id) {
+export function getConfig(appId) {
   return defHttp.get<Result<AlipayConfig>>({
-    url: '/alipay/config/findById',
-    params: { id: unref(id) },
+    url: '/alipay/config/findByAppId',
+    params: { appId },
   })
 }
 
 /**
- * 保存或更新
+ * 更新商户
  */
-export function saveOrUpdate(obj: AlipayConfig) {
+export function update(obj: AlipayConfig) {
   return defHttp.post({
-    url: '/alipay/config/saveOrUpdate',
+    url: '/alipay/config/update',
     data: obj,
   })
 }
 
 /**
- * 获取单条特约商户
+ * 获取单条子商户
  */
-export function getSubConfig(id) {
+export function getSubConfig(appId) {
   return defHttp.get<Result<AlipaySubConfig>>({
-    url: '/alipay/config/findSubById',
-    params: { id: unref(id) },
+    url: '/alipay/config/findSubByAppId',
+    params: { appId },
   })
 }
 
 /**
- * 保存或更新特约商户
+ * 更新子商户
  */
-export function saveOrUpdateSub(obj: AlipaySubConfig) {
+export function updateSub(obj: AlipaySubConfig) {
   return defHttp.post({
-    url: '/alipay/config/saveOrUpdateSub',
+    url: '/alipay/config/updateSub',
     data: obj,
   })
 }
+
 
 /**
  * 支付宝配置
  */
 export interface AlipayConfig extends MchEntity {
+  // 商户号
+  mchNo?: string
   // 商户AppId
   appId?: string
   // 支付宝商户appId
   aliAppId?: string
   // 是否启用
   enable: boolean
-  // 支付限额
-  limitAmount?: number
   // 是否为特约商户
   isv?: boolean
   // 特约商户Token
@@ -91,6 +91,4 @@ export interface AlipaySubConfig extends MchEntity {
   enable: boolean
   // 商户账号ID
   alipayUserId?: string
-  // 支付限额
-  limitAmount?: number
 }

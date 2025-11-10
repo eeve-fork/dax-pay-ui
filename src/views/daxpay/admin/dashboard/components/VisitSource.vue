@@ -242,37 +242,137 @@
     justify-content: space-between;
     //公共标题
     .common_title {
-      font-size: 0.9375vw;
+      font-size: 18px;
       width: 100%;
-      padding-left: 0.8333vw;
+      padding-left: 16px;
       position: relative;
       display: flex;
       align-items: center;
       color: #2e3853;
-      font-size: 0.9375vw;
+      font-size: 18px;
       font-weight: 600;
+      
+      // 响应式设计
+      @media (max-width: 1200px) {
+        padding-left: 14px;
+        font-size: 16px;
+      }
+      
+      @media (max-width: 768px) {
+        padding-left: 12px;
+        font-size: 14px;
+      }
+      
+      @media (max-width: 480px) {
+        padding-left: 10px;
+        font-size: 12px;
+      }
+      
       &::before {
         position: absolute;
         left: 0;
         content: '';
-        width: 0.2283vw;
-        height: 0.8854vw;
+        width: 4px;
+        height: 17px;
         background-color: #4073e1;
-        border-radius: 0px 0.5208vw 0.5208vw 0px;
+        border-radius: 0px 10px 10px 0px;
+        
+        // 响应式设计
+        @media (max-width: 1200px) {
+          width: 3px;
+          height: 15px;
+          border-radius: 0px 8px 8px 0px;
+        }
+        
+        @media (max-width: 768px) {
+          width: 2px;
+          height: 13px;
+          border-radius: 0px 6px 6px 0px;
+        }
+        
+        @media (max-width: 480px) {
+          width: 2px;
+          height: 11px;
+          border-radius: 0px 4px 4px 0px;
+        }
       }
     }
     .chartPie_item {
       width: 32.5%;
-      padding-top: 1.0417vw;
+      padding-top: 20px;
       background-color: #ffffff;
-      border-radius: 0.5208vw;
+      border-radius: 10px;
+      
+      // 响应式设计
+      @media (max-width: 1200px) {
+        padding-top: 18px;
+        border-radius: 8px;
+      }
+      
+      @media (max-width: 768px) {
+        width: 48%;
+        padding-top: 16px;
+        border-radius: 6px;
+        margin-bottom: 16px;
+      }
+      
+      @media (max-width: 480px) {
+        width: 100%;
+        padding-top: 14px;
+        border-radius: 4px;
+        margin-bottom: 12px;
+      }
     }
     .tradeStatisticsBox {
       width: 100%;
-      padding-top: 1.0417vw;
-      margin-top: 1.0417vw;
+      padding-top: 20px;
+      margin-top: 20px;
       background-color: #ffffff;
-      border-radius: 0.5208vw;
+      border-radius: 10px;
+      
+      // 响应式设计
+      @media (max-width: 1200px) {
+        padding-top: 18px;
+        margin-top: 18px;
+        border-radius: 8px;
+      }
+      
+      @media (max-width: 768px) {
+        padding-top: 16px;
+        margin-top: 16px;
+        border-radius: 6px;
+      }
+      
+      @media (max-width: 480px) {
+        padding-top: 14px;
+        margin-top: 14px;
+        border-radius: 4px;
+      }
+    }
+  }
+
+  // 全局响应式样式
+  @media (max-width: 1200px) {
+    :deep(.ant-card) {
+      .ant-card-body {
+        padding: 16px;
+      }
+    }
+  }
+
+  @media (max-width: 768px) {
+    :deep(.ant-card) {
+      .ant-card-body {
+        padding: 12px;
+      }
+    }
+  }
+
+  @media (max-width: 480px) {
+    :deep(.ant-card) {
+      .ant-card-body {
+        padding: 8px;
+      }
     }
   }
 </style>

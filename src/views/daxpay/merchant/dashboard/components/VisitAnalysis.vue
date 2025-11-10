@@ -81,3 +81,37 @@
     })
   })
 </script>
+
+<style lang="scss" scoped>
+  .chart_box {
+    height: 400px;
+  }
+  
+  // 响应式设计
+  @media (max-width: 1200px) {
+    .chart_box {
+      height: 350px;
+    }
+    :deep(.ant-card-body) {
+      padding: 20px;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .chart_box {
+      height: 300px;
+    }
+    :deep(.ant-card-body) {
+      padding: 16px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .chart_box {
+      height: 250px;
+    }
+    :deep(.ant-card-body) {
+      padding: 12px;
+    }
+  }
+</style>

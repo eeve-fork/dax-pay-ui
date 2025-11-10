@@ -11,6 +11,15 @@ export enum ChannelEnum {
   VBILL_PAY = 'vbill_pay',
   ADA_PAY = 'ada_pay',
   HKRT_PAY = 'hkrt_pay',
+  DOUGONG_PAY = 'dougong_pay',
+  LAKALA_PAY = 'lakala_pay',
+  FUYOU_PAY = 'fuyou_pay',
+  SHENG_PAY = 'sheng_pay',
+  YSEP_PAY = 'ysep_pay',
+  QUICK_PAY = 'quick_pay',
+  SAND_PAY = 'sand_pay',
+  YEE_PAY = 'yee_pay',
+  UMS_PAY = 'ums_pay',
 }
 
 /**
@@ -78,11 +87,12 @@ export enum ChannelAuthStatusEnum {
 }
 
 /**
- * 收银台类型
+ * 收银场景
  */
-export enum CashierTypeEnum {
+export enum CashierSceneEnum {
   WECHAT_PAY = 'wechat_pay',
   ALIPAY = 'alipay',
+  UNION_PAY = 'union_pay',
 }
 
 /**
@@ -156,18 +166,6 @@ export enum VbillAllocApplyEnum {
 }
 
 /**
- * 随行付分账能力开通类型枚举
- */
-export enum VbillAllocSignTypeEnum {
-  /** 接口签约 */
-  INTERFACE_SIGN = '00',
-  /** 短信签约 */
-  SMS_SIGN = '01',
-  /** 线下签约 */
-  OFFLINE_SIGN = '02',
-}
-
-/**
  * 分账关系类型
  */
 export enum AllocRelationTypeEnum {
@@ -212,13 +210,15 @@ export enum AllocReceiverTypeEnum {
 /**
  * 进件申请状态
  */
-export enum IsvApplyStatusEnum {
+export enum OnbApplyStatusEnum {
   /** 草稿 */
   DRAFT = 'draft',
-  /** 预审 = 暂时不用) */
+  /** 预审 */
   PRE_TRIAL = 'pre_trial',
-  /** 预审拒绝 = 暂时不用) */
+  /** 预审拒绝 */
   PRE_TRIAL_REJECT = 'pre_trial_reject',
+  /** 数据补填 */
+  COMPLETION = 'completion',
   /** 申请中 */
   APPLY = 'apply',
   /** 驳回 */
@@ -233,4 +233,6 @@ export enum IsvApplyStatusEnum {
   GENERATED = 'generated',
   /** 关闭 */
   CLOSED = 'closed',
+  /** 错误 */
+  ERROR = 'error',
 }

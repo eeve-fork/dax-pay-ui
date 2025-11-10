@@ -9,7 +9,7 @@
       />
     </div>
     <div class="m-3 p-3 bg-white">
-      <vxe-toolbar ref="xToolbar" custom :refresh="{ queryMethod: queryPage }">
+      <vxe-toolbar ref="xToolbar" custom refresh :refresh-options="{ queryMethod: queryPage }">
         <template #buttons>
           <a-space>
             <a-button type="primary" pre-icon="ant-design:plus-outlined" @click="add"
@@ -18,7 +18,7 @@
           </a-space>
         </template>
       </vxe-toolbar>
-      <vxe-table ref="xTable" key-field="id" :data="pagination.records" :loading="loading">
+      <vxe-table ref="xTable" :row-config="{ keyField: 'id' }" :data="pagination.records" :loading="loading">
         <vxe-column type="seq" width="60" />
         <vxe-column field="code" title="编码" />
         <vxe-column field="name" title="名称" />
@@ -105,7 +105,7 @@
   })
 
   function vxeBind() {
-    xTable.value?.connect(xToolbar.value as VxeToolbarInstance)
+    xTable.value?.connectToolbar(xToolbar.value as VxeToolbarInstance)
   }
 
   /**

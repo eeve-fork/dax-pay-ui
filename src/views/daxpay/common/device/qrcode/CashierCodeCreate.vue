@@ -53,19 +53,85 @@
           />
         </a-form-item>
         <a-form-item label="状态" name="enable">
-          <a-radio-group button-style="solid" v-model:value="form.enable">
-            <a-radio-button :value="true">启用</a-radio-button>
-            <a-radio-button :value="false">禁用</a-radio-button>
+          <a-radio-group v-model:value="form.enable">
+            <a-radio :value="true">启用</a-radio>
+            <a-radio :value="false">禁用</a-radio>
           </a-radio-group>
         </a-form-item>
-        <a-form-item label="码牌配置" name="configId">
-          <a-select
-            v-model:value="form.configId"
-            :options="configList"
-            placeholder="请选择码牌配置"
-            style="width: 100%"
-          />
+        <a-form-item label="读取系统配置" name="readSystem">
+          <a-radio-group v-model:value="form.readSystem">
+            <a-radio :value="true">读取</a-radio>
+            <a-radio :value="false">自定义</a-radio>
+          </a-radio-group>
         </a-form-item>
+        <a-form-item label="是否开启分账" name="allocation">
+          <a-radio-group v-model:value="form.allocation">
+            <a-radio :value="true">开启</a-radio>
+            <a-radio :value="false">关闭</a-radio>
+          </a-radio-group>
+        </a-form-item>
+        <a-form-item label="自动分账" name="autoAllocation" v-if="form.allocation">
+          <a-radio-group v-model:value="form.autoAllocation">
+            <a-radio :value="true">开启</a-radio>
+            <a-radio :value="false">关闭</a-radio>
+          </a-radio-group>
+        </a-form-item>
+        <template v-if="!form.readSystem">
+          <a-form-item label="微信支付对应通道" name="wxChannel">
+            <a-select
+              v-model:value="form.wxChannel"
+              :disabled="showable"
+              :options="channelList"
+              allow-clear
+              placeholder="请选择微信支付对应通道"
+            />
+          </a-form-item>
+          <a-form-item label="微信支付对应支付方式" name="wxMethod" v-if="form.wxChannel">
+            <a-select
+              v-model:value="form.wxMethod"
+              :disabled="showable"
+              :options="wxMethodList"
+              allow-clear
+              placeholder="请选择微信支付对应支付方式"
+            />
+          </a-form-item>
+          <a-form-item label="支付宝支付对应通道" name="alipayChannel">
+            <a-select
+              v-model:value="form.alipayChannel"
+              :disabled="showable"
+              :options="channelList"
+              allow-clear
+              placeholder="请选择支付宝支付对应通道"
+            />
+          </a-form-item>
+          <a-form-item label="支付宝支付对应支付方式" name="alipayMethod" v-if="form.alipayChannel">
+            <a-select
+              v-model:value="form.alipayMethod"
+              :disabled="showable"
+              :options="alipayMethodList"
+              allow-clear
+              placeholder="请选择支付宝支付对应支付方式"
+            />
+          </a-form-item>
+          <a-form-item label="银联支付对应通道" name="unionChannel">
+            <a-select
+              v-model:value="form.unionChannel"
+              :disabled="showable"
+              :options="channelList"
+              allow-clear
+              placeholder="请选择银联支付对应通道"
+            />
+          </a-form-item>
+          <a-form-item label="银联支付对应支付方式" name="unionMethod" v-if="form.unionChannel">
+            <a-select
+              v-model:value="form.unionMethod"
+              :disabled="showable"
+              :options="unionMethodList"
+              allow-clear
+              placeholder="请选择银联支付对应支付方式"
+            />
+          </a-form-item>
+        </template>
       </a-form>
     </a-spin>
     <template #footer>
@@ -77,7 +143,7 @@
           :loading="confirmLoading"
           type="primary"
           @click="handleOk"
-          >保存</a-button
+          >生成</a-button
         >
       </a-space>
     </template>
@@ -87,24 +153,90 @@
 <script setup lang="ts">
   import { BasicModal } from '@/components/Modal'
   import useFormEdit from '@/hooks/bootx/useFormEdit'
-  import { computed, nextTick, ref } from 'vue'
+  import { computed, nextTick, ref, watch } from 'vue'
   import { FormInstance, Rule } from 'ant-design-vue/lib/form'
   import { CashierCodeBatch, createBatch, existsByBatchNo } from './CashierCode.api'
-  import { dropdown } from '@/views/daxpay/admin/device/qrcode/config/CashierCodeConfig.api'
-  import { LabeledValue } from 'ant-design-vue/lib/select'
   import { useMessage } from '@/hooks/web/useMessage'
   import dayjs from 'dayjs'
+  import { useDict } from '@/hooks/bootx/useDict'
+  import { LabeledValue } from 'ant-design-vue/lib/select'
+  import { findGatewayMethodByScene } from '@/views/daxpay/common/assist/basic/ChannelBasic.api'
+  import { CashierSceneEnum } from '@/enums/daxpay/daxpayEnum'
 
   const { handleCancel, confirmLoading, visible, showable, labelCol, wrapperCol } = useFormEdit()
   const { createMessage } = useMessage()
-  const formRef = ref<FormInstance>()
-  const configList = ref<LabeledValue[]>([])
+  const { dictDropDown } = useDict()
 
+  const formRef = ref<FormInstance>()
   let form = ref<CashierCodeBatch>({
     enable: true,
+    readSystem: true,
+    allocation: false,
     count: 1,
     amountType: 'random',
   })
+
+  // 字典数据
+  const channelList = ref<LabeledValue[]>([])
+  const wxMethodList = ref<LabeledValue[]>([])
+  const alipayMethodList = ref<LabeledValue[]>([])
+  const unionMethodList = ref<LabeledValue[]>([])
+
+  // 监听通道变化，更新对应的支付方式列表
+  watch(
+    () => form.value.wxChannel,
+    (newVal) => {
+      if (newVal) {
+        findGatewayMethodByScene(form.value.wxChannel, CashierSceneEnum.WECHAT_PAY).then(
+          ({ data }) => {
+            wxMethodList.value = data
+            form.value.wxMethod = wxMethodList.value[0].value as string
+          },
+        )
+      } else {
+        wxMethodList.value = []
+        form.value.wxMethod = ''
+        form.value.wxChannel = ''
+      }
+    },
+  )
+
+  watch(
+    () => form.value.alipayChannel,
+    (newVal) => {
+      if (newVal) {
+        findGatewayMethodByScene(form.value.alipayChannel, CashierSceneEnum.ALIPAY).then(
+          ({ data }) => {
+            alipayMethodList.value = data
+            form.value.alipayMethod = alipayMethodList.value[0].value as string
+          },
+        )
+      } else {
+        alipayMethodList.value = []
+        form.value.alipayMethod = ''
+        form.value.alipayChannel = ''
+      }
+    },
+  )
+
+  watch(
+    () => form.value.unionChannel,
+    (newVal) => {
+      if (newVal) {
+        findGatewayMethodByScene(form.value.unionChannel, CashierSceneEnum.UNION_PAY).then(
+          ({ data }) => {
+            unionMethodList.value = data
+            form.value.unionMethod = unionMethodList.value[0].value as string
+          },
+        )
+      } else {
+        unionMethodList.value = []
+        form.value.unionMethod = ''
+        form.value.unionChannel = ''
+      }
+    },
+  )
+
   // 校验
   const rules = computed(() => {
     return {
@@ -114,8 +246,11 @@
       ],
       count: [{ required: true, message: '请输入要创建码牌的数量' }],
       enable: [{ required: true, message: '请选择码牌是否启用' }],
+      readSystem: [{ required: true, message: '请选择码牌是否读取系统配置' }],
       amountType: [{ required: true, message: '请选择金额类型' }],
       amount: [{ required: true, message: '请输入收款金额' }],
+      allocation: [{ required: true, message: '请选择是否开启分账' }],
+      autoAllocation: [{ required: true, message: '请选择是否开启自动分账' }],
     } as Record<string, Rule[]>
   })
 
@@ -126,12 +261,17 @@
    * 入口
    */
   function init() {
+    initData()
     resetForm()
     visible.value = true
     confirmLoading.value = false
-    dropdown().then(({ data }) => {
-      configList.value = data
-    })
+  }
+
+  /**
+   * 初始化数据
+   */
+  async function initData() {
+    channelList.value = await dictDropDown('channel')
   }
 
   /**

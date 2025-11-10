@@ -99,7 +99,7 @@
 <script lang="ts" setup>
   import { computed, nextTick, ref } from 'vue'
   import useFormEdit from '@/hooks/bootx/useFormEdit'
-  import { getSubConfig, saveOrUpdateSub, WechatPaySubConfig } from './WechatPayConfig.api'
+  import {getSubConfig, updateSub, WechatPaySubConfig} from './WechatPayConfig.api'
   import { FormInstance, Rule } from 'ant-design-vue/lib/form'
   import { BasicDrawer } from '@/components/Drawer'
   import { useMessage } from '@/hooks/web/useMessage'
@@ -143,13 +143,11 @@
    * 获取信息
    */
   function getInfo() {
-    if (channelConfig.value.id) {
-      confirmLoading.value = true
-      getSubConfig(channelConfig.value.id).then(({ data }) => {
-        form.value = data
-        confirmLoading.value = false
-      })
-    }
+    confirmLoading.value = true
+    getSubConfig(channelConfig.value.appId).then(({ data }) => {
+      form.value = data
+      confirmLoading.value = false
+    })
   }
   /**
    * 保存
@@ -157,7 +155,7 @@
   function handleOk() {
     formRef.value?.validate().then(() => {
       confirmLoading.value = true
-      saveOrUpdateSub({
+      updateSub({
         ...form.value,
         mchNo: channelConfig.value.mchNo,
         appId: channelConfig.value.appId,

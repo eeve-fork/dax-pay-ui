@@ -1,9 +1,5 @@
 <template>
   <channel-terminal-comm-edit ref="comm" @ok="ok" />
-  <adapay-terminal-edit ref="adapay" @ok="ok" />
-  <leshua-terminal-edit ref="leshua" @ok="ok" />
-  <hkrt-terminal-edit ref="hkrt" @ok="ok" />
-  <vbill-terminal-edit ref="vbill" @ok="ok" />
 </template>
 
 <script setup lang="ts">
@@ -12,10 +8,6 @@
   import { ref } from 'vue'
   import { ChannelEnum } from '@/enums/daxpay/daxpayEnum'
   import { FormEditType } from '@/enums/formTypeEnum'
-  import AdapayTerminalEdit from '@/views/daxpay/common/channel/adapay/terminal/AdapayTerminalEdit.vue'
-  import HkrtTerminalEdit from '@/views/daxpay/common/channel/hkrt/terminal/HkrtTerminalEdit.vue'
-  import VbillTerminalEdit from '@/views/daxpay/common/channel/vbill/terminal/VbillTerminalEdit.vue'
-  import LeshuaTerminalEdit from '@/views/daxpay/common/channel/leshua/terminal/LeshuaTerminalEdit.vue'
 
   // 事件
   const emits = defineEmits(['ok'])

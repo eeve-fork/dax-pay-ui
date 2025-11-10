@@ -18,6 +18,17 @@
         :label-col="labelCol"
         :wrapper-col="wrapperCol"
       >
+        <template v-if="isAdmin()">
+          <a-form-item label="代理商" name="agentNo">
+            <a-select
+              style="width: 100%"
+              v-model:value="form.agentNo"
+              :options="agentOptions"
+              allow-clear
+              placeholder="请选择所属代理商"
+            />
+          </a-form-item>
+        </template>
         <a-form-item label="商户名称" name="mchName">
           <a-input v-model:value="form.mchName" placeholder="请输入商户名称" />
         </a-form-item>
@@ -39,9 +50,6 @@
         </a-form-item>
         <a-form-item label="管理员账号" name="account" validate-first>
           <a-input v-model:value="form.account" placeholder="请输入管理员账号" />
-        </a-form-item>
-        <a-form-item label="管理员名称" name="name">
-          <a-input v-model:value="form.name" placeholder="请输入管理员名称" />
         </a-form-item>
         <a-form-item label="登录密码" name="password" validate-first>
           <strength-meter
@@ -75,6 +83,9 @@
   import { existsAccount } from '@/api/sys/userAssist'
   import { useMessage } from '@/hooks/web/useMessage'
   import { add, MerchantCreate } from './Merchant.api'
+  import { LabeledValue } from 'ant-design-vue/lib/select'
+  import { dropdown as agentDropdown } from '@/views/daxpay/common/assist/basic/AgentQuery.api'
+  import { isAdmin } from '@/utils/env'
 
   const { handleCancel, labelCol, wrapperCol, modalWidth, confirmLoading, visible } = useFormEdit()
   const { createMessage } = useMessage()
@@ -84,12 +95,14 @@
     status: 'enable',
     createDefaultApp: true,
   })
+  const agentOptions = ref<LabeledValue[]>([])
+
   // 校验
   const rules = reactive({
     createDefaultApp: [{ required: true, message: '请是否创建默认商户应用' }],
+    agentNo: [{ required: true, message: '请选择所属代理商' }],
     mchName: [{ required: true, message: '请输入商户名称' }],
     status: [{ required: true, message: '请选择商户状态' }],
-    name: [{ required: true, message: '请输入用户名称' }],
     account: [
       { required: true, message: '请输入用户账号' },
       { validator: checkAccount, trigger: 'blur' },
@@ -110,11 +123,22 @@
    * 入口
    */
   function init() {
+    initData()
     visible.value = true
     confirmLoading.value = false
     nextTick(() => {
       formRef.value?.resetFields()
     })
+  }
+
+  /**
+   * 初始化数据
+   */
+  function initData() {
+    // 初始化所属代理商列表
+    if (isAdmin()) {
+      agentDropdown().then(({ data }) => (agentOptions.value = data))
+    }
   }
 
   /**
@@ -136,7 +160,7 @@
    */
   async function checkAccount() {
     const { data } = await existsAccount(form.value.account)
-    return data ? Promise.reject('用户名已存在!') : Promise.resolve()
+    return data ? Promise.reject('账号已存在!') : Promise.resolve()
   }
   /**
    * 密码检查

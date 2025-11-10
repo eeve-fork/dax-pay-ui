@@ -1,5 +1,4 @@
 <template>
-  <LoginFormTitle v-show="getShow" class="enter-x" />
   <a-spin :spinning="loading">
     <a-form
       class="p-4 enter-x"
@@ -53,32 +52,20 @@
           </a-form-item>
         </a-col>
         <a-col :span="12">
-<!--          <a-form-item :style="{ 'text-align': 'right' }">-->
-<!--            &lt;!&ndash; 没有逻辑，你需要自己处理 &ndash;&gt;-->
-<!--            <a-button-->
-<!--              type="link"-->
-<!--              size="small"-->
-<!--              @click="setLoginState(LoginStateEnum.RESET_PASSWORD)"-->
-<!--            >-->
-<!--              忘记密码?-->
-<!--            </a-button>-->
-<!--          </a-form-item>-->
+          <a-form-item :style="{ 'text-align': 'right' }">
+            <!-- 没有逻辑，你需要自己处理 -->
+          </a-form-item>
         </a-col>
       </a-row>
 
       <a-form-item class="enter-x" style="margin-bottom: 8px">
         <a-button type="primary" size="large" block @click="handleLogin"> 登录 </a-button>
       </a-form-item>
-      <a-row v-if="false" class="enter-x">
-        <a-button block @click="setLoginState(LoginStateEnum.REGISTER)"> 注册 </a-button>
-      </a-row>
     </a-form>
   </a-spin>
 </template>
 <script lang="ts" setup>
   import { reactive, unref, computed, onMounted, ref } from 'vue'
-
-  import LoginFormTitle from './LoginFormTitle.vue'
 
   import { useMessage } from '@/hooks/web/useMessage'
   import { useUserStore } from '@/store/modules/user'
@@ -88,12 +75,13 @@
   import { Rule } from 'ant-design-vue/lib/form'
   import { getAppEnvConfig } from '@/utils/env'
   import { imgCaptcha } from '@/api/common/Captcha'
+  import { LoginType } from '@/api/common/LoginAssist'
 
   const { notification } = useMessage()
   // 用户信息存储
   const userStore = useUserStore()
 
-  const { setLoginState, getLoginState } = useLoginState()
+  const { getLoginState } = useLoginState()
 
   const formRef = ref<FormInstance>()
   let loading = ref(false)
@@ -168,3 +156,5 @@
     }
   }
 </script>
+
+<style lang="less" scoped></style>

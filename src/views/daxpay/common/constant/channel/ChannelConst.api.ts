@@ -14,7 +14,16 @@ export const page = (params) => {
 }
 
 /**
- * 服务商通道配置列表
+ * 所有启用的通道列表
+ */
+export const dropdownByEnable = () => {
+  return defHttp.get<Result<LabeledValue[]>>({
+    url: '/const/channel/dropdownByEnable',
+  })
+}
+
+/**
+ * 服务商通道列表
  */
 export const dropdownByIsv = () => {
   return defHttp.get<Result<LabeledValue[]>>({
@@ -22,6 +31,14 @@ export const dropdownByIsv = () => {
   })
 }
 
+/**
+ * 进件通道列表
+ */
+export const dropdownByApply = () => {
+  return defHttp.get<Result<LabeledValue[]>>({
+    url: '/const/channel/dropdownByApply',
+  })
+}
 
 export interface ChannelConst extends BaseEntity {
   /** 编码 */
@@ -38,5 +55,4 @@ export interface ChannelConst extends BaseEntity {
   allocatable?: boolean
   /** 是否支持支付终端报送 */
   terminal?: boolean
-
 }

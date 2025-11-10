@@ -9,10 +9,10 @@
       />
     </div>
     <div class="m-3 p-3 bg-white">
-      <vxe-toolbar ref="xToolbar" custom :refresh="{ queryMethod: queryPage }">
+      <vxe-toolbar ref="xToolbar" custom refresh :refresh-options="{ queryMethod: queryPage }">
         <template #buttons>
           <a-space>
-            <a-dropdown v-if="batchOperateFlag">
+            <a-dropdown v-if="batchOperateFlag && isAdmin()">
               <a-button post-icon="ant-design:down-outlined"> 批量操作 </a-button>
               <template #overlay>
                 <a-menu>
@@ -22,7 +22,7 @@
                   <a-menu-item>
                     <a @click="lockUserConfirmBatch(false)">解锁账号</a>
                   </a-menu-item>
-                  <a-menu-item>
+                  <a-menu-item v-if="isAdmin()">
                     <a @click="resetPwdBatch()">重置密码</a>
                   </a-menu-item>
                 </a-menu>
@@ -44,38 +44,42 @@
           <vxe-column type="checkbox" width="50" />
           <vxe-column field="account" title="登录账号" :min-width="170" />
           <vxe-column field="name" title="用户名称" :min-width="150" />
+          <vxe-column field="phone" title="手机号" :min-width="150" />
           <vxe-column field="status" title="用户状态" align="center" :min-width="100">
             <template #default="{ row }">
               {{ dictConvert('user_status', row.status) || '无' }}
             </template>
           </vxe-column>
-          <vxe-column field="mchName" title="商户" :min-width="150" />
-          <vxe-column field="phone" title="手机号" :min-width="150" />
-          <vxe-column field="email" title="邮箱" :min-width="150" />
-          <vxe-column fixed="right" width="170" :showOverflow="false" title="操作">
+          <vxe-column field="mchName" title="商户名称" :min-width="150" />
+          <vxe-column field="agentName" title="代理商名称" :min-width="150" />
+          <vxe-column field="isvName" title="服务商名称" :min-width="150" />
+          <vxe-column fixed="right" width="170" align="center" :showOverflow="false" title="操作">
             <template #default="{ row }">
-              <a href="javascript:" @click="show(row)">查看</a>
-              <a-divider type="vertical" />
-              <a href="javascript:" @click="edit(row)">编辑</a>
-              <a-divider type="vertical" />
-              <a-dropdown>
-                <a> 更多 <icon icon="ant-design:down-outlined" :size="12" /> </a>
-                <template #overlay>
-                  <a-menu>
-                    <a-menu-item>
-                      <a-link @click="resetPwd(row)">重置密码</a-link>
-                    </a-menu-item>
-                    <a-menu-item v-if="[UserStatusEnum.NORMAL].includes(row.status)">
-                      <a-link danger @click="lockUserConfirm(row.id, true)">封禁账号</a-link>
-                    </a-menu-item>
-                    <a-menu-item
-                      v-if="[UserStatusEnum.LOCK, UserStatusEnum.BAN].includes(row.status)"
-                    >
-                      <a-link @click="lockUserConfirm(row.id, false)">解锁账号</a-link>
-                    </a-menu-item>
-                  </a-menu>
+              <a-space :size="2">
+                <template #split>
+                  <a-divider type="vertical" />
                 </template>
-              </a-dropdown>
+                <a href="javascript:" @click="show(row)">查看</a>
+                <a href="javascript:" @click="edit(row)" v-if="isAdmin()">编辑</a>
+                <a-dropdown>
+                  <a> 更多 <icon icon="ant-design:down-outlined" :size="12" /> </a>
+                  <template #overlay>
+                    <a-menu>
+                      <a-menu-item v-if="isAdmin()" >
+                        <a-link @click="resetPwd(row)">重置密码</a-link>
+                      </a-menu-item>
+                      <a-menu-item v-if="[UserStatusEnum.NORMAL].includes(row.status)">
+                        <a-link danger @click="lockUserConfirm(row.id, true)">封禁账号</a-link>
+                      </a-menu-item>
+                      <a-menu-item
+                        v-if="[UserStatusEnum.LOCK, UserStatusEnum.BAN].includes(row.status)"
+                      >
+                        <a-link @click="lockUserConfirm(row.id, false)">解锁账号</a-link>
+                      </a-menu-item>
+                    </a-menu>
+                  </template>
+                </a-dropdown>
+              </a-space>
             </template>
           </vxe-column>
         </vxe-table>
@@ -110,6 +114,7 @@
   import ALink from '@/components/Link/Link.vue'
   import { page, banUser, banUserBatch, unlockUser, unlockUserBatch } from './MerchantUser.api'
   import { UserStatusEnum } from '@/enums/bootx/bootxEnum'
+  import {isAdmin} from "@/utils/env";
 
   const { createConfirm } = useMessage()
   // 使用hooks
@@ -141,7 +146,7 @@
     queryPage()
   })
   function vxeBind() {
-    xTable.value?.connect(xToolbar.value as VxeToolbarInstance)
+    xTable.value?.connectToolbar(xToolbar.value as VxeToolbarInstance)
   }
 
   // 分页查询

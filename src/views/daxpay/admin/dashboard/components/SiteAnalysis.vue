@@ -42,3 +42,72 @@
     activeKey.value = key
   }
 </script>
+
+<style lang="scss" scoped>
+  // 响应式设计
+  @media (max-width: 1200px) {
+    :deep(.ant-card) {
+      .ant-card-head {
+        padding: 0 16px;
+        min-height: 48px;
+        
+        .ant-card-head-title {
+          font-size: 16px;
+        }
+        
+        .ant-tabs-tab {
+          font-size: 14px;
+          padding: 8px 16px;
+        }
+      }
+      
+      .ant-card-body {
+        padding: 16px;
+      }
+    }
+  }
+
+  @media (max-width: 768px) {
+    :deep(.ant-card) {
+      .ant-card-head {
+        padding: 0 12px;
+        min-height: 44px;
+        
+        .ant-card-head-title {
+          font-size: 14px;
+        }
+        
+        .ant-tabs-tab {
+          font-size: 12px;
+          padding: 6px 12px;
+        }
+      }
+      
+      .ant-card-body {
+        padding: 12px;
+      }
+    }
+  }
+
+  @media (max-width: 480px) {
+    :deep(.ant-card) {
+      .ant-card-head {
+        padding: 0 8px;
+        min-height: 40px;
+        
+        .ant-card-head-title {
+          font-size: 12px;
+        }
+        
+        .ant-tabs-tab {
+          font-size: 11px;
+          padding: 4px 8px;
+        }
+      }
+      
+      .ant-card-body {
+        padding: 8px;
+      }
+    }
+  }
+</style>

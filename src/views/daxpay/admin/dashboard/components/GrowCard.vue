@@ -117,8 +117,8 @@
           <div class="adverseBox">
             <div class="common_title">通知公告</div>
             <div class="adverse_content">
-              <div class="adverse_item" v-for="item in 18" :key="item">
-                <div class="left">公告{{ item }}</div>
+              <div class="adverse_item" v-for="item in 15" :key="item">
+                <div class="left">公告功能现在尚未开发完成，请耐心等待！</div>
                 <div class="date">2025-06-01</div>
               </div>
             </div>
@@ -134,9 +134,22 @@
                 </div>
               </div>
               <div class="bus_item">
-                <div class="title">商户应用</div>
+                <div class="title">代理商</div>
                 <div class="number">
                   <CountTo :startVal="0" :endVal="mchData.normalAppCount || 0" />
+                </div>
+              </div>
+              <div class="bus_item">
+                <div class="title">商户应用</div>
+                <div class="number">
+                  <CountTo :startVal="0" :endVal="mchData.partnerCount || 0" />
+                </div>
+              </div>
+
+              <div class="bus_item">
+                <div class="title">*</div>
+                <div class="number">
+                  <CountTo :startVal="0" :endVal="mchData.partnerAppCount || 0" />
                 </div>
               </div>
             </div>
@@ -211,71 +224,70 @@
     //公共标题
     .common_title {
       box-sizing: border-box;
-      font-size: 0.9375vw;
+      font-size: 18px;
       width: 100%;
-      padding-left: 0.8333vw;
+      padding-left: 16px;
       position: relative;
       display: flex;
       align-items: center;
       color: #2e3853;
-      font-size: 0.9375vw;
+      font-size: 18px;
       font-weight: 600;
       &::before {
         position: absolute;
         left: 0;
         content: '';
-        width: 0.2283vw;
-        height: 0.8854vw;
+        width: 4px;
+        height: 17px;
         background-color: #4073e1;
-        border-radius: 0px 0.5208vw 0.5208vw 0px;
+        border-radius: 0px 10px 10px 0px;
       }
     }
     .left_box {
-      height: 25.0521vw;
+      height: 480px;
       display: flex;
       flex-direction: column;
-      gap: 1.0417vw;
+      gap: 20px;
       .left_item {
         box-sizing: border-box;
         height: 50%;
-        padding: 1.0417vw 0vw;
-        border-radius: 0.5208vw;
+        padding: 20px 0px;
+        border-radius: 10px;
         background: #ffffff;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
-        gap: 1.0417vw;
+        gap: 20px;
         .content_box {
           box-sizing: border-box;
-          padding: 0vw 0.8333vw;
+          padding: 0px 16px;
           display: flex;
-          gap: 0.8333vw;
+          gap: 16px;
           .content_item {
             box-sizing: border-box;
             background-color: #f9fbff;
-            border-radius: 0.5208vw;
+            border-radius: 10px;
             flex: 1;
             display: flex;
             align-items: flex-end;
             justify-content: space-between;
-            padding: 0.625vw 0.7292vw;
+            padding: 12px 14px;
             .left {
               display: flex;
               flex-direction: column;
-              gap: 0.7292vw;
+              gap: 14px;
               .title {
-                font-size: 1.0938vw;
-                color: #000000;
+                font-size: 21px;
               }
               .number {
-                font-size: 1.8229vw;
+                font-size: 35px;
                 color: #303133;
               }
             }
             .right {
               img {
-                width: 2.7604vw;
-                height: 2.7604vw;
+                width: 53px;
+                height: 53px;
               }
             }
           }
@@ -283,31 +295,31 @@
       }
     }
     .right_box {
-      height: 25.0521vw;
+      height: 480px;
       display: flex;
       flex-direction: column;
-      gap: 1.0417vw;
+      gap: 20px;
       .adverseBox {
         height: 50%;
-        padding: 1.4063vw 0vw 0.5208vw;
+        padding: 27px 0px 10px;
         background-color: #ffffff;
         box-sizing: border-box;
-        border-radius: 0.5208vw;
+        border-radius: 10px;
         display: flex;
         flex-direction: column;
-        gap: 0.6771vw;
+        gap: 13px;
         .adverse_content {
-          padding: 0vw 1.0417vw;
-          height: 8.2292vw;
+          padding: 0px 20px;
+          height: 158px;
           box-sizing: border-box;
           overflow: scroll;
           .adverse_item {
             display: flex;
-            margin-bottom: 0.3125vw;
+            margin-bottom: 6px;
             box-sizing: border-box;
             justify-content: space-between;
-            font-size: 0.7292vw;
-            gap: 1.0417vw;
+            font-size: 14px;
+            gap: 20px;
             .left {
               color: #606266;
               flex: 1;
@@ -320,7 +332,7 @@
               }
             }
             .date {
-              width: 3.9042vw;
+              width: 75px;
               color: #909399;
             }
           }
@@ -329,40 +341,227 @@
       .busInform {
         height: 50%;
         box-sizing: border-box;
-        padding: 1.4063vw 0vw 1.3542vw;
+        padding: 27px 0px 26px;
         background-color: #ffffff;
-        border-radius: 0.5208vw;
+        border-radius: 10px;
         display: flex;
         flex-direction: column;
-        gap: 0.6771vw;
+        gap: 13px;
         .bus_content {
           width: 100%;
           box-sizing: border-box;
-          padding: 0vw 1.0938vw;
+          padding: 0px 21px;
           display: flex;
           justify-content: space-between;
-          gap: 1.0938vw;
+          gap: 21px;
           flex-wrap: wrap;
           .bus_item {
             box-sizing: border-box;
             width: 46%;
-            padding: 0.5729vw 0.6771vw;
+            padding: 11px 13px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             background-color: #f9fbff;
-            border-radius: 0.5208vw;
+            border-radius: 10px;
             .title {
-              font-size: 0.9375vw;
+              font-size: 18px;
               color: #000000;
             }
             .number {
-              font-size: 1.5625vw;
+              font-size: 30px;
               color: #303133;
             }
           }
         }
       }
+    }
+  }
+
+  // 响应式设计
+  @media (max-width: 1200px) {
+    .orderInfo {
+      .common_title {
+        font-size: 16px;
+        padding-left: 14px;
+        &::before {
+          width: 3px;
+          height: 15px;
+          border-radius: 0px 8px 8px 0px;
+        }
+      }
+      .left_box {
+        height: 420px;
+        gap: 18px;
+        .left_item {
+          padding: 18px 0px;
+          border-radius: 8px;
+          gap: 18px;
+          .content_box {
+            padding: 0px 14px;
+            gap: 14px;
+            .content_item {
+              border-radius: 8px;
+              padding: 10px 12px;
+              .left {
+                gap: 12px;
+                .title {
+                  font-size: 18px;
+                }
+                .number {
+                  font-size: 30px;
+                }
+              }
+              .right {
+                img {
+                  width: 45px;
+                  height: 45px;
+                }
+              }
+            }
+          }
+        }
+      }
+      .right_box {
+        height: 420px;
+        gap: 18px;
+        .adverseBox {
+          padding: 24px 0px 8px;
+          border-radius: 8px;
+          gap: 11px;
+          .adverse_content {
+            padding: 0px 18px;
+            height: 140px;
+            .adverse_item {
+              margin-bottom: 5px;
+              font-size: 12px;
+              gap: 18px;
+              .date {
+                width: 65px;
+              }
+            }
+          }
+        }
+        .busInform {
+          padding: 24px 0px 22px;
+          border-radius: 8px;
+          gap: 11px;
+          .bus_content {
+            padding: 0px 18px;
+            gap: 18px;
+            .bus_item {
+              padding: 9px 11px;
+              border-radius: 8px;
+              .title {
+                font-size: 16px;
+              }
+              .number {
+                font-size: 26px;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  @media (max-width: 768px) {
+    .orderInfo {
+      .common_title {
+        font-size: 14px;
+        padding-left: 12px;
+        &::before {
+          width: 2px;
+          height: 12px;
+          border-radius: 0px 6px 6px 0px;
+        }
+      }
+      .left_box {
+        height: auto;
+        gap: 15px;
+        .left_item {
+          padding: 15px 0px;
+          border-radius: 6px;
+          gap: 15px;
+          .content_box {
+            padding: 0px 12px;
+            gap: 12px;
+            flex-direction: column;
+            .content_item {
+              border-radius: 6px;
+              padding: 8px 10px;
+              .left {
+                gap: 10px;
+                .title {
+                  font-size: 16px;
+                }
+                .number {
+                  font-size: 24px;
+                }
+              }
+              .right {
+                img {
+                  width: 35px;
+                  height: 35px;
+                }
+              }
+            }
+          }
+        }
+      }
+      .right_box {
+        height: auto;
+        gap: 15px;
+        .adverseBox {
+          padding: 20px 0px 6px;
+          border-radius: 6px;
+          gap: 9px;
+          .adverse_content {
+            padding: 0px 15px;
+            height: 120px;
+            .adverse_item {
+              margin-bottom: 4px;
+              font-size: 11px;
+              gap: 15px;
+              .date {
+                width: 55px;
+              }
+            }
+          }
+        }
+        .busInform {
+          padding: 20px 0px 18px;
+          border-radius: 6px;
+          gap: 9px;
+          .bus_content {
+            padding: 0px 15px;
+            gap: 15px;
+            .bus_item {
+              width: 100%;
+              padding: 8px 10px;
+              border-radius: 6px;
+              .title {
+                font-size: 14px;
+              }
+              .number {
+                font-size: 22px;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .text-20px {
+    font-size: 20px;
+
+    @media (max-width: 1200px) {
+      font-size: 18px;
+    }
+
+    @media (max-width: 768px) {
+      font-size: 16px;
     }
   }
 </style>

@@ -1,4 +1,3 @@
-import { closeWebSocket, initWebSocket } from '@/logics/websocket/UserGlobalWebSocker'
 import { useUserStoreWithOut } from '@/store/modules/user'
 // import { userPassWordCheck } from '@/views/security/remind/UserRemind'
 
@@ -12,8 +11,6 @@ export async function userLoginInitAction() {
 
   // 刷新登陆后用户信息
   userStore.refreshUserInfoAction().then()
-  // 初始化 websocket连接.
-  // initWebSocket().then()
   // 检查密码情况
   // const check = await userPassWordCheck()
   // if (!check) {
@@ -27,8 +24,6 @@ export async function userLoginInitAction() {
  */
 export function userLogoutAction() {
   const userStore = useUserStoreWithOut()
-  // 关闭websocket
-  closeWebSocket()
 
   // 重置 Token和用户信息 需要放最后
   userStore.resetState()

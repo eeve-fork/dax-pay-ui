@@ -10,6 +10,14 @@
         :wrapperCol="{ span: 18 }"
         :validate-trigger="['blur', 'change']"
       >
+        <a-form-item label="商户私钥" required>
+          <a-space>
+            <a-button size="small" @click="showPrivateKeyModal" type="primary">设置私钥</a-button>
+            <a-button size="small" v-if="privateKey" @click="privateKey = ''" danger
+              >清除私钥</a-button
+            >
+          </a-space>
+        </a-form-item>
         <a-form-item label="商户号" name="mchNo">
           <a-select
             :filter-option="search"
@@ -80,6 +88,20 @@
         <a-form-item label="终端设备编码" name="terminalNo">
           <a-input v-model:value="form.terminalNo" placeholder="请输入终端设备编码" />
         </a-form-item>
+        <a-form-item label="是否分账" name="allocation">
+          <a-switch
+            checked-children="是"
+            un-checked-children="否"
+            v-model:checked="form.allocation"
+          />
+        </a-form-item>
+        <a-form-item label="是否自动分账" name="autoAllocation">
+          <a-switch
+            checked-children="是"
+            un-checked-children="否"
+            v-model:checked="form.autoAllocation"
+          />
+        </a-form-item>
         <a-form-item label="限制用户支付类型" name="limitPay">
           <a-select
             allow-clear
@@ -140,12 +162,29 @@
             <a-button @click="getSign">生成</a-button>
           </a-input-group>
         </a-form-item>
+      </a-form>
+      <a-affix :offset-bottom="20">
         <a-space style="display: flex; justify-content: center">
           <a-button @click="handleReset">重置表单</a-button>
           <a-button type="primary" @click="handleSubmit">提交请求</a-button>
         </a-space>
-      </a-form>
+      </a-affix>
     </a-spin>
+
+    <!-- 设置私钥弹窗 -->
+    <a-modal
+      v-model:visible="privateKeyVisible"
+      title="设置商户私钥"
+      @ok="savePrivateKey"
+      :maskClosable="false"
+    >
+      <a-textarea
+        v-model:value="privateKeyInput"
+        placeholder="请输入商户私钥"
+        :rows="6"
+        allow-clear
+      />
+    </a-modal>
   </div>
 </template>
 <script setup lang="ts">
@@ -166,6 +205,11 @@
   const { search } = useFormEdit()
   const { dictDropDown } = useDict()
 
+  // 添加商户私钥相关状态
+  const privateKey = ref<string>('')
+  const privateKeyVisible = ref<boolean>(false)
+  const privateKeyInput = ref<string>('')
+
   const confirmLoading = ref(false)
   const formRef = ref<FormInstance>()
   const form = reactive<PayParam>({
@@ -178,7 +222,6 @@
   const rules = computed(() => {
     return {
       mchNo: [{ required: true, message: '商户号不可为空' }],
-      appId: [{ required: true, message: '应用号不可为空' }],
       channel: [{ required: true, message: '支付通道不可为空' }],
       bizOrderNo: [{ required: true, message: '订单号不可为空' }],
       title: [{ required: true, message: '支付标题不可为空' }],
@@ -217,7 +260,7 @@
     methodOptions.value = await dictDropDown('pay_method')
     // 时间默认30M后
     form.expiredTime = XEUtils.toDateString(
-      new Date(new Date().getTime() + 30 * 60 * 1000),
+      new Date(new Date().getTime() + 12 * 60 * 60 * 1000),
       'yyyy-MM-dd HH:mm:ss',
     )
     genNonceStr()
@@ -260,10 +303,26 @@
    */
   function getSign() {
     formRef.value?.validate().then(() => {
-      paySign(form).then(({ data }) => {
+      paySign(form, privateKey.value).then(({ data }) => {
         form.sign = data
       })
     })
+  }
+
+  /**
+   * 显示设置私钥弹窗
+   */
+  function showPrivateKeyModal() {
+    privateKeyInput.value = privateKey.value || ''
+    privateKeyVisible.value = true
+  }
+
+  /**
+   * 保存私钥
+   */
+  function savePrivateKey() {
+    privateKey.value = privateKeyInput.value
+    privateKeyVisible.value = false
   }
 
   /**
@@ -273,14 +332,13 @@
     formRef.value?.resetFields()
     initData()
   }
-
   /**
    * 提交
    */
   function handleSubmit() {
     formRef.value?.validate().then(() => {
       confirmLoading.value = true
-      tradePay(form)
+      tradePay(form, privateKey.value)
         .then(({ data }) => {
           Modal.info({
             title: '响应结果',

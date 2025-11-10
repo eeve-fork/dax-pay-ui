@@ -31,21 +31,19 @@
             v-model:checked="form.enable"
           />
         </a-form-item>
-        <a-form-item name="alipayUserId">
-          <template #label>
-            <basic-title
-              helpMessage="是商家与支付宝签约后，商家获得的支付宝商家唯一识别码，以 2088 开头的 16 位数字组成，在开放平台中账户中心获取"
-              >合作者身份ID
-            </basic-title>
-          </template>
+        <a-form-item
+          name="alipayUserId"
+          label="合作者身份ID"
+          tooltip="是商家与支付宝签约后，商家获得的支付宝商家唯一识别码，以 2088 开头的 16 位数字组成，在开放平台中账户中心获取"
+        >
           <a-input v-model:value="form.alipayUserId" placeholder="请输入合作者身份ID" />
         </a-form-item>
-        <a-form-item name="appAuthToken" v-if="isIsv">
-          <template #label>
-            <basic-title helpMessage="商家授权给服务商的应用授权凭证, 用于代调用接口"
-              >应用授权Token
-            </basic-title>
-          </template>
+        <a-form-item
+          name="appAuthToken"
+          v-if="isIsv"
+          label="应用授权Token"
+          tooltip="商家授权给服务商的应用授权凭证, 用于代调用接口"
+        >
           <a-input v-model:value="form.appAuthToken" placeholder="请输入特约商户AppAuthToken" />
         </a-form-item>
         <a-form-item label="沙箱环境" name="sandbox">
@@ -88,9 +86,9 @@
             :disabled="showable"
             name="file"
             :multiple="false"
-            :action="uploadAction"
-            :headers="tokenHeader"
+            :before-upload="beforeUpload"
             :showUploadList="false"
+            accept=".crt"
             @change="(info) => handleChange(info, 'appCert')"
           >
             <a-button type="primary" preIcon="carbon:cloud-upload"> 应用证书上传 </a-button>
@@ -114,9 +112,9 @@
             :disabled="showable"
             name="file"
             :multiple="false"
-            :action="uploadAction"
-            :headers="tokenHeader"
+            :before-upload="beforeUpload"
             :showUploadList="false"
+            accept=".crt"
             @change="(info) => handleChange(info, 'alipayCert')"
           >
             <a-button type="primary" preIcon="carbon:cloud-upload"> 公钥证书上传 </a-button>
@@ -140,9 +138,9 @@
             :disabled="showable"
             name="file"
             :multiple="false"
-            :action="uploadAction"
-            :headers="tokenHeader"
+            :before-upload="beforeUpload"
             :showUploadList="false"
+            accept=".crt"
             @change="(info) => handleChange(info, 'alipayRootCert')"
           >
             <a-button type="primary" preIcon="carbon:cloud-upload"> CA根证书上传 </a-button>
@@ -181,19 +179,16 @@
 <script lang="ts" setup>
   import { computed, nextTick, ref } from 'vue'
   import useFormEdit from '@/hooks/bootx/useFormEdit'
-  import { saveOrUpdate, AlipayConfig, getConfig } from './AlipayConfig.api'
+  import { update, AlipayConfig, getConfig } from './AlipayConfig.api'
   import { FormInstance, Rule } from 'ant-design-vue/lib/form'
-  import { useUpload } from '@/hooks/bootx/useUpload'
   import { useMessage } from '@/hooks/web/useMessage'
   import { BasicDrawer } from '@/components/Drawer'
   import { Icon } from '@/components/Icon'
-  import BasicTitle from '@/components/Basic/src/BasicTitle.vue'
   import { ChannelConfig } from '@/views/daxpay/common/merchant/config/ChannelConfig.api'
 
   const { handleCancel, diffForm, labelCol, wrapperCol, confirmLoading, visible, showable } =
     useFormEdit()
   // 读取证书内容
-  const { tokenHeader, uploadAction } = useUpload('/readText')
   const { createMessage } = useMessage()
 
   const formRef = ref<FormInstance>()
@@ -203,7 +198,6 @@
   const form = ref<AlipayConfig>({
     aliAppId: '',
     enable: true,
-    limitAmount: 20000,
     authType: 'key',
     signType: 'RSA2',
     alipayPublicKey: '',
@@ -248,14 +242,12 @@
    * 获取信息
    */
   function getInfo() {
-    if (channelConfig.value.id) {
-      getConfig(channelConfig.value.id).then(({ data }) => {
+      getConfig(channelConfig.value.appId).then(({ data }) => {
         confirmLoading.value = true
         rawForm = { ...data }
         form.value = data
         confirmLoading.value = false
       })
-    }
   }
   /**
    * 更新
@@ -263,7 +255,7 @@
   function handleOk() {
     formRef.value?.validate().then(() => {
       confirmLoading.value = true
-      saveOrUpdate({
+      update({
         ...form.value,
         ...diffForm(
           rawForm,
@@ -276,6 +268,7 @@
           'privateKey',
         ),
         isv: isIsv.value,
+        mchNo: channelConfig.value.mchNo,
         appId: channelConfig.value.appId,
       })
         .then(() => {
@@ -289,21 +282,26 @@
     })
   }
   /**
+   * 阻止自动上传
+   */
+  function beforeUpload() {
+    // 返回 false 可以阻止自动上传
+    return false
+  }
+  /**
    * 文件上传
    */
   function handleChange(info, fieldName) {
-    // 上传完毕
-    if (info.file.status === 'done') {
-      const res = info.file.response
-      if (!res.code) {
-        form.value[fieldName] = res.data
-        createMessage.success(`${info.file.name} 上传成功!`)
-      } else {
-        createMessage.error(`${res.msg}`)
-      }
-    } else if (info.file.status === 'error') {
-      createMessage.error('上传失败')
+    const file = info.file
+    const reader = new FileReader()
+    reader.onload = (e) => {
+      // 读取结果
+      form.value[fieldName] = e?.target?.result
+      createMessage.success(`${info.file.name} 上传成功!`)
+      formRef.value?.validateFields(fieldName)
     }
+    // 读取文件为文本
+    reader.readAsText(file)
   }
 
   /**

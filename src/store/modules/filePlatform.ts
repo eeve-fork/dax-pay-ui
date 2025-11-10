@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { FilePlatform } from '#/store'
-import { findAll, getDefaultUploadPlatform } from '@/views/baseapi/file/platform/FilePlatform.api'
+import { findAll } from '@/views/baseapi/file/platform/FilePlatform.api'
 
 interface FilePlatformState {
   filePlatform: FilePlatform[]
@@ -37,16 +37,6 @@ export const useFilePlatformStore = defineStore({
       })
       console.log('初始化存储平台')
       return this.filePlatform
-    },
-
-    /**
-     * 获取默认上传平台
-     */
-    async initUploadPlatform() {
-      const { data } = await getDefaultUploadPlatform()
-      this.uploadPlatform = data
-      console.log(`默认上传存储平台为: ${this.uploadPlatform}`)
-      return data
     },
   },
 })

@@ -33,11 +33,15 @@
           />
         </a-form-item>
         <a-form-item
-          label="商户号"
+          label="乐刷商户号"
           name="lsMchNo"
-          :rules="[{ required: true, message: '请输入乐刷商户号' }]"
+          :rules="[{ required: true, message: '请选择乐刷进件商户' }]"
         >
-          <a-input v-model:value="form.lsMchNo" placeholder="请输入乐刷商户号" />
+          <a-select v-model:value="form.lsMchNo" placeholder="请选择乐刷进件商户" allow-clear>
+            <a-select-option v-for="item in onbMchNoList" :key="item.value">
+              {{ `${item.label || '-'}(${item.value})` }}
+            </a-select-option>
+          </a-select>
         </a-form-item>
         <a-divider>微信认证配置</a-divider>
         <a-form-item
@@ -104,11 +108,12 @@
 <script lang="ts" setup>
   import { nextTick, ref } from 'vue'
   import useFormEdit from '@/hooks/bootx/useFormEdit'
-  import { saveOrUpdateSub, getSubConfig, LeshuaSubConfig } from './LeshuaConfig.api'
+  import { update, getConfig, LeshuaSubConfig } from './LeshuaConfig.api'
   import { FormInstance } from 'ant-design-vue/lib/form'
   import { useMessage } from '@/hooks/web/useMessage'
   import { BasicDrawer } from '@/components/Drawer'
   import { ChannelConfig } from '@/views/daxpay/common/merchant/config/ChannelConfig.api'
+  import { LabeledValue } from 'ant-design-vue/lib/select'
 
   const { handleCancel, diffForm, labelCol, wrapperCol, confirmLoading, visible, showable } =
     useFormEdit()
@@ -123,30 +128,33 @@
     readSystem: true,
   })
   let rawForm: any = {}
+  const onbMchNoList = ref<LabeledValue[]>([])
+
   // 事件
   const emits = defineEmits(['ok'])
+
   /**
    * 入口
    */
   function init(config: ChannelConfig) {
     channelConfig.value = config
+    initData()
     resetForm()
     visible.value = true
     getInfo()
   }
 
+
   /**
    * 获取信息
    */
   function getInfo() {
-    if (channelConfig.value.id) {
-      getSubConfig(channelConfig.value.id).then(({ data }) => {
-        confirmLoading.value = true
-        rawForm = { ...data }
-        form.value = data
-        confirmLoading.value = false
-      })
-    }
+    getConfig(channelConfig.value.appId).then(({ data }) => {
+      confirmLoading.value = true
+      rawForm = { ...data }
+      form.value = data
+      confirmLoading.value = false
+    })
   }
   /**
    * 更新
@@ -154,7 +162,7 @@
   function handleOk() {
     formRef.value?.validate().then(() => {
       confirmLoading.value = true
-      saveOrUpdateSub({
+      update({
         ...form.value,
         ...diffForm(rawForm, form.value),
         mchNo: channelConfig.value.mchNo,

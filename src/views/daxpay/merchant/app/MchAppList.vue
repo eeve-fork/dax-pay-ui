@@ -7,7 +7,12 @@
           <a-col class="gutter-row" :span="6" v-for="item in pagination.records" :key="item">
             <div class="itemBox">
               <div class="titleBox">
-                <div class="title" @click="show(item)">{{ item.appName }}</div>
+                <div class="title" @click="show(item)">
+                  {{ item.appName }}
+                  <span v-if="item.defaultApp" style="color: #ff4d4f; font-size: 0.7292vw"
+                    >(默认)</span
+                  >
+                </div>
                 <div class="editBtn" @click="edit(item)">修改</div>
               </div>
               <div class="appId"> 应用ID: {{ item.appId }} </div>
@@ -19,11 +24,19 @@
                     <a> 更多 <Icon icon="ant-design:down-outlined" :size="12" /> </a>
                     <template #overlay>
                       <a-menu>
-                        <a-menu-item>
-                          <a-link @click="showNotifyConfig(item)">订阅配置</a-link>
-                        </a-menu-item>
+                        <!--                        <a-menu-item>-->
+                        <!--                          <a-link @click="showNotifyConfig(item)">订阅配置</a-link>-->
+                        <!--                        </a-menu-item>-->
+                        <!--                        <a-menu-item>-->
+                        <!--                          <a-link @click="showAllocConfig(item)">分账配置</a-link>-->
+                        <!--                        </a-menu-item>-->
                         <a-menu-item>
                           <a-link @click="showGatewayPay(item)">网关支付</a-link>
+                        </a-menu-item>
+                        <a-menu-item>
+                          <a-link @click="toggleDefaultApp(item)">
+                            {{ item.defaultApp ? '清除默认' : '设为默认' }}
+                          </a-link>
                         </a-menu-item>
                         <a-menu-item>
                           <a-link danger @click="remove(item)">删除</a-link>
@@ -46,14 +59,13 @@
     </div>
     <mch-app-edit ref="mchApp" @ok="queryPage" />
     <channel-config-list ref="channelSetup" />
-    <MerchantNotifyConfigList ref="merchantNotifyConfigList" />
     <GatewayConfigModel ref="gatewayConfigModel" />
   </div>
 </template>
 
 <script lang="ts" setup>
   import { onMounted, ref } from 'vue'
-  import { del, page } from './MchApp.api'
+  import { del, page, setDefault, clearDefault } from './MchApp.api'
   import useTablePage from '@/hooks/bootx/useTablePage'
   import MchAppEdit from './MchAppEdit.vue'
   import { FormEditType } from '@/enums/formTypeEnum'
@@ -61,9 +73,8 @@
   import { VxeTableInstance, VxeToolbarInstance } from 'vxe-table'
   import ALink from '@/components/Link/Link.vue'
   import { useDict } from '@/hooks/bootx/useDict'
-  import ChannelConfigList from '@/views/daxpay/common/merchant/config/ChannelConfigList.vue'
-  import MerchantNotifyConfigList from '@/views/daxpay/common/merchant/notify/MerchantNotifyConfigList.vue'
   import Icon from '@/components/Icon/Icon.vue'
+  import ChannelConfigList from '@/views/daxpay/common/merchant/config/ChannelConfigList.vue'
   import GatewayConfigModel from '@/views/daxpay/common/merchant/gateway/GatewayConfigModel.vue'
 
   // 使用hooks
@@ -75,7 +86,6 @@
   const xToolbar = ref<VxeToolbarInstance>()
   const mchApp = ref<any>()
   const channelSetup = ref<any>()
-  const merchantNotifyConfigList = ref<any>()
   const gatewayConfigModel = ref<any>()
 
   onMounted(() => {
@@ -84,7 +94,7 @@
   })
 
   function vxeBind() {
-    xTable.value?.connect(xToolbar.value as VxeToolbarInstance)
+    xTable.value?.connectToolbar(xToolbar.value as VxeToolbarInstance)
   }
 
   // 分页查询
@@ -117,12 +127,6 @@
   function showChannelSetup(record) {
     channelSetup.value.init(record)
   }
-  /**
-   * 通知配置
-   */
-  function showNotifyConfig(record) {
-    merchantNotifyConfigList.value.init(record.appId)
-  }
 
   /**
    * 网关支付配置
@@ -144,6 +148,27 @@
           createMessage.success('删除成功')
           queryPage()
         })
+      },
+    })
+  }
+
+  /**
+   * 切换默认应用状态
+   */
+  function toggleDefaultApp(record) {
+    const action = record.defaultApp ? '取消默认' : '设置默认'
+    createConfirm({
+      iconType: 'info',
+      title: '确认操作',
+      content: `确定要将${record.appName}${action}应用吗？`,
+      onOk: async () => {
+        if (record.defaultApp) {
+          await clearDefault(record.id)
+        } else {
+          await setDefault(record.id)
+        }
+        createMessage.success(`设置成功`)
+        queryPage().then()
       },
     })
   }

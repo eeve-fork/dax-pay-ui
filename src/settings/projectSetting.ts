@@ -17,7 +17,7 @@ const setting: ProjectConfig = {
   showSettingButton: true,
 
   // 是否显示主题切换按钮
-  showDarkModeToggle: true,
+  showDarkModeToggle: false,
 
   // 按钮位置
   settingButtonPosition: SettingButtonPositionEnum.AUTO,
@@ -75,7 +75,7 @@ const setting: ProjectConfig = {
   // 菜单配置
   menuSetting: {
     // 背景颜色
-    bgColor: '#28333E',
+    bgColor: '#ffffff',
     // 是否固定
     fixed: true,
     // Menu collapse

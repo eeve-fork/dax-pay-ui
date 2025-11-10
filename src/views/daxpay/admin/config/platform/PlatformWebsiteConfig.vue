@@ -14,44 +14,27 @@
               </a-form-item>
             </a-col>
             <a-col :span="12">
-              <a-form-item label="公司全称">
-                <a-input
-                  :disabled="!edit"
-                  v-model:value="form.companyName"
-                  placeholder="请输入公司全称"
-                />
+              <a-form-item label="公司全称" tooltip="该配置暂未生效">
+                <a-input disabled v-model:value="form.companyName" placeholder="请输入公司全称" />
               </a-form-item>
             </a-col>
           </a-row>
           <a-row :gutter="[128, 24]">
             <a-col :span="12">
-              <a-form-item label="公司电话">
-                <a-input
-                  :disabled="!edit"
-                  v-model:value="form.companyPhone"
-                  placeholder="请输入公司电话"
-                />
+              <a-form-item label="公司电话" tooltip="该配置暂未生效">
+                <a-input disabled v-model:value="form.companyPhone" placeholder="请输入公司电话" />
               </a-form-item>
             </a-col>
             <a-col :span="12">
-              <a-form-item label="公司邮箱">
-                <a-input
-                  :disabled="!edit"
-                  v-model:value="form.companyEmail"
-                  placeholder="请输入公司邮箱"
-                />
+              <a-form-item label="公司邮箱" tooltip="该配置暂未生效">
+                <a-input disabled v-model:value="form.companyEmail" placeholder="请输入公司邮箱" />
               </a-form-item>
             </a-col>
           </a-row>
           <a-row :gutter="[128, 24]">
             <a-col :span="12">
-              <a-form-item label="系统完整logo">
+              <a-form-item label="系统logo">
                 <b-upload-pic :showable="!edit" v-model:pic-url="form.wholeLogo" />
-              </a-form-item>
-            </a-col>
-            <a-col :span="12">
-              <a-form-item label="系统简化Logo">
-                <b-upload-pic :showable="!edit" v-model:pic-url="form.simpleLogo" />
               </a-form-item>
             </a-col>
           </a-row>
@@ -202,6 +185,7 @@
           createMessage.success('更新成功')
           confirmLoading.value = false
           edit.value = false
+          initData()
         })
         .catch(() => {
           confirmLoading.value = false

@@ -9,7 +9,7 @@
       />
     </div>
     <div class="m-3 p-3 bg-white">
-      <vxe-toolbar ref="xToolbar" custom :refresh="{ queryMethod: queryPage }">
+      <vxe-toolbar ref="xToolbar" custom refresh :refresh-options="{ queryMethod: queryPage }">
         <template #buttons>
           <a-space>
             <a-select
@@ -26,7 +26,7 @@
       <div class="h-65vh">
         <vxe-table
           height="auto"
-          key-field="id"
+          :row-config="{ keyField: 'id' }"
           ref="xTable"
           :data="pagination.records"
           :loading="loading"
@@ -158,7 +158,7 @@
     queryPage()
   })
   function vxeBind() {
-    xTable.value?.connect(xToolbar.value as VxeToolbarInstance)
+    xTable.value?.connectToolbar(xToolbar.value as VxeToolbarInstance)
   }
 
   /**

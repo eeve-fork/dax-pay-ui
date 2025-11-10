@@ -1,24 +1,23 @@
 import { defHttp } from '@/utils/http/axios'
 import { Result } from '#/axios'
 import { MchEntity } from '#/web'
-import { unref } from 'vue'
 
 /**
  * 获取单条
  */
-export function getConfig(id) {
+export function getConfig(isvNo) {
   return defHttp.get<Result<VbillIsvConfig>>({
-    url: '/isv/vbill/config/findById',
-    params: { id: unref(id) },
+    url: '/vbill/config/isv/findByIsvNo',
+    params: { isvNo },
   })
 }
 
 /**
  * 保存或更新
  */
-export function saveOrUpdate(obj: VbillIsvConfig) {
+export function update(obj: VbillIsvConfig) {
   return defHttp.post({
-    url: '/isv/vbill/config/saveOrUpdate',
+    url: '/vbill/config/isv/update',
     data: obj,
   })
 }
@@ -33,8 +32,6 @@ export interface VbillIsvConfig extends MchEntity {
   enable: boolean
   // 沙箱
   sandbox: boolean
-  // 支付限额
-  limitAmount?: number
   // 天阙公钥
   publicKey?: string
   // 私钥

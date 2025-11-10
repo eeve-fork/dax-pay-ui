@@ -18,8 +18,16 @@
         :label-col="labelCol"
         :wrapper-col="wrapperCol"
       >
+        <a-divider>基础配置</a-divider>
         <a-form-item label="主键" name="id" :hidden="true">
           <a-input v-model:value="form.id" :disabled="showable" />
+        </a-form-item>
+        <a-form-item label="是否启用" name="enable">
+          <a-switch
+            checked-children="启用"
+            un-checked-children="停用"
+            v-model:checked="form.enable"
+          />
         </a-form-item>
         <a-form-item label="商户号" name="wxMchId">
           <a-input v-model:value="form.wxMchId" :disabled="showable" placeholder="请输入商户号" />
@@ -29,31 +37,6 @@
             v-model:value="form.wxAppId"
             :disabled="showable"
             placeholder="请输入微信应用AppId"
-          />
-        </a-form-item>
-        <a-form-item label="公众号AppSecret" name="appSecret">
-          <a-input
-            v-model:value="form.appSecret"
-            :disabled="showable"
-            placeholder="用于获取接口调用凭证时使用, 如OpenId/AccessToken等"
-          />
-        </a-form-item>
-        <a-form-item
-          name="authUrl"
-          label="OAuth2认证地址"
-          tooltip="该地址需要重定向或转发到网关前端的地址，用于进行微信认证（置空将读取平台配置中的网关前端地址）"
-        >
-          <a-input
-            v-model:value="form.authUrl"
-            :disabled="showable"
-            placeholder="请输入微信OAuth2认证地址"
-          />
-        </a-form-item>
-        <a-form-item label="是否启用" name="enable">
-          <a-switch
-            checked-children="启用"
-            un-checked-children="停用"
-            v-model:checked="form.enable"
           />
         </a-form-item>
         <a-form-item
@@ -66,7 +49,7 @@
             <a-radio-button value="apiV3"> API_V3 </a-radio-button>
           </a-radio-group>
         </a-form-item>
-        <a-form-item name="apiKeyV2" label="APIv2密钥">
+        <a-form-item name="apiKeyV2" label="APIv2密钥" v-if="form.apiVersion === 'apiV2'">
           <a-textarea
             :rows="3"
             :disabled="showable"
@@ -74,7 +57,7 @@
             placeholder="请输入APIv2密钥"
           />
         </a-form-item>
-        <a-form-item label="APIv3密钥" name="apiKeyV3">
+        <a-form-item label="APIv3密钥" name="apiKeyV3" v-if="form.apiVersion === 'apiV3'">
           <a-textarea
             :rows="3"
             :disabled="showable"
@@ -208,6 +191,25 @@
             </template>
           </a-input>
         </a-form-item>
+        <a-divider>微信认证配置</a-divider>
+        <a-form-item label="公众号AppSecret" name="appSecret">
+          <a-input
+            v-model:value="form.appSecret"
+            :disabled="showable"
+            placeholder="用于获取接口调用凭证时使用, 如OpenId/AccessToken等"
+          />
+        </a-form-item>
+        <a-form-item
+          name="authUrl"
+          label="OAuth2认证地址"
+          tooltip="该地址需要重定向或转发到网关前端的地址，用于进行微信认证（置空将读取平台配置中的网关前端地址）"
+        >
+          <a-input
+            v-model:value="form.authUrl"
+            :disabled="showable"
+            placeholder="请输入微信OAuth2认证地址"
+          />
+        </a-form-item>
       </a-form>
     </a-spin>
     <template #footer>
@@ -229,12 +231,12 @@
 <script lang="ts" setup>
   import { computed, nextTick, ref } from 'vue'
   import useFormEdit from '@/hooks/bootx/useFormEdit'
-  import { getConfig, saveOrUpdate, WechatPayConfig } from './WechatIsvConfig.api'
+  import { getConfig, update, WechatPayConfig } from './WechatIsvConfig.api'
   import { FormInstance, Rule } from 'ant-design-vue/lib/form'
   import { BasicDrawer } from '@/components/Drawer'
   import Icon from '@/components/Icon/Icon.vue'
   import { useMessage } from '@/hooks/web/useMessage'
-  import { IsvChannelConfig } from '@/views/daxpay/admin/isv/config/IsvChannelConfig.api'
+  import { IsvChannelConfig } from '@/views/daxpay/admin/isv/config/channel/IsvChannelConfig.api'
 
   const { handleCancel, diffForm, labelCol, wrapperCol, confirmLoading, visible, showable } =
     useFormEdit()
@@ -264,7 +266,7 @@
       returnUrl: [{ required: true, message: '请输入同步通知页面地址' }],
       sandbox: [{ required: true, message: '请选择是否为沙箱环境' }],
       apiVersion: [{ required: true, message: '请选择支付API版本' }],
-      apiKeyV2: [{ required: form.value.apiVersion === 'apiV2', message: '请输入V2秘钥' }],
+      apiKeyV2: [{ required: true, message: '请输入V2秘钥' }],
       apiKeyV3: [{ required: true, message: '请输入V3秘钥' }],
       certSerialNo: [{ required: form.value.apiVersion === 'apiV3', message: '请输入证书序列号' }],
       privateKey: [
@@ -297,14 +299,12 @@
    * 获取信息
    */
   function getInfo() {
-    if (channelConfig.value.id) {
-      confirmLoading.value = true
-      getConfig(channelConfig.value.id).then(({ data }) => {
-        rawForm = { ...data }
-        form.value = data
-        confirmLoading.value = false
-      })
-    }
+    confirmLoading.value = true
+    getConfig(channelConfig.value.isvNo).then(({ data }) => {
+      rawForm = { ...data }
+      form.value = data
+      confirmLoading.value = false
+    })
   }
   /**
    * 保存
@@ -312,7 +312,7 @@
   function handleOk() {
     formRef.value?.validate().then(() => {
       confirmLoading.value = true
-      saveOrUpdate({
+      update({
         ...form.value,
         ...diffForm(
           rawForm,

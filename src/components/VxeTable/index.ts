@@ -33,7 +33,6 @@ export function setDark(dark: boolean) {
 VXETable.setConfig({
   // 表格配置
   table: {
-    resizable: true,
     border: true,
     stripe: true,
     showOverflow: true,

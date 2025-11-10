@@ -9,10 +9,10 @@
       />
     </div>
     <div class="m-3 p-3 bg-white">
-      <vxe-toolbar ref="xToolbar" custom :refresh="{ queryMethod: queryPage }" />
+      <vxe-toolbar ref="xToolbar" custom refresh :refresh-options="{ queryMethod: queryPage }" />
       <div class="h-65vh">
         <vxe-table
-          key-field="id"
+          :row-config="{ keyField: 'id' }"
           height="auto"
           ref="xTable"
           :data="pagination.records"
@@ -20,7 +20,7 @@
           :sort-config="{ remote: true, trigger: 'cell' }"
           @sort-change="sortChange"
         >
-          <vxe-column type="seq" title="序号" width="60" />
+          <vxe-column type="seq" title="序号" width="60" align="center" />
           <vxe-column field="orderId" title="平台交易号" :min-width="230">
             <template #default="{ row }">
               <a-link @click="showOrder(row)">
@@ -167,7 +167,7 @@
     queryPage()
   })
   function vxeBind() {
-    xTable.value?.connect(xToolbar.value as VxeToolbarInstance)
+    xTable.value?.connectToolbar(xToolbar.value as VxeToolbarInstance)
   }
   watch(
     () => model.queryParam?.mchNo,

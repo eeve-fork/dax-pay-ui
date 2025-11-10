@@ -3,7 +3,7 @@
     showFooter
     v-bind="$attrs"
     width="60%"
-    title="乐刷支付子商户配置"
+    title="海科支付子商户配置"
     :open="visible"
     :maskClosable="false"
     @close="handleCancel"
@@ -30,7 +30,11 @@
           />
         </a-form-item>
         <a-form-item label="海科商户号" name="merchNo">
-          <a-input v-model:value="form.merchNo" placeholder="请输入海科商户号" />
+          <a-select v-model:value="form.merchNo" placeholder="请选择海科进件商户" allow-clear>
+            <a-select-option v-for="item in onbMchNoList" :key="item.value">
+              {{ `${item.label || '-'}(${item.value})` }}
+            </a-select-option>
+          </a-select>
         </a-form-item>
         <a-form-item label="SAAS终端号(PN)" name="pn">
           <a-input v-model:value="form.pn" placeholder="请输入海科SAAS终端号(PN)" />
@@ -46,9 +50,19 @@
         </a-form-item>
         <template v-if="!form.readSystem">
           <a-form-item
+            label="使用通道认证"
+            name="wxChannelAuth"
+            :rules="[{ required: true, message: '请选择是否使用通道认证' }]"
+          >
+            <a-switch
+              checked-children="是"
+              un-checked-children="否"
+              v-model:checked="form.wxChannelAuth"
+            />
+          </a-form-item>
+          <a-form-item
             label="微信AppId"
             name="wxAppId"
-            :rules="[{ required: true, message: '请输入微信应用AppId' }]"
           >
             <a-input
               v-model:value="form.wxAppId"
@@ -100,11 +114,13 @@
 <script lang="ts" setup>
   import { computed, nextTick, ref } from 'vue'
   import useFormEdit from '@/hooks/bootx/useFormEdit'
-  import { saveOrUpdateSub, getSubConfig, HkrtSubConfig } from './HkrtPayConfig.api'
+  import { update, getConfig, HkrtSubConfig } from './HkrtPayConfig.api'
   import { FormInstance, Rule } from 'ant-design-vue/lib/form'
   import { useMessage } from '@/hooks/web/useMessage'
   import { BasicDrawer } from '@/components/Drawer'
   import { ChannelConfig } from '@/views/daxpay/common/merchant/config/ChannelConfig.api'
+  import { LabeledValue } from 'ant-design-vue/lib/select'
+  import { ChannelEnum } from '@/enums/daxpay/daxpayEnum'
 
   const { handleCancel, diffForm, labelCol, wrapperCol, confirmLoading, visible, showable } =
     useFormEdit()
@@ -117,12 +133,15 @@
   const form = ref<HkrtSubConfig>({
     enable: true,
     readSystem: true,
+    wxChannelAuth: true,
   })
   let rawForm: any = {}
+  const onbMchNoList = ref<LabeledValue[]>([])
+
   // 校验
   const rules = computed(() => {
     return {
-      merchNo: [{ required: true, message: '请输入海科商户号' }],
+      merchNo: [{ required: true, message: '请选择海科进件商户' }],
       pn: [{ required: true, message: '请输入海科SAAS终端号(PN)' }],
       enable: [{ required: true, message: '请选择是否启用' }],
     } as Record<string, Rule[]>
@@ -134,23 +153,28 @@
    */
   function init(config: ChannelConfig) {
     channelConfig.value = config
+    initData()
     resetForm()
     visible.value = true
     getInfo()
   }
 
   /**
+   * 初始化数据
+   */
+  function initData() {
+  }
+
+  /**
    * 获取信息
    */
   function getInfo() {
-    if (channelConfig.value.id) {
-      getSubConfig(channelConfig.value.id).then(({ data }) => {
-        confirmLoading.value = true
-        rawForm = { ...data }
-        form.value = data
-        confirmLoading.value = false
-      })
-    }
+    getConfig(channelConfig.value.appId).then(({ data }) => {
+      confirmLoading.value = true
+      rawForm = { ...data }
+      form.value = data
+      confirmLoading.value = false
+    })
   }
   /**
    * 更新
@@ -158,7 +182,7 @@
   function handleOk() {
     formRef.value?.validate().then(() => {
       confirmLoading.value = true
-      saveOrUpdateSub({
+      update({
         ...form.value,
         ...diffForm(rawForm, form.value),
         mchNo: channelConfig.value.mchNo,

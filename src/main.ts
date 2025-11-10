@@ -1,5 +1,6 @@
 import 'uno.css'
 import '@/design/index.less'
+import '@/assets/style/common.less'
 import 'ant-design-vue/dist/reset.css'
 // Register icon sprite
 import 'virtual:svg-icons-register'
@@ -14,6 +15,7 @@ import { useTable } from '@/components/VxeTable'
 import { setupStore } from '@/store'
 
 import App from './App.vue'
+import { initWebsiteConfig } from '@/logics/initWebsiteConfig'
 
 async function bootstrap() {
   const app = createApp(App)
@@ -25,6 +27,9 @@ async function bootstrap() {
   // Initialize internal system configuration
   // 初始化内部系统配置
   initAppConfigStore()
+
+  // 初始化网站自定义配置
+  initWebsiteConfig()
 
   // Register global components
   // 注册全局组件

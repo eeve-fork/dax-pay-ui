@@ -43,6 +43,20 @@ export function updateWebsite(data: PlatformWebsiteConfig) {
 }
 
 /**
+ * 获取对接配置
+ */
+export function getIntegration() {
+  return defHttp.get<Result<PlatformIntegrationConfig>>({ url: '/platform/config/integration/get' })
+}
+
+/**
+ * 修改对接配置
+ */
+export function updateIntegration(data: PlatformIntegrationConfig) {
+  return defHttp.post<Result>({ url: '/platform/config/integration/update', data })
+}
+
+/**
  * 平台配置
  */
 export interface PlatformBasicConfig {
@@ -52,26 +66,12 @@ export interface PlatformBasicConfig {
   monthlyLimitAmount?: number
   /** 每日限额 */
   dailyLimitAmount?: number
-}
-
-/**
- * 平台提现规则配置
- */
-export interface PlatformCashoutsConfig {
-  /** 起始提现额度 */
-  startAmount?: number
-  /** 手续费计算公式 */
-  feeFormula?: string
-  /** 单笔固定 */
-  fixedFee?: number
-  /** 单笔费率 */
-  fixedRate?: number
-  /** 组合 固定手续费 */
-  fixedFeeCombined?: number
-  /** 组合 费率 */
-  fixedRateCombined?: number
-  /** 冻结金额 */
-  freezeAmount?: number
+  /** 订单超时时间(分钟) */
+  orderTimeout?: number
+  /** 默认代理商 */
+  defaultAgentNo?: string
+  /** 默认服务商 */
+  defaultIsvNo?: string
 }
 
 /**
@@ -126,4 +126,16 @@ export interface PlatformWebsiteConfig {
   copyright?: string
   /** 版权信息链接 */
   copyrightLink?: string
+}
+
+/**
+ * 平台对接配置
+ */
+export interface PlatformIntegrationConfig {
+  /** 是否对请求进行验签 */
+  reqSign?: boolean
+  /** 是否验证请求时间是否超时 */
+  reqTimeout?: boolean
+  /** 超时时间(秒) */
+  apiReqTimeout?: number
 }

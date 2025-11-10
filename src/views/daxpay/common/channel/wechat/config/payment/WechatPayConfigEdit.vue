@@ -245,7 +245,7 @@
 <script lang="ts" setup>
   import { computed, nextTick, ref } from 'vue'
   import useFormEdit from '@/hooks/bootx/useFormEdit'
-  import { getConfig, saveOrUpdate, WechatPayConfig } from './WechatPayConfig.api'
+  import { getConfig, update, WechatPayConfig } from './WechatPayConfig.api'
   import { FormInstance, Rule } from 'ant-design-vue/lib/form'
   import { BasicDrawer } from '@/components/Drawer'
   import Icon from '@/components/Icon/Icon.vue'
@@ -264,7 +264,6 @@
   let form = ref<WechatPayConfig>({
     id: null,
     enable: true,
-    limitAmount: 20000,
     apiVersion: 'apiV2',
     authType: 'sp',
   })
@@ -315,14 +314,12 @@
    * 获取信息
    */
   function getInfo() {
-    if (channelConfig.value.id) {
-      confirmLoading.value = true
-      getConfig(channelConfig.value.id).then(({ data }) => {
-        rawForm = { ...data }
-        form.value = data
-        confirmLoading.value = false
-      })
-    }
+    confirmLoading.value = true
+    getConfig(channelConfig.value.appId).then(({ data }) => {
+      rawForm = { ...data }
+      form.value = data
+      confirmLoading.value = false
+    })
   }
   /**
    * 保存
@@ -330,7 +327,7 @@
   function handleOk() {
     formRef.value?.validate().then(() => {
       confirmLoading.value = true
-      saveOrUpdate({
+      update({
         ...form.value,
         ...diffForm(
           rawForm,

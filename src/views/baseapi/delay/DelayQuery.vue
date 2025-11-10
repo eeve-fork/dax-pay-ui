@@ -59,7 +59,7 @@
               <vxe-table
                 height="auto"
                 ref="xTable"
-                key-field="id"
+                :row-config="{ keyField: 'id' }"
                 :data="paginationOne.records"
                 :loading="loadingOne"
               >
@@ -112,7 +112,7 @@
               <vxe-table
                 height="auto"
                 ref="xTable"
-                key-field="id"
+                :row-config="{ keyField: 'id' }"
                 :data="paginationTwo.records"
                 :loading="loadingTwo"
               >

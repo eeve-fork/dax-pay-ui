@@ -1,24 +1,23 @@
 import { defHttp } from '@/utils/http/axios'
 import { Result } from '#/axios'
 import { MchEntity } from '#/web'
-import { unref } from 'vue'
 
 /**
  * 获取单条
  */
-export function getConfig(id) {
+export function getConfig(isvNo) {
   return defHttp.get<Result<HkrtIsvConfig>>({
-    url: '/isv/hkrt/config/findById',
-    params: { id: unref(id) },
+    url: '/hkrt/config/isv/findByIsvNo',
+    params: { isvNo },
   })
 }
 
 /**
  * 保存或更新
  */
-export function saveOrUpdate(obj: HkrtIsvConfig) {
+export function update(obj: HkrtIsvConfig) {
   return defHttp.post({
-    url: '/isv/hkrt/config/saveOrUpdate',
+    url: '/hkrt/config/isv/update',
     data: obj,
   })
 }
@@ -49,6 +48,8 @@ export interface HkrtIsvConfig extends MchEntity {
   tradeUrl?: string
   // 其他API地址
   otherUrl?: string
+  // 微信使用通道渠道认证
+  wxChannelAuth?: boolean
   // 微信AppId
   wxAppId?: string
   // 微信AppSecret

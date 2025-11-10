@@ -32,8 +32,6 @@ export interface UnionPayConfig extends MchEntity {
   seller?: string
   // 是否启用
   enable: boolean
-  // 支付限额
-  limitAmount?: number
   // 签名类型
   signType?: string
   // 是否为证书签名

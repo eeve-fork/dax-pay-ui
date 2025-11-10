@@ -66,7 +66,7 @@
 <script lang="ts" setup>
   import { computed, nextTick, ref } from 'vue'
   import useFormEdit from '@/hooks/bootx/useFormEdit'
-  import { saveOrUpdateSub, getSubConfig, AlipaySubConfig } from './AlipayConfig.api'
+  import { updateSub, getSubConfig, AlipaySubConfig } from './AlipayConfig.api'
   import { FormInstance, Rule } from 'ant-design-vue/lib/form'
   import { useMessage } from '@/hooks/web/useMessage'
   import { BasicDrawer } from '@/components/Drawer'
@@ -106,14 +106,12 @@
    * 获取信息
    */
   function getInfo() {
-    if (channelConfig.value.id) {
-      getSubConfig(channelConfig.value.id).then(({ data }) => {
-        confirmLoading.value = true
-        rawForm = { ...data }
-        form.value = data
-        confirmLoading.value = false
-      })
-    }
+    getSubConfig(channelConfig.value.appId).then(({ data }) => {
+      confirmLoading.value = true
+      rawForm = { ...data }
+      form.value = data
+      confirmLoading.value = false
+    })
   }
   /**
    * 更新
@@ -121,7 +119,7 @@
   function handleOk() {
     formRef.value?.validate().then(() => {
       confirmLoading.value = true
-      saveOrUpdateSub({
+      updateSub({
         ...form.value,
         ...diffForm(rawForm, form.value, 'appAuthToken'),
         mchNo: channelConfig.value.mchNo,

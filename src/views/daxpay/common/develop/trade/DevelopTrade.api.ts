@@ -4,57 +4,78 @@ import { Result } from '#/axios'
 /**
  * 支付参数签名
  */
-export function paySign(param: PayParam) {
-  return defHttp.post<Result<string>>({ url: '/develop/trade/sign/pay', data: param })
+export function paySign(param: PayParam, privateKey) {
+  return defHttp.post<Result<string>>({
+    url: '/develop/trade/sign/pay',
+    data: { param, privateKey },
+  })
 }
 
 /**
  * 支付
  */
-export function tradePay(params) {
-  return defHttp.post<Result<PayResult>>({ url: '/develop/trade/pay', data: params })
+export function tradePay(param, privateKey) {
+  return defHttp.post<Result<PayResult>>({ url: '/develop/trade/pay', data: { param, privateKey } })
 }
 
 /**
  * 退款参数签名
  */
-export function refundSign(param: RefundParam) {
-  return defHttp.post<Result<string>>({ url: '/develop/trade/sign/refund', data: param })
+export function refundSign(param: RefundParam, privateKey) {
+  return defHttp.post<Result<string>>({
+    url: '/develop/trade/sign/refund',
+    data: { param, privateKey },
+  })
 }
 
 /**
  * 退款
  */
-export function tradeRefund(params) {
-  return defHttp.post<Result<RefundResult>>({ url: '/develop/trade/refund', data: params })
+export function tradeRefund(param, privateKey) {
+  return defHttp.post<Result<RefundResult>>({
+    url: '/develop/trade/refund',
+    data: { param, privateKey },
+  })
 }
 
 /**
  * 转账签名
  */
-export function transferSign(param: TransferParam) {
-  return defHttp.post<Result<string>>({ url: '/develop/trade/sign/transfer', data: param })
+export function transferSign(param: TransferParam, privateKey) {
+  return defHttp.post<Result<string>>({
+    url: '/develop/trade/sign/transfer',
+    data: { param, privateKey },
+  })
 }
 
 /**
  * 转账
  */
-export function tradeTransfer(params) {
-  return defHttp.post<Result<TransferResult>>({ url: '/develop/trade/transfer', data: params })
+export function tradeTransfer(param, privateKey) {
+  return defHttp.post<Result<TransferResult>>({
+    url: '/develop/trade/transfer',
+    data: { param, privateKey },
+  })
 }
 
 /**
  * 创建收银台链接签名
  */
-export function gatewaySign(param: GatewayPayParam) {
-  return defHttp.post<Result<string>>({ url: '/develop/trade/sign/gateway', data: param })
+export function gatewaySign(param: GatewayPayParam, privateKey) {
+  return defHttp.post<Result<string>>({
+    url: '/develop/trade/sign/gateway',
+    data: { param, privateKey },
+  })
 }
 
 /**
  * 创建收银台链接
  */
-export function gateway(params) {
-  return defHttp.post<Result<CheckoutUrlResult>>({ url: '/develop/trade/gateway', data: params })
+export function gateway(param, privateKey) {
+  return defHttp.post<Result<CheckoutUrlResult>>({
+    url: '/develop/trade/gateway',
+    data: { param, privateKey },
+  })
 }
 
 /**

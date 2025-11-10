@@ -51,6 +51,26 @@ export const del = (id) => {
 }
 
 /**
+ * 设为默认
+ */
+export const setDefault = (id) => {
+  return defHttp.post<Result<void>>({
+    url: '/mch/app/setDefault',
+    params: { id },
+  })
+}
+
+/**
+ * 清除默认
+ */
+export const clearDefault = (id) => {
+  return defHttp.post<Result<void>>({
+    url: '/mch/app/clearDefault',
+    params: { id },
+  })
+}
+
+/**
  * 根据应用AppId获取启用的通道
  */
 export function dropdownByEnable(appId) {

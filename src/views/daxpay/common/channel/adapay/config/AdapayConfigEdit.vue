@@ -22,10 +22,7 @@
         <a-form-item label="主键" name="id" :hidden="true">
           <a-input v-model:value="form.id" />
         </a-form-item>
-        <a-form-item label="商户号" name="adaPayMchNo">
-          <a-input v-model:value="form.adaPayMchNo" placeholder="请输入汇付商户号" />
-        </a-form-item>
-        <a-form-item label="应用号" name="adaPayAppId">
+        <a-form-item label="汇付应用号" name="adaPayAppId">
           <a-input v-model:value="form.adaPayAppId" placeholder="请输入汇付AppId" />
         </a-form-item>
         <a-form-item label="是否启用" name="enable">
@@ -108,7 +105,7 @@
 <script lang="ts" setup>
   import { computed, nextTick, ref } from 'vue'
   import useFormEdit from '@/hooks/bootx/useFormEdit'
-  import { saveOrUpdate, getConfig, AdaPayConfig } from './AdapayConfig.api'
+  import { update, getConfig, AdaPayConfig } from './AdapayConfig.api'
   import { FormInstance, Rule } from 'ant-design-vue/lib/form'
   import { useMessage } from '@/hooks/web/useMessage'
   import { BasicDrawer } from '@/components/Drawer'
@@ -155,14 +152,12 @@
    * 获取信息
    */
   function getInfo() {
-    if (channelConfig.value.id) {
-      getConfig(channelConfig.value.id).then(({ data }) => {
-        confirmLoading.value = true
-        rawForm = { ...data }
-        form.value = data
-        confirmLoading.value = false
-      })
-    }
+    getConfig(channelConfig.value.appId).then(({ data }) => {
+      confirmLoading.value = true
+      rawForm = { ...data }
+      form.value = data
+      confirmLoading.value = false
+    })
   }
   /**
    * 更新
@@ -170,7 +165,7 @@
   function handleOk() {
     formRef.value?.validate().then(() => {
       confirmLoading.value = true
-      saveOrUpdate({
+      update({
         ...form.value,
         ...diffForm(rawForm, form.value, 'apiKey', 'mchPrivateKey'),
         mchNo: channelConfig.value.mchNo,

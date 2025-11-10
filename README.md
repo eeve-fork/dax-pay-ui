@@ -1,4 +1,4 @@
-# DaxPay多商户前端
+# DaxPay WEB端
 
 ## 简绍
 vite5 + vue3.4 + vben admin2 + antd vue4 搭建

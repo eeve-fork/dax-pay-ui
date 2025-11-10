@@ -9,7 +9,7 @@
       />
     </div>
     <div class="m-3 p-3 bg-white">
-      <vxe-toolbar ref="xToolbar" custom :refresh="{ queryMethod: queryPage }">
+      <vxe-toolbar ref="xToolbar" custom refresh :refresh-options="{ queryMethod: queryPage }">
         <template #buttons>
           <a-upload
             :multiple="false"
@@ -29,12 +29,12 @@
       <div class="h-65vh">
         <vxe-table
           height="auto"
-          key-field="id"
+          :row-config="{ keyField: 'id' }"
           ref="xTable"
           :data="pagination.records"
           :loading="loading"
         >
-          <vxe-column type="seq" :width="60" />
+          <vxe-column type="seq" title="序号" width="60" align="center" />
           <vxe-column field="originalFilename" title="原始文件名" :min-width="180">
             <template #default="{ row }">
               <a-link @click="show(row)">{{ row.originalFilename }}</a-link>
@@ -131,7 +131,7 @@
     queryPage()
   })
   function vxeBind() {
-    xTable.value?.connect(xToolbar.value as VxeToolbarInstance)
+    xTable.value?.connectToolbar(xToolbar.value as VxeToolbarInstance)
   }
 
   /**

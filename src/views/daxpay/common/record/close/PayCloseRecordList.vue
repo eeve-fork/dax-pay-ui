@@ -9,18 +9,18 @@
       />
     </div>
     <div class="m-3 p-3 bg-white">
-      <vxe-toolbar ref="xToolbar" custom :refresh="{ queryMethod: queryPage }" />
+      <vxe-toolbar ref="xToolbar" custom refresh :refresh-options="{ queryMethod: queryPage }" />
       <div class="h-65vh">
         <vxe-table
           height="auto"
-          key-field="id"
+          :row-config="{ keyField: 'id' }"
           ref="xTable"
           :data="pagination.records"
           :loading="loading"
           :sort-config="{ remote: true, trigger: 'cell' }"
           @sort-change="sortChange"
         >
-          <vxe-column type="seq" title="序号" width="60" />
+          <vxe-column type="seq" title="序号" width="60" align="center" />
           <vxe-column field="orderNo" title="订单号" :min-width="220">
             <template #default="{ row }">
               <a @click="showPayOder(row.orderNo)">
@@ -166,7 +166,7 @@
     queryPage()
   })
   function vxeBind() {
-    xTable.value?.connect(xToolbar.value as VxeToolbarInstance)
+    xTable.value?.connectToolbar(xToolbar.value as VxeToolbarInstance)
   }
 
   /**

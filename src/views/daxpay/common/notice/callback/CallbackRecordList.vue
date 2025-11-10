@@ -7,10 +7,10 @@
     :open="visible"
     @close="visible = false"
   >
-    <vxe-toolbar ref="xToolbar" custom :refresh="{ queryMethod: queryPage }" />
+    <vxe-toolbar ref="xToolbar" custom refresh :refresh-options="{ queryMethod: queryPage }" />
     <div class="h-75vh">
       <vxe-table
-        key-field="id"
+        :row-config="{ keyField: 'id' }"
         height="auto"
         ref="xTable"
         :data="pagination.records"
@@ -86,7 +86,7 @@
   const xToolbar = ref<VxeToolbarInstance>()
 
   nextTick(() => {
-    xTable.value?.connect(xToolbar.value as VxeToolbarInstance)
+    xTable.value?.connectToolbar(xToolbar.value as VxeToolbarInstance)
   })
 
   /**

@@ -10,7 +10,7 @@
       />
     </div>
     <div class="m-3 p-3 bg-white">
-      <vxe-toolbar ref="xToolbar" custom :refresh="{ queryMethod: queryPage }">
+      <vxe-toolbar ref="xToolbar" custom refresh :refresh-options="{ queryMethod: queryPage }">
         <template #buttons>
           <span style="font-size: 18px">收入金额: {{ totalAmount.incomeAmount || 0 }} 元</span>
           <span style="font-size: 18px; margin-left: 50px"
@@ -24,12 +24,12 @@
       <div class="h-65vh">
         <vxe-table
           height="auto"
-          key-field="id"
+          :row-config="{ keyField: 'id' }"
           ref="xTable"
           :data="pagination.records"
           :loading="loading"
         >
-          <vxe-column type="seq" title="序号" width="60" />
+          <vxe-column type="seq" title="序号" width="60" align="center" />
           <vxe-column field="title" title="标题" :min-width="230" />
           <vxe-column field="amount" title="金额(元)" :min-width="120" sortable>
             <template #default="{ row }">
@@ -174,7 +174,7 @@
     queryPage()
   })
   function vxeBind() {
-    xTable.value?.connect(xToolbar.value as VxeToolbarInstance)
+    xTable.value?.connectToolbar(xToolbar.value as VxeToolbarInstance)
   }
   watch(
     () => model.queryParam?.mchNo,

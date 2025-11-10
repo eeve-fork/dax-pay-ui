@@ -9,7 +9,7 @@
       />
     </div>
     <div class="m-3 p-3 bg-white">
-      <vxe-toolbar ref="xToolbar" custom :refresh="{ queryMethod: queryPage }">
+      <vxe-toolbar ref="xToolbar" custom refresh :refresh-options="{ queryMethod: queryPage }">
         <template #buttons>
           <span style="font-size: 18px">收款金额: {{ totalAmount || 0 }}元</span>
         </template>
@@ -17,7 +17,7 @@
       <div class="h-65vh">
         <vxe-table
           height="auto"
-          key-field="id"
+          :row-config="{ keyField: 'id' }"
           ref="xTable"
           :cell-style="cellStyle"
           :data="pagination.records"
@@ -25,7 +25,7 @@
           :sort-config="{ remote: true, trigger: 'cell' }"
           @sort-change="sortChange"
         >
-          <vxe-column type="seq" title="序号" width="60" />
+          <vxe-column type="seq" title="序号" width="60" align="center" />
           <vxe-column field="orderNo" title="订单号" :min-width="230">
             <template #default="{ row }">
               <a @click="show(row)">
@@ -87,46 +87,48 @@
           <vxe-column fixed="right" width="120" :showOverflow="false" title="操作">
             <template #default="{ row }">
               <a-link @click="show(row)">查看</a-link>
-              <a-divider type="vertical" />
-              <a-dropdown>
-                <a>
-                  更多
-                  <icon icon="ant-design:down-outlined" :size="12" />
-                </a>
-                <template #overlay>
-                  <a-menu>
-                    <a-menu-item>
-                      <a-link @click="sync(row)">同步</a-link>
-                    </a-menu-item>
-                    <a-menu-item v-if="[PayStatusEnum.PROGRESS].includes(row.status)">
-                      <a-link @click="closeOrder(row)" danger>关闭</a-link>
-                    </a-menu-item>
-                    <a-menu-item v-if="[PayStatusEnum.PROGRESS].includes(row.status)">
-                      <a-link @click="cancelOrder(row)" danger>撤销</a-link>
-                    </a-menu-item>
-                    <a-menu-item
-                      v-if="
-                        row.allocStatus === PayAllocStatusEnum.WAITING &&
-                        PayStatusEnum.SUCCESS === row.status
-                      "
-                    >
-                      <a-link @click="allocationOrder(row)">分账</a-link>
-                    </a-menu-item>
-                    <a-menu-item
-                      v-if="
-                        [PayStatusEnum.SUCCESS].includes(row.status) &&
-                        row.refundableBalance > 0 &&
-                        [
-                          PayRefundStatusEnum.NO_REFUND,
-                          PayRefundStatusEnum.PARTIAL_REFUND,
-                        ].includes(row.refundStatus)
-                      "
-                    >
-                      <a-link @click="refund(row)" danger>退款</a-link>
-                    </a-menu-item>
-                  </a-menu>
-                </template>
-              </a-dropdown>
+              <template v-if="!isAgent() || agentPerm.createOrder">
+                <a-divider type="vertical" />
+                <a-dropdown>
+                  <a>
+                    更多
+                    <icon icon="ant-design:down-outlined" :size="12" />
+                  </a>
+                  <template #overlay>
+                    <a-menu>
+                      <a-menu-item>
+                        <a-link @click="sync(row)">同步</a-link>
+                      </a-menu-item>
+                      <a-menu-item v-if="[PayStatusEnum.PROGRESS].includes(row.status)">
+                        <a-link @click="closeOrder(row)" danger>关闭</a-link>
+                      </a-menu-item>
+                      <a-menu-item v-if="[PayStatusEnum.PROGRESS].includes(row.status)">
+                        <a-link @click="cancelOrder(row)" danger>撤销</a-link>
+                      </a-menu-item>
+                      <a-menu-item
+                        v-if="
+                          row.allocStatus === PayAllocStatusEnum.WAITING &&
+                          PayStatusEnum.SUCCESS === row.status
+                        "
+                      >
+                        <a-link @click="allocationOrder(row)">分账</a-link>
+                      </a-menu-item>
+                      <a-menu-item
+                        v-if="
+                          [PayStatusEnum.SUCCESS].includes(row.status) &&
+                          row.refundableBalance > 0 &&
+                          [
+                            PayRefundStatusEnum.NO_REFUND,
+                            PayRefundStatusEnum.PARTIAL_REFUND,
+                          ].includes(row.refundStatus)
+                        "
+                      >
+                        <a-link @click="refund(row)" danger>退款</a-link>
+                      </a-menu-item>
+                    </a-menu>
+                  </template>
+                </a-dropdown>
+              </template>
             </template>
           </vxe-column>
         </vxe-table>
@@ -175,6 +177,8 @@
   import { dropdown as merchantDropdown } from '@/views/daxpay/common/assist/basic/MerchantQuery.api'
   import { dropdownByMchNo as mchAppDropdown } from '@/views/daxpay/common/assist/basic/MchAppQuery.api'
   import { PayMethodEnum } from '@/enums/daxpay/daxpayEnum'
+  import { isAgent } from '@/utils/env'
+  import { AgentPermConfig, getAgentPermConfig } from '@/api/daxpay/DaxpayPerm.api'
 
   // 使用hooks
   const {
@@ -252,6 +256,7 @@
   const payOrderInfo = ref<any>()
   const refundModel = ref<any>()
   const totalAmount = ref<number>(0.0)
+  const agentPerm = ref<AgentPermConfig>({})
 
   // 提供一个 getter 函数
   watch(
@@ -265,7 +270,7 @@
     queryPage()
   })
   function vxeBind() {
-    xTable.value?.connect(xToolbar.value as VxeToolbarInstance)
+    xTable.value?.connectToolbar(xToolbar.value as VxeToolbarInstance)
   }
 
   /**
@@ -275,6 +280,12 @@
     merchantDropdown().then(({ data }) => {
       mchNoOptions.value = data //获取查询商户号下拉列表
     })
+    if (isAgent()) {
+      // 代理商权限
+      getAgentPermConfig().then(({ data }) => {
+        agentPerm.value = data
+      })
+    }
     channelList.value = await dictDropDown('channel') //获取查询支付通道下拉列表
     methodList.value = await dictDropDown('pay_method') //获取查询支付方式下拉列表
     payStatusList.value = await dictDropDown('pay_status') //获取查询支付状态下拉列表

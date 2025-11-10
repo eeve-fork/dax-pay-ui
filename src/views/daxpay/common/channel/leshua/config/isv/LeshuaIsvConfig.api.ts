@@ -1,24 +1,23 @@
 import { defHttp } from '@/utils/http/axios'
 import { Result } from '#/axios'
 import { MchEntity } from '#/web'
-import { unref } from 'vue'
 
 /**
  * 获取单条
  */
-export function getConfig(id) {
+export function getConfig(isvNo) {
   return defHttp.get<Result<LeshuaIsvConfig>>({
-    url: '/isv/leshua/config/findById',
-    params: { id: unref(id) },
+    url: '/leshua/config/isv/findByIsvNo',
+    params: { isvNo },
   })
 }
 
 /**
- * 保存或更新
+ * 更新
  */
-export function saveOrUpdate(obj: LeshuaIsvConfig) {
+export function update(obj: LeshuaIsvConfig) {
   return defHttp.post({
-    url: '/isv/leshua/config/saveOrUpdate',
+    url: '/leshua/config/isv/update',
     data: obj,
   })
 }

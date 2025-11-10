@@ -47,23 +47,32 @@
         <a-form-item label="支付宝渠道号" name="aliChannelNo">
           <a-input v-model:value="form.aliChannelNo" placeholder="请输入海科支付宝渠道号" />
         </a-form-item>
-        <a-form-item label="交易API地址" name="tradeUrl">
+        <a-form-item
+          label="交易API地址"
+          name="tradeUrl"
+          tooltip="海科交易接口对发起方有IP限制，如果使用反向代理进行绕过的话，需要在这设置用于调用的交易API接口地址"
+        >
           <a-input
             v-model:value="form.tradeUrl"
             placeholder="不填写则使用默认的海科官方交易API地址"
           />
         </a-form-item>
-        <a-form-item label="其他API地址" name="otherUrl">
-          <a-input
-            v-model:value="form.otherUrl"
-            placeholder="不填写则使用默认的海科官方其他API地址"
+        <a-divider>微信认证配置</a-divider>
+        <a-form-item
+          label="使用通道认证"
+          name="wxChannelAuth"
+          :rules="[{ required: true, message: '请选择是否使用通道认证' }]"
+        >
+          <a-switch
+            checked-children="是"
+            un-checked-children="否"
+            v-model:checked="form.wxChannelAuth"
           />
         </a-form-item>
-        <a-form-item label="传输密钥" name="transferKey">
-          <a-input v-model:value="form.transferKey" placeholder="请输入海科传输密钥" />
-        </a-form-item>
-        <a-divider>微信认证配置</a-divider>
-        <a-form-item label="微信AppId" name="wxAppId">
+        <a-form-item
+          label="微信AppId"
+          name="wxAppId"
+        >
           <a-input
             v-model:value="form.wxAppId"
             :disabled="showable"
@@ -109,11 +118,11 @@
 <script lang="ts" setup>
   import { computed, nextTick, ref } from 'vue'
   import useFormEdit from '@/hooks/bootx/useFormEdit'
-  import { saveOrUpdate, getConfig, HkrtIsvConfig } from './HkrtIsvConfig.api'
+  import { update, getConfig, HkrtIsvConfig } from './HkrtIsvConfig.api'
   import { FormInstance, Rule } from 'ant-design-vue/lib/form'
   import { useMessage } from '@/hooks/web/useMessage'
   import { BasicDrawer } from '@/components/Drawer'
-  import { IsvChannelConfig } from '@/views/daxpay/admin/isv/config/IsvChannelConfig.api'
+  import { IsvChannelConfig } from '@/views/daxpay/admin/isv/config/channel/IsvChannelConfig.api'
 
   const { handleCancel, diffForm, labelCol, wrapperCol, confirmLoading, visible, showable } =
     useFormEdit()
@@ -125,6 +134,7 @@
   const form = ref<HkrtIsvConfig>({
     enable: true,
     sandbox: false,
+    wxChannelAuth: true,
   })
   let rawForm: any = {}
   // 校验
@@ -153,14 +163,12 @@
    * 获取信息
    */
   function getInfo() {
-    if (channelConfig.value.id) {
-      getConfig(channelConfig.value.id).then(({ data }) => {
-        confirmLoading.value = true
-        rawForm = { ...data }
-        form.value = data
-        confirmLoading.value = false
-      })
-    }
+    getConfig(channelConfig.value.isvNo).then(({ data }) => {
+      confirmLoading.value = true
+      rawForm = { ...data }
+      form.value = data
+      confirmLoading.value = false
+    })
   }
   /**
    * 更新
@@ -168,7 +176,7 @@
   function handleOk() {
     formRef.value?.validate().then(() => {
       confirmLoading.value = true
-      saveOrUpdate({
+      update({
         ...form.value,
         ...diffForm(rawForm, form.value, 'accessKey', 'transferKey'),
         isvNo: channelConfig.value.isvNo,

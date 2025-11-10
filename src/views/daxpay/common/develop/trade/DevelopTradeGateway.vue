@@ -56,6 +56,20 @@
             placeholder="请输入支付金额"
           />
         </a-form-item>
+        <a-form-item label="是否分账" name="allocation">
+          <a-switch
+            checked-children="是"
+            un-checked-children="否"
+            v-model:checked="form.allocation"
+          />
+        </a-form-item>
+        <a-form-item label="是否自动分账" name="autoAllocation">
+          <a-switch
+            checked-children="是"
+            un-checked-children="否"
+            v-model:checked="form.autoAllocation"
+          />
+        </a-form-item>
         <a-form-item label="限制用户支付类型" name="limitPay">
           <a-select
             allow-clear
@@ -184,7 +198,7 @@
     gatewayTypeOptions.value = await dictDropDown('gateway_pay_type')
     // 时间默认30M后
     form.expiredTime = XEUtils.toDateString(
-      new Date(new Date().getTime() + 30 * 60 * 1000),
+      new Date(new Date().getTime() + 12 * 60 * 60 * 1000),
       'yyyy-MM-dd HH:mm:ss',
     )
     genNonceStr()

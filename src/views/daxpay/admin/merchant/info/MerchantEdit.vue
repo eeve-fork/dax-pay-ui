@@ -21,6 +21,12 @@
         <a-form-item label="主键" name="id" :hidden="true">
           <a-input v-model:value="form.id" :disabled="showable" />
         </a-form-item>
+        <a-form-item label="所属服务商" name="isvName">
+          {{ form.isvName }}({{ form.isvNo }})
+        </a-form-item>
+        <a-form-item label="所属代理商" name="agentName">
+          {{ form.agentName }}({{ form.agentNo }})
+        </a-form-item>
         <a-form-item label="商户号" name="mchNo">
           <a-input v-model:value="form.mchNo" disabled />
         </a-form-item>
@@ -62,6 +68,9 @@
   import { FormInstance, Rule } from 'ant-design-vue/lib/form'
   import { FormEditType } from '@/enums/formTypeEnum'
   import { BasicDrawer } from '@/components/Drawer'
+  import { LabeledValue } from 'ant-design-vue/lib/select'
+  import { dropdown as isvDropdown } from '@/views/daxpay/common/assist/basic/IsvQuery.api'
+  import { isAdmin } from '@/utils/env'
 
   const {
     initFormEditType,
@@ -79,10 +88,11 @@
   const formRef = ref<FormInstance>()
   let form = ref<Merchant>({})
 
+  const isvOptions = ref<LabeledValue[]>([])
+
   // 校验
   const rules = computed(() => {
     return {
-      merchantType: [{ required: true, message: '请选择商户类型' }],
       mchName: [{ required: true, message: '请输入商户名称' }],
       status: [{ required: true, message: '请选择商户状态' }],
     } as Record<string, Rule[]>
@@ -91,9 +101,20 @@
   const emits = defineEmits(['ok'])
   // 入口
   function init(id, editType: FormEditType) {
+    initData()
     initFormEditType(editType)
     resetForm()
     getInfo(id, editType)
+  }
+
+  /**
+   * 初始化数据
+   */
+  function initData() {
+    // 初始化所属服务商
+    if (isAdmin()) {
+      isvDropdown().then(({ data }) => (isvOptions.value = data))
+    }
   }
 
   /**

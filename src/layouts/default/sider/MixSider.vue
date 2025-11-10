@@ -104,6 +104,7 @@
   import { listenerRouteChange } from '@/logics/mitt/routeChange'
   import LayoutTrigger from '../trigger/index.vue'
   import { createAsyncComponent } from '@/utils/factory/createAsyncComponent'
+  import {getSystemTitle} from "@/logics/initWebsiteConfig";
 
   const SimpleMenuTag = createAsyncComponent(
     () => import('@/components/SimpleMenu/src/SimpleMenuTag.vue'),
@@ -135,7 +136,7 @@
     getCollapsed,
   } = useMenuSetting()
 
-  const { title } = useGlobSetting()
+  const title = computed(() => getSystemTitle())
   const permissionStore = usePermissionStore()
 
   useDragLine(sideRef, dragBarRef, true)

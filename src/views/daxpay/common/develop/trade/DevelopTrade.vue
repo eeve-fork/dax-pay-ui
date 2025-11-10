@@ -8,10 +8,10 @@
           }}</a-radio-button>
         </a-radio-group>
         <div style="width: 100%; height: 25px"></div>
-        <develop-trade-pay v-if="tradeType === TradeTypeEnum.PAY" />
-        <develop-trade-refund v-if="tradeType === TradeTypeEnum.REFUND" />
-        <develop-trade-transfer v-if="tradeType === TradeTypeEnum.TRANSFER" />
-        <develop-trade-gateway v-if="tradeType === 'gateway'" />
+        <develop-trade-pay v-show="tradeType === TradeTypeEnum.PAY" />
+        <develop-trade-refund v-show="tradeType === TradeTypeEnum.REFUND" />
+        <develop-trade-transfer v-show="tradeType === TradeTypeEnum.TRANSFER" />
+        <develop-trade-gateway v-show="tradeType === 'gateway'" />
       </div>
     </div>
   </div>
@@ -20,14 +20,11 @@
 <script setup lang="ts">
   import { onMounted, ref } from 'vue'
   import { TradeTypeEnum } from '@/enums/daxpay/daxpayEnum'
-  import { useDict } from '@/hooks/bootx/useDict'
   import { LabeledValue } from 'ant-design-vue/lib/select'
   import DevelopTradePay from './DevelopTradePay.vue'
   import DevelopTradeRefund from './DevelopTradeRefund.vue'
   import DevelopTradeTransfer from './DevelopTradeTransfer.vue'
   import DevelopTradeGateway from './DevelopTradeGateway.vue'
-
-  const { dictDropDown } = useDict()
 
   let tradeType = ref<string>(TradeTypeEnum.PAY)
   let tradeTypes = ref<LabeledValue[]>([])

@@ -32,20 +32,10 @@
         <a-form-item label="沙箱环境" name="sandbox">
           <a-switch checked-children="是" un-checked-children="否" v-model:checked="form.sandbox" />
         </a-form-item>
-        <a-form-item label="服务商号" name="lsIsvNo">
-          <a-input v-model:value="form.lsIsvNo" placeholder="请输入乐刷服务商号" />
+        <a-form-item label="代理商/服务商号" name="lsIsvNo">
+          <a-input v-model:value="form.lsIsvNo" placeholder="请输入乐刷代理商/服务商号" />
         </a-form-item>
-        <a-form-item
-          label="签名类型"
-          name="signType"
-          tooltip="进件只支持MD5，推荐直接选择MD5签名类型"
-        >
-          <a-radio-group v-model:value="form.signType" placeholder="选择签名类型">
-            <a-radio value="MD5">MD5</a-radio>
-            <a-radio value="SM3">SM3</a-radio>
-          </a-radio-group>
-        </a-form-item>
-        <a-form-item label="交易KEY" name="tradeKey">
+        <a-form-item label="进件交易KEY" name="tradeKey">
           <a-input v-model:value="form.tradeKey" placeholder="请输入乐刷交易KEY" />
         </a-form-item>
         <a-form-item label="异步通知KEY" name="notifyKey">
@@ -98,11 +88,11 @@
 <script lang="ts" setup>
   import { computed, nextTick, ref } from 'vue'
   import useFormEdit from '@/hooks/bootx/useFormEdit'
-  import { saveOrUpdate, getConfig, LeshuaIsvConfig } from './LeshuaIsvConfig.api'
+  import { update, getConfig, LeshuaIsvConfig } from './LeshuaIsvConfig.api'
   import { FormInstance, Rule } from 'ant-design-vue/lib/form'
   import { useMessage } from '@/hooks/web/useMessage'
   import { BasicDrawer } from '@/components/Drawer'
-  import { IsvChannelConfig } from '@/views/daxpay/admin/isv/config/IsvChannelConfig.api'
+  import { IsvChannelConfig } from '@/views/daxpay/admin/isv/config/channel/IsvChannelConfig.api'
 
   const { handleCancel, diffForm, labelCol, wrapperCol, confirmLoading, visible, showable } =
     useFormEdit()
@@ -113,7 +103,6 @@
 
   const form = ref<LeshuaIsvConfig>({
     enable: true,
-    signType: 'MD5',
     sandbox: false,
   })
   let rawForm: any = {}
@@ -121,9 +110,8 @@
   const rules = computed(() => {
     return {
       enable: [{ required: true, message: '请选择是否启用' }],
-      lsIsvNo: [{ required: true, message: '请输入乐刷服务商号' }],
+      lsIsvNo: [{ required: true, message: '请输入请输入乐刷代理商/服务商号' }],
       sandbox: [{ required: true, message: '请选择是否为沙箱环境' }],
-      signType: [{ required: true, message: '请选择加密类型' }],
       tradeKey: [{ required: true, message: '请输入乐刷交易KEY' }],
       notifyKey: [{ required: true, message: '请输入乐刷异步通知KEY' }],
     } as Record<string, Rule[]>
@@ -144,14 +132,12 @@
    * 获取信息
    */
   function getInfo() {
-    if (channelConfig.value.id) {
-      getConfig(channelConfig.value.id).then(({ data }) => {
-        confirmLoading.value = true
-        rawForm = { ...data }
-        form.value = data
-        confirmLoading.value = false
-      })
-    }
+    getConfig(channelConfig.value.isvNo).then(({ data }) => {
+      confirmLoading.value = true
+      rawForm = { ...data }
+      form.value = data
+      confirmLoading.value = false
+    })
   }
   /**
    * 更新
@@ -159,7 +145,7 @@
   function handleOk() {
     formRef.value?.validate().then(() => {
       confirmLoading.value = true
-      saveOrUpdate({
+      update({
         ...form.value,
         ...diffForm(rawForm, form.value, 'notifyKey', 'tradeKey'),
         isvNo: channelConfig.value.isvNo,

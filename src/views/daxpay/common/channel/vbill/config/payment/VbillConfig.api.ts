@@ -1,72 +1,25 @@
 import { defHttp } from '@/utils/http/axios'
 import { Result } from '#/axios'
 import { MchEntity } from '#/web'
-import { unref } from 'vue'
-
-/**
- * 获取单条
- */
-export function getConfig(id) {
-  return defHttp.get<Result<VbillPayConfig>>({
-    url: '/vbill/config/findById',
-    params: { id: unref(id) },
-  })
-}
-
-/**
- * 保存或更新
- */
-export function saveOrUpdate(obj: VbillPayConfig) {
-  return defHttp.post({
-    url: '/vbill/config/saveOrUpdate',
-    data: obj,
-  })
-}
 
 /**
  * 获取单条特约商户
  */
-export function getSubConfig(id) {
+export function getConfig(appId) {
   return defHttp.get<Result<VbillSubConfig>>({
-    url: '/vbill/config/findSubById',
-    params: { id: unref(id) },
+    url: '/vbill/config/findByAppId',
+    params: { appId },
   })
 }
 
 /**
  * 保存或更新特约商户
  */
-export function saveOrUpdateSub(obj: VbillSubConfig) {
+export function update(obj: VbillSubConfig) {
   return defHttp.post({
-    url: '/vbill/config/saveOrUpdateSub',
+    url: '/vbill/config/update',
     data: obj,
   })
-}
-
-/**
- * 随行付支付配置
- */
-export interface VbillPayConfig extends MchEntity {
-  // 天阙商户号
-  mno?: string
-  // 天阙机构号
-  orgId?: string
-  // 是否启用
-  enable: boolean
-  // 支付限额
-  limitAmount?: number
-  // 天阙公钥
-  publicKey?: string
-  // 私钥
-  privateKey?: string
-  // 是否沙箱环境
-  sandbox?: boolean
-  // 微信AppId
-  wxAppId?: string
-  // 微信AppSecret
-  wxAppSecret?: string
-  // 微信授权认证地址
-  wxAuthUrl?: string
 }
 
 /**
@@ -79,8 +32,6 @@ export interface VbillSubConfig extends MchEntity {
   mno?: string
   // 是否启用
   enable: boolean
-  // 支付限额
-  limitAmount?: number
   // 读取服务商配置
   readSystem?: boolean
   // 微信AppId

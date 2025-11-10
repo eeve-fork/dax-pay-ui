@@ -9,6 +9,7 @@ import {
   Badge,
   Popover,
   QRCode,
+  Result,
   InputNumber,
   Empty,
   Popconfirm,
@@ -44,6 +45,7 @@ import {
   Transfer,
   Space,
   Statistic,
+  Affix,
   Cascader,
 } from 'ant-design-vue'
 
@@ -55,6 +57,7 @@ export function registerGlobComp(app: App) {
   app.use(Cascader)
   app.use(Layout)
   app.use(Collapse)
+  app.use(Affix)
   app.use(InputNumber)
   app.use(Tag)
   app.use(Tabs)
@@ -91,6 +94,7 @@ export function registerGlobComp(app: App) {
   app.use(Form)
   app.use(Spin)
   app.use(Transfer)
+  app.use(Result)
   app.use(Dropdown)
   app.use(Input)
   app.use(Statistic)

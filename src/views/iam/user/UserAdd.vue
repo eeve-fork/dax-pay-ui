@@ -120,7 +120,7 @@
    */
   async function checkAccount() {
     const { data } = await existsAccount(form.value.account)
-    return data ? Promise.reject('用户名已存在!') : Promise.resolve()
+    return data ? Promise.reject('账号已存在!') : Promise.resolve()
   }
   /**
    * 密码检查

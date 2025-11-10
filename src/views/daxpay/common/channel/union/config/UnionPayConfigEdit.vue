@@ -51,9 +51,9 @@
             :disabled="showable"
             name="file"
             :multiple="false"
-            :action="uploadAction"
-            :headers="tokenHeader"
+            :before-upload="beforeUpload"
             :showUploadList="false"
+            accept=".cer"
             @change="(info) => handleChange(info, 'keyPrivateCert')"
           >
             <a-button type="primary" preIcon="carbon:cloud-upload"> 证书上传 </a-button>
@@ -85,9 +85,9 @@
             :disabled="showable"
             name="file"
             :multiple="false"
-            :action="uploadAction"
-            :headers="tokenHeader"
+            :before-upload="beforeUpload"
             :showUploadList="false"
+            accept=".cer"
             @change="(info) => handleChange(info, 'acpMiddleCert')"
           >
             <a-button type="primary" preIcon="carbon:cloud-upload"> 证书上传 </a-button>
@@ -111,9 +111,9 @@
             :disabled="showable"
             name="file"
             :multiple="false"
-            :action="uploadAction"
-            :headers="tokenHeader"
+            :before-upload="beforeUpload"
             :showUploadList="false"
+            accept=".cer"
             @change="(info) => handleChange(info, 'acpRootCert')"
           >
             <a-button type="primary" preIcon="carbon:cloud-upload"> 证书上传 </a-button>
@@ -157,17 +157,14 @@
   import useFormEdit from '@/hooks/bootx/useFormEdit'
   import { FormInstance, Rule } from 'ant-design-vue/lib/form'
   import { BasicDrawer } from '@/components/Drawer'
-  import Icon from '../../../../../../components/Icon/Icon.vue'
-  import { useUpload } from '@/hooks/bootx/useUpload'
+  import Icon from '@/components/Icon/Icon.vue'
   import { useMessage } from '@/hooks/web/useMessage'
-  import BasicTitle from '@/components/Basic/src/BasicTitle.vue'
   import { getConfig, saveOrUpdate, UnionPayConfig } from './UnionPayConfig.api'
   import { ChannelConfig } from '@/views/daxpay/common/merchant/config/ChannelConfig.api'
 
   const { handleCancel, diffForm, labelCol, wrapperCol, confirmLoading, visible, showable } =
     useFormEdit()
   // 文件上传
-  const { tokenHeader, uploadAction } = useUpload('/readBase64')
   const { createMessage } = useMessage()
 
   const channelConfig = ref<ChannelConfig>({})
@@ -176,7 +173,6 @@
   let rawForm: any = {}
   let form = ref<UnionPayConfig>({
     id: null,
-    limitAmount: 20000,
     signType: 'RSA2',
     enable: true,
     sandbox: false,
@@ -238,6 +234,7 @@
           'acpMiddleCert',
           'acpRootCert',
         ),
+        mchNo: channelConfig.value.mchNo,
         appId: channelConfig.value.appId,
       }).finally(() => {
         confirmLoading.value = false
@@ -257,23 +254,27 @@
     })
   }
   /**
+   * 阻止自动上传
+   */
+  function beforeUpload() {
+    // 返回 false 可以阻止自动上传
+    return false
+  }
+  /**
    * 文件上传
    */
   function handleChange(info, fieldName) {
-    // 上传完毕
-    if (info.file.status === 'done') {
-      const res = info.file.response
-      if (!res.code) {
-        form.value[fieldName] = res.data
-        createMessage.success(`${info.file.name} 上传成功!`)
-      } else {
-        createMessage.error(`${res.msg}`)
-      }
-    } else if (info.file.status === 'error') {
-      createMessage.error('上传失败')
+    const file = info.file
+    const reader = new FileReader()
+    reader.onload = () => {
+      // 读取结果
+      form.value[fieldName] = (reader.result as string)?.split(',')[1]
+      createMessage.success(`${info.file.name} 上传成功!`)
+      formRef.value?.validateFields(fieldName)
     }
+    // 读取文件为base64文本
+    reader.readAsDataURL(file)
   }
-
   defineExpose({
     init,
   })

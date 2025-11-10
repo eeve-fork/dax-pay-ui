@@ -15,10 +15,10 @@
           <div class="my-auto">
             <img :alt="title" src="@/assets/svg/login-box-bg.svg" class="w-1/2 -mt-16 -enter-x" />
             <div class="mt-10 font-medium text-white -enter-x">
-              <span class="inline-block mt-4 text-3xl"> 支付系统</span>
+              <!--              <span class="inline-block mt-4 text-3xl"> {{ getSystemName() }}</span>-->
             </div>
-            <div class="mt-5 font-normal text-white dark:text-gray-500 -enter-x"
-              >支持聚合支付、服务商模式等功能
+            <div class="mt-5 font-normal text-white dark:text-gray-500 -enter-x">
+              <!--              支持聚合支付、分账、商户进件、代理商、商户管理等功能-->
             </div>
           </div>
         </div>
@@ -29,10 +29,6 @@
           >
             <!--       账号密码登录     -->
             <LoginForm />
-            <!--      找回密码      -->
-            <ForgetPasswordForm />
-            <!--      注册      -->
-            <RegisterForm />
           </div>
         </div>
       </div>
@@ -44,9 +40,7 @@
   import { useGlobSetting } from '@/hooks/setting'
   import { useDesign } from '@/hooks/web/useDesign'
   import { computed } from 'vue'
-  import ForgetPasswordForm from './ForgetPasswordForm.vue'
   import LoginForm from './LoginForm.vue'
-  import RegisterForm from './RegisterForm.vue'
 
   defineProps({
     sessionTimeout: {

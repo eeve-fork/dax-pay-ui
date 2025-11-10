@@ -7,7 +7,7 @@
     :open="visible"
     @close="visible = false"
   >
-    <vxe-toolbar ref="xToolbar" custom :refresh="{ queryMethod: queryPage }">
+    <vxe-toolbar ref="xToolbar" custom refresh :refresh-options="{ queryMethod: queryPage }">
       <template #buttons>
         <a-space>
           <a-button type="primary" pre-icon="ant-design:plus-outlined" @click="add">新建</a-button>
@@ -88,7 +88,7 @@
   const dictItemEdit = ref<any>()
 
   nextTick(() => {
-    xTable.value?.connect(xToolbar.value as VxeToolbarInstance)
+    xTable.value?.connectToolbar(xToolbar.value as VxeToolbarInstance)
   })
 
   function init(dict) {

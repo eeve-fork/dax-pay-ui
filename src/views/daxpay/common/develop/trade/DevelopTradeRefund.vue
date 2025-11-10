@@ -10,6 +10,14 @@
         :wrapperCol="{ span: 18 }"
         :validate-trigger="['blur', 'change']"
       >
+        <a-form-item label="商户私钥" required>
+          <a-space>
+            <a-button size="small" @click="showPrivateKeyModal" type="primary">设置私钥</a-button>
+            <a-button size="small" v-if="privateKey" @click="privateKey = ''" danger
+              >清除私钥</a-button
+            >
+          </a-space>
+        </a-form-item>
         <a-form-item label="商户号" name="mchNo">
           <a-select
             :filter-option="search"
@@ -98,6 +106,21 @@
         </a-space>
       </a-form>
     </a-spin>
+
+    <!-- 设置私钥弹窗 -->
+    <a-modal
+      v-model:visible="privateKeyVisible"
+      title="设置商户私钥"
+      @ok="savePrivateKey"
+      :maskClosable="false"
+    >
+      <a-textarea
+        v-model:value="privateKeyInput"
+        placeholder="请输入商户私钥"
+        :rows="6"
+        allow-clear
+      />
+    </a-modal>
   </div>
 </template>
 <script setup lang="ts">
@@ -113,6 +136,11 @@
   import { buildShortUUID, buildUUID } from '@/utils/uuid'
 
   const { search } = useFormEdit()
+
+  // 添加商户私钥相关状态
+  const privateKey = ref<string>('')
+  const privateKeyVisible = ref<boolean>(false)
+  const privateKeyInput = ref<string>('')
 
   const confirmLoading = ref(false)
   const formRef = ref<FormInstance>()
@@ -189,10 +217,26 @@
    */
   function getSign() {
     formRef.value?.validate().then(() => {
-      refundSign(form).then(({ data }) => {
+      refundSign(form, privateKey.value).then(({ data }) => {
         form.sign = data
       })
     })
+  }
+
+  /**
+   * 显示设置私钥弹窗
+   */
+  function showPrivateKeyModal() {
+    privateKeyInput.value = privateKey.value || ''
+    privateKeyVisible.value = true
+  }
+
+  /**
+   * 保存私钥
+   */
+  function savePrivateKey() {
+    privateKey.value = privateKeyInput.value
+    privateKeyVisible.value = false
   }
 
   /**
@@ -209,7 +253,7 @@
   function handleSubmit() {
     formRef.value?.validate().then(() => {
       confirmLoading.value = true
-      tradeRefund(form)
+      tradeRefund(form, privateKey.value)
         .then(({ data }) => {
           Modal.info({
             title: '响应结果',

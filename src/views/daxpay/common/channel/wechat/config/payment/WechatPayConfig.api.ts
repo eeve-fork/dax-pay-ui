@@ -1,42 +1,43 @@
 import { defHttp } from '@/utils/http/axios'
 import { Result } from '#/axios'
 import { MchEntity } from '#/web'
-import { unref } from 'vue'
-/**
- * 获取单条
- */
-export function getConfig(id) {
-  return defHttp.get<Result<WechatPayConfig>>({
-    url: '/wechat/pay/config/findById',
-    params: { id: unref(id) },
-  })
-}
 
-/**
- * 保存或更新
- */
-export function saveOrUpdate(obj: WechatPayConfig) {
-  return defHttp.post({
-    url: '/wechat/pay/config/saveOrUpdate',
-    data: obj,
-  })
-}
 /**
  * 获取单条特约商户
  */
-export function getSubConfig(id) {
-  return defHttp.get<Result<WechatPaySubConfig>>({
-    url: '/wechat/pay/config/findSubById',
-    params: { id: unref(id) },
+export function getConfig(appId) {
+  return defHttp.get<Result<WechatPayConfig>>({
+    url: '/wechat/pay/config/findByAppId',
+    params: { appId },
   })
 }
 
 /**
  * 保存或更新特约商户
  */
-export function saveOrUpdateSub(obj: WechatPaySubConfig) {
+export function update(obj: WechatPayConfig) {
   return defHttp.post({
-    url: '/wechat/pay/config/saveOrUpdateSub',
+    url: '/wechat/pay/config/update',
+    data: obj,
+  })
+}
+
+/**
+ * 获取单条特约商户
+ */
+export function getSubConfig(appId) {
+  return defHttp.get<Result<WechatPaySubConfig>>({
+    url: '/wechat/pay/config/findSubByAppId',
+    params: { appId },
+  })
+}
+
+/**
+ * 保存或更新特约商户
+ */
+export function updateSub(obj: WechatPaySubConfig) {
+  return defHttp.post({
+    url: '/wechat/pay/config/updateSub',
     data: obj,
   })
 }
@@ -61,8 +62,6 @@ export interface WechatPayConfig extends MchEntity {
   authType?: string
   // 授权认证地址
   authUrl?: string
-  // 支付限额
-  limitAmount?: number
   // API 版本
   apiVersion: string
   // 商户平台「API安全」中的 APIv2 密钥
@@ -111,6 +110,4 @@ export interface WechatPaySubConfig extends MchEntity {
   wxAuthUrl?: string
   // 是否启用
   enable?: boolean
-  // 支付限额
-  limitAmount?: number
 }

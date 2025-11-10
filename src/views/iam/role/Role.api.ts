@@ -3,7 +3,7 @@ import { Result } from '#/axios'
 import { BaseEntity } from '#/web'
 
 /**
- * tree
+ * 树
  */
 export const tree = () => {
   return defHttp.get<Result<RoleTree[]>>({

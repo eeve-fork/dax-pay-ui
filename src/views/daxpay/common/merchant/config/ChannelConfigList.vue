@@ -11,14 +11,14 @@
       <a-spin :spinning="confirmLoading">
         <a-list
           style="margin-left: 20px"
-          :grid="{ gutter: 16, xs: 1, sm: 1, md: 2, lg: 3, xl: 4, xxl: 5 }"
+          :grid="{ gutter: 16, xs: 1, sm: 1, md: 2, lg: 3, xl: 4, xxl: 6 }"
           :data-source="channelConfigs"
         >
           <template #renderItem="{ item }">
-            <a-card hoverable style="max-width: 200px; margin-bottom: 20px" @click="setting(item)">
+            <a-card hoverable style="max-width: 175px; margin-bottom: 15px" @click="setting(item)">
               <template #cover>
                 <a-image
-                  style="width: 150px; height: 150px; margin-top: 20px"
+                  style="width: 100px; height: 100px; margin-top: 30px"
                   :preview="false"
                   :src="getIcon(item.channel)"
                   :fallback="fallbackImg"
@@ -54,16 +54,24 @@
   import { ref } from 'vue'
   import { findAll, ChannelConfig } from './ChannelConfig.api'
   import { ChannelEnum } from '@/enums/daxpay/daxpayEnum'
+  import { MchApp } from '@/views/daxpay/admin/merchant/app/MchAppAdmin.api'
   import alipay from '@/assets/daxpay/alipay.svg'
   import adapay from '@/assets/daxpay/adapay.svg'
   import wechat from '@/assets/daxpay/wechat.svg'
   import unionPay from '@/assets/daxpay/unionPay.svg'
   import leshua from '@/assets/daxpay/leshua.svg'
   import vbillPay from '@/assets/daxpay/vbillPay.svg'
-  import allinPay from '@/assets/daxpay/allinPay.svg'
   import hkrtPay from '@/assets/daxpay/hkrtPay.svg'
   import ChannelConfigEdit from '@/views/daxpay/common/merchant/config/ChannelConfigEdit.vue'
-  import { MchApp } from '@/views/daxpay/admin/merchant/app/MchAppAdmin.api'
+  import dougong from '@/assets/daxpay/dougong.svg'
+  import umsPay from '@/assets/daxpay/umsPay.svg'
+  import lakala from '@/assets/daxpay/lakala.svg'
+  import fuyou from '@/assets/daxpay/fuyou.svg'
+  import shengPay from '@/assets/daxpay/shengPay.svg'
+  import ysepPay from '@/assets/daxpay/ysepPay.svg'
+  import quickPay from '@/assets/daxpay/quickPay.svg'
+  import sandPay from '@/assets/daxpay/sandPay.svg'
+  import yeePay from '@/assets/daxpay/yeePay.svg'
 
   const confirmLoading = ref(false)
   const channelConfigs = ref<ChannelConfig[]>([])
@@ -133,10 +141,26 @@
         return vbillPay
       case ChannelEnum.ADA_PAY:
         return adapay
-      case ChannelEnum.ALLIN_YST2:
-        return allinPay
       case ChannelEnum.HKRT_PAY:
         return hkrtPay
+      case ChannelEnum.DOUGONG_PAY:
+        return dougong
+      case ChannelEnum.LAKALA_PAY:
+        return lakala
+      case ChannelEnum.FUYOU_PAY:
+        return fuyou
+      case ChannelEnum.SHENG_PAY:
+        return shengPay
+      case ChannelEnum.YSEP_PAY:
+        return ysepPay
+      case ChannelEnum.QUICK_PAY:
+        return quickPay
+      case ChannelEnum.SAND_PAY:
+        return sandPay
+      case ChannelEnum.YEE_PAY:
+        return yeePay
+      case ChannelEnum.UMS_PAY:
+        return umsPay
       default:
         return ''
     }

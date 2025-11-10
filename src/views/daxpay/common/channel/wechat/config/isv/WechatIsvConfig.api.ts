@@ -1,23 +1,22 @@
 import { defHttp } from '@/utils/http/axios'
 import { Result } from '#/axios'
 import { MchEntity } from '#/web'
-import { unref } from 'vue'
 /**
  * 获取单条
  */
-export function getConfig(id) {
+export function getConfig(isvNo) {
   return defHttp.get<Result<WechatPayConfig>>({
-    url: '/isv/wechat/config/findById',
-    params: { id: unref(id) },
+    url: '/wechat/config/isv/findByIsvNo',
+    params: { isvNo },
   })
 }
 
 /**
  * 保存或更新
  */
-export function saveOrUpdate(obj: WechatPayConfig) {
+export function update(obj: WechatPayConfig) {
   return defHttp.post({
-    url: '/isv/wechat/config/saveOrUpdate',
+    url: '/wechat/config/isv/update',
     data: obj,
   })
 }

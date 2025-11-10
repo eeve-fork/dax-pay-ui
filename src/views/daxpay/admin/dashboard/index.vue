@@ -1,7 +1,7 @@
 <template>
   <div class="indexPage">
     <div class="datequeryBox">
-      <a-alert message="欢 迎 使 用 DaxPay 运 营 端" type="info" />
+      <a-alert :message="`欢迎使用 ${title}`" type="info" />
       <div class="date">
         <a-range-picker
           v-model:value="dateValue"
@@ -22,10 +22,13 @@
   </div>
 </template>
 <script lang="ts" setup>
-  import { reactive, ref } from 'vue'
+  import { computed, reactive, ref } from 'vue'
   import GrowCard from './components/GrowCard.vue'
   import VisitSource from './components/VisitSource.vue'
   import dayjs from 'dayjs'
+  import { getSystemTitle } from '@/logics/initWebsiteConfig'
+
+  const title = computed(() => getSystemTitle())
 
   //默认绑定最近七天
   const dateValue = ref<[string, string]>([
@@ -53,7 +56,7 @@
 </script>
 <style lang="scss" scoped>
   .indexPage {
-    padding: 0.625vw 0vw;
+    padding: 12px 0px;
     width: 100%;
     height: 100%;
     background-color: #f0f4fb;
@@ -61,12 +64,43 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      height: 2.5833vw;
-      padding: 0vw 1.0417vw;
+      height: 50px;
+      padding: 0px 20px;
     }
     .scrollBox_index {
       width: 100%;
-      padding: 0.625vw 1.0417vw;
+      padding: 12px 20px;
+    }
+  }
+
+  // 响应式设计
+  @media (max-width: 1200px) {
+    .indexPage {
+      padding: 10px 0px;
+      .datequeryBox {
+        height: 45px;
+        padding: 0px 15px;
+      }
+      .scrollBox_index {
+        padding: 10px 15px;
+      }
+    }
+  }
+
+  @media (max-width: 768px) {
+    .indexPage {
+      padding: 8px 0px;
+      .datequeryBox {
+        height: 40px;
+        padding: 0px 10px;
+        flex-direction: column;
+        gap: 10px;
+        height: auto;
+        padding: 10px;
+      }
+      .scrollBox_index {
+        padding: 8px 10px;
+      }
     }
   }
 </style>
@@ -75,8 +109,28 @@
   .datequeryBox {
     .ant-alert {
       flex: 1;
-      margin-right: 1.5625vw;
-      padding: 0.4167vw 0.625vw;
+      margin-right: 30px;
+      padding: 8px 12px;
+    }
+  }
+
+  // 响应式设计
+  @media (max-width: 1200px) {
+    .datequeryBox {
+      .ant-alert {
+        margin-right: 20px;
+        padding: 6px 10px;
+      }
+    }
+  }
+
+  @media (max-width: 768px) {
+    .datequeryBox {
+      .ant-alert {
+        margin-right: 0;
+        margin-bottom: 10px;
+        padding: 6px 8px;
+      }
     }
   }
 </style>

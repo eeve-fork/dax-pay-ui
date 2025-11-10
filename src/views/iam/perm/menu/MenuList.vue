@@ -30,7 +30,7 @@
       </a-form>
     </div>
     <div class="m-3 p-3 bg-white">
-      <vxe-toolbar ref="xToolbar" custom zoom :refresh="{ queryMethod: queryPage }">
+      <vxe-toolbar ref="xToolbar" custom refresh :refresh-options="{ queryMethod: queryPage }">
         <template #buttons>
           <a-space>
             <a-button type="primary" pre-icon="ant-design:plus-outlined" @click="add()">
@@ -43,7 +43,6 @@
       </vxe-toolbar>
       <div class="h-70vh">
         <vxe-table
-          resizable
           height="auto"
           ref="xTable"
           border="inner"
@@ -138,7 +137,7 @@
   })
 
   function vxeBind() {
-    xTable.value?.connect(xToolbar.value as VxeToolbarInstance)
+    xTable.value?.connectToolbar(xToolbar.value as VxeToolbarInstance)
   }
 
   async function initClients() {

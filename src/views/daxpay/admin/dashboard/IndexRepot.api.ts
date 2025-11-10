@@ -111,10 +111,15 @@ export interface TradeStatisticsReport {
  * 商户统计
  */
 export interface MerchantReportResult {
-  /** 商户数量 */
+  /** 普通商户数量 */
   normalCount?: number
 
-  /** 商户应用数量 */
+  /** 特约商户数量 */
+  partnerCount?: number
+
+  /** 普通商户应用数量 */
   normalAppCount?: number
 
+  /** 特约商户应用数量 */
+  partnerAppCount?: number
 }

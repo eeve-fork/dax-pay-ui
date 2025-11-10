@@ -5,30 +5,28 @@
         <a-form layout="vertical" :model="form" ref="formRef">
           <a-row :gutter="[128, 24]">
             <a-col :span="12">
-              <a-form-item label="支付网关服务地址">
+              <a-form-item label="商户端网址">
                 <a-input-group compact>
                   <a-input
                     :disabled="!edit"
                     style="width: calc(100% - 60px)"
-                    v-model:value="form.gatewayServiceUrl"
-                    placeholder="请输入网关服务地址"
+                    v-model:value="form.mchWebUrl"
+                    placeholder="请输入商户端网址"
                   />
-                  <a-button type="primary" :disabled="!edit" @click="checkGatewayUrl"
-                  >检查</a-button
-                  >
+                  <a-button type="primary" :disabled="!edit" @click="checkMchUrl">检查</a-button>
                 </a-input-group>
               </a-form-item>
             </a-col>
             <a-col :span="12">
-              <a-form-item label="网关H5端地址">
+              <a-form-item label="代理商端网址">
                 <a-input-group compact>
                   <a-input
                     :disabled="!edit"
                     style="width: calc(100% - 60px)"
-                    v-model:value="form.gatewayH5Url"
-                    placeholder="请输入网关H5端地址"
+                    v-model:value="form.agentWebUrl"
+                    placeholder="请输入代理商端网址"
                   />
-                  <a-button type="primary" :disabled="!edit" @click="checkH5Url">检查</a-button>
+                  <a-button type="primary" :disabled="!edit" @click="checkAgentUrl">检查</a-button>
                 </a-input-group>
               </a-form-item>
             </a-col>
@@ -48,15 +46,32 @@
               </a-form-item>
             </a-col>
             <a-col :span="12">
-              <a-form-item label="商户端网址">
+              <a-form-item label="支付网关服务地址">
                 <a-input-group compact>
                   <a-input
                     :disabled="!edit"
                     style="width: calc(100% - 60px)"
-                    v-model:value="form.mchWebUrl"
-                    placeholder="请输入商户端网址"
+                    v-model:value="form.gatewayServiceUrl"
+                    placeholder="请输入网关服务地址"
                   />
-                  <a-button type="primary" :disabled="!edit" @click="checkMchUrl">检查</a-button>
+                  <a-button type="primary" :disabled="!edit" @click="checkGatewayUrl"
+                    >检查</a-button
+                  >
+                </a-input-group>
+              </a-form-item>
+            </a-col>
+          </a-row>
+          <a-row :gutter="[128, 24]">
+            <a-col :span="12">
+              <a-form-item label="网关H5端地址">
+                <a-input-group compact>
+                  <a-input
+                    :disabled="!edit"
+                    style="width: calc(100% - 60px)"
+                    v-model:value="form.gatewayH5Url"
+                    placeholder="请输入网关H5端地址"
+                  />
+                  <a-button type="primary" :disabled="!edit" @click="checkH5Url">检查</a-button>
                 </a-input-group>
               </a-form-item>
             </a-col>
@@ -107,6 +122,7 @@
           createMessage.success('更新成功')
           confirmLoading.value = false
           edit.value = false
+          initData()
         })
         .catch(() => {
           confirmLoading.value = false

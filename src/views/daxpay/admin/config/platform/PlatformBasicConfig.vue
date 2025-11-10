@@ -28,8 +28,6 @@
                 />
               </a-form-item>
             </a-col>
-          </a-row>
-          <a-row :gutter="[256, 24]">
             <a-col :span="12">
               <a-form-item label="每日累计限额(元)">
                 <a-input-number
@@ -39,6 +37,45 @@
                   :disabled="!edit || true"
                   v-model:value="form.dailyLimitAmount"
                   placeholder="请输入商户每日累计限额"
+                />
+              </a-form-item>
+            </a-col>
+            <a-col :span="12">
+              <a-form-item
+                label="订单默认超时时间(分钟)"
+                tooltip="受不同通道的超时时间处理方式不同，此处的超时时间指的是在系统订单存储的超时时间，通道方不一定会有效"
+              >
+                <a-input-number
+                  :precision="0"
+                  :min="5"
+                  :max="999999"
+                  :disabled="!edit"
+                  v-model:value="form.orderTimeout"
+                  placeholder="请输入订单默认超时时间(分钟)"
+                />
+              </a-form-item>
+            </a-col>
+            <a-col :span="12">
+              <a-form-item label="默认代理商" tooltip="注册商户时，默认的代理商">
+                <a-select
+                  style="width: 100%"
+                  v-model:value="form.defaultAgentNo"
+                  :disabled="!edit"
+                  :options="agentOptions"
+                  allow-clear
+                  placeholder="请选择默认代理商"
+                />
+              </a-form-item>
+            </a-col>
+            <a-col :span="12">
+              <a-form-item label="默认服务商" tooltip="注册代理商时，默认的服务商">
+                <a-select
+                  style="width: 100%"
+                  v-model:value="form.defaultIsvNo"
+                  :disabled="!edit || true"
+                  :options="isvOptions"
+                  allow-clear
+                  placeholder="请选择默认服务商"
                 />
               </a-form-item>
             </a-col>
@@ -63,18 +100,26 @@
     updateBasic,
   } from '@/views/daxpay/admin/config/platform/PlatformConfig.api'
   import { FormInstance } from 'ant-design-vue/lib/form'
+  import { LabeledValue } from 'ant-design-vue/lib/select'
+  import { dropdown as agentDropdown } from '@/views/daxpay/common/assist/basic/AgentQuery.api'
+  import { dropdown as isvDropdown } from '@/views/daxpay/common/assist/basic/IsvQuery.api'
 
   const { createMessage } = useMessage()
   const confirmLoading = ref(false)
   const form = ref<PlatformBasicConfig>({})
   const formRef = ref<FormInstance>()
   const edit = ref<boolean>(false)
+  const agentOptions = ref<LabeledValue[]>([])
+  const isvOptions = ref<LabeledValue[]>([])
 
   /**
    * 初始化数据
    */
   function initData() {
     confirmLoading.value = true
+    // 初始化代理商服务商
+    agentDropdown().then(({ data }) => (agentOptions.value = data))
+    isvDropdown().then(({ data }) => (isvOptions.value = data))
     getBasic().then(({ data }) => {
       form.value = data
       confirmLoading.value = false
@@ -93,6 +138,7 @@
           createMessage.success('更新成功')
           confirmLoading.value = false
           edit.value = false
+          initData()
         })
         .catch(() => {
           confirmLoading.value = false

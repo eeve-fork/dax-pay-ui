@@ -45,7 +45,11 @@
   // 自定义组件校验触发时机
   const { onFieldChange } = useInjectFormItemContext()
 
-  const { showable = false } = defineProps<{ showable?: boolean }>()
+  // size大小为kb
+  const { showable = false, maxSize = 1024 } = defineProps<{
+    showable?: boolean
+    maxSize?: number
+  }>()
 
   const picUrl = defineModel<string | undefined>('picUrl')
   const picId = defineModel<string | undefined>('picId')
@@ -68,6 +72,13 @@
    * 上传前处理
    */
   const beforeUpload: UploadProps['beforeUpload'] = async (file) => {
+    // 判断文件大小,
+    if (file.size / 1024 > maxSize) {
+      createMessage.error(
+        `${file.name} 文件大小为${formatFileSize(file.size)}, 超出了最大${formatFileSize(maxSize * 1024)}的限制!`,
+      )
+      return false
+    }
     // 前端直传获取签名链接
     await getUploadParams({
       fileName: file.name,
@@ -118,6 +129,21 @@
     picId.value = undefined
     onFieldChange()
     emit('uploadChange', undefined)
+  }
+
+  /**
+   * 格式化文件大小
+   * @param bytes 字节大小
+   * @returns 格式化后的文件大小字符串
+   */
+  function formatFileSize(bytes: number): string {
+    if (bytes === 0) return '0 B'
+
+    const k = 1024
+    const sizes = ['B', 'KB', 'MB', 'GB', 'TB']
+    const i = Math.floor(Math.log(bytes) / Math.log(k))
+
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
   }
 </script>
 

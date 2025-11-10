@@ -240,39 +240,122 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
-    //公共标题
+    
+    // 公共标题
     .common_title {
-      font-size: 0.9375vw;
+      font-size: 18px;
       width: 100%;
-      padding-left: 0.8333vw;
+      padding-left: 16px;
       position: relative;
       display: flex;
       align-items: center;
       color: #2e3853;
-      font-size: 0.9375vw;
       font-weight: 600;
       &::before {
         position: absolute;
         left: 0;
         content: '';
-        width: 0.2283vw;
-        height: 0.8854vw;
+        width: 4px;
+        height: 17px;
         background-color: #4073e1;
-        border-radius: 0px 0.5208vw 0.5208vw 0px;
+        border-radius: 0px 10px 10px 0px;
       }
     }
+    
     .chartPie_item {
       width: 32.5%;
-      padding-top: 1.0417vw;
+      padding-top: 20px;
       background-color: #ffffff;
-      border-radius: 0.5208vw;
+      border-radius: 10px;
     }
+    
     .tradeStatisticsBox {
       width: 100%;
-      padding-top: 1.0417vw;
-      margin-top: 1.0417vw;
+      padding-top: 20px;
+      margin-top: 20px;
       background-color: #ffffff;
-      border-radius: 0.5208vw;
+      border-radius: 10px;
+    }
+  }
+
+  // 响应式设计
+  @media (max-width: 1200px) {
+    .chartPie_index {
+      .common_title {
+        font-size: 16px;
+        padding-left: 14px;
+        &::before {
+          width: 3px;
+          height: 15px;
+          border-radius: 0px 8px 8px 0px;
+        }
+      }
+      
+      .chartPie_item {
+        width: 48%;
+        padding-top: 18px;
+        border-radius: 8px;
+        margin-bottom: 16px;
+      }
+      
+      .tradeStatisticsBox {
+        padding-top: 18px;
+        margin-top: 18px;
+        border-radius: 8px;
+      }
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .chartPie_index {
+      .common_title {
+        font-size: 14px;
+        padding-left: 12px;
+        &::before {
+          width: 3px;
+          height: 13px;
+          border-radius: 0px 6px 6px 0px;
+        }
+      }
+      
+      .chartPie_item {
+        width: 100%;
+        padding-top: 16px;
+        border-radius: 6px;
+        margin-bottom: 12px;
+      }
+      
+      .tradeStatisticsBox {
+        padding-top: 16px;
+        margin-top: 16px;
+        border-radius: 6px;
+      }
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .chartPie_index {
+      .common_title {
+        font-size: 13px;
+        padding-left: 10px;
+        &::before {
+          width: 2px;
+          height: 12px;
+          border-radius: 0px 5px 5px 0px;
+        }
+      }
+      
+      .chartPie_item {
+        padding-top: 14px;
+        border-radius: 5px;
+        margin-bottom: 10px;
+      }
+      
+      .tradeStatisticsBox {
+        padding-top: 14px;
+        margin-top: 14px;
+        border-radius: 5px;
+      }
     }
   }
 </style>

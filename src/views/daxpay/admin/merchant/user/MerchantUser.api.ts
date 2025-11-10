@@ -8,7 +8,7 @@ import { MchEntity } from '#/web'
  */
 export function page(params) {
   return defHttp.get<Result<PageResult<MerchantUserInfo[]>>>({
-    url: '/merchant/user/page',
+    url: '/admin/merchant/user/page',
     params,
   })
 }
@@ -18,7 +18,7 @@ export function page(params) {
  */
 export function get(id) {
   return defHttp.get<Result<MerchantUserInfo>>({
-    url: '/merchant/user/findById',
+    url: '/admin/merchant/user/findById',
     params: { id },
   })
 }
@@ -28,7 +28,7 @@ export function get(id) {
  */
 export function update(params) {
   return defHttp.post<Result>({
-    url: '/merchant/user/update',
+    url: '/admin/merchant/user/update',
     data: params,
   })
 }
@@ -38,7 +38,7 @@ export function update(params) {
  */
 export function restartPassword(userId, newPassword) {
   return defHttp.post({
-    url: '/merchant/user/restartPassword',
+    url: '/admin/merchant/user/restartPassword',
     data: { userId, newPassword },
   })
 }
@@ -48,7 +48,7 @@ export function restartPassword(userId, newPassword) {
  */
 export function restartPasswordBatch(userIds, newPassword) {
   return defHttp.post({
-    url: '/merchant/user/restartPasswordBatch',
+    url: '/admin/merchant/user/restartPasswordBatch',
     data: { userIds, newPassword },
   })
 }
@@ -58,7 +58,7 @@ export function restartPasswordBatch(userIds, newPassword) {
  */
 export function banUser(userId) {
   return defHttp.post({
-    url: '/merchant/user/ban',
+    url: '/admin/merchant/user/ban',
     params: { userId },
   })
 }
@@ -68,7 +68,7 @@ export function banUser(userId) {
  */
 export function banUserBatch(userIds) {
   return defHttp.post({
-    url: '/merchant/user/banBatch',
+    url: '/admin/merchant/user/banBatch',
     data: userIds,
   })
 }
@@ -78,7 +78,7 @@ export function banUserBatch(userIds) {
  */
 export function unlockUser(userId) {
   return defHttp.post({
-    url: '/merchant/user/unlock',
+    url: '/admin/merchant/user/unlock',
     params: { userId },
   })
 }
@@ -88,7 +88,7 @@ export function unlockUser(userId) {
  */
 export function unlockUserBatch(userIds) {
   return defHttp.post({
-    url: '/merchant/user/unlockBatch',
+    url: '/admin/merchant/user/unlockBatch',
     data: userIds,
   })
 }

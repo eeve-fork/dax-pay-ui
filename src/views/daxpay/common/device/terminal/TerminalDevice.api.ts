@@ -24,6 +24,26 @@ export function get(id: string) {
 }
 
 /**
+ * 分配代理商
+ */
+export function assignAgent(data) {
+  return defHttp.post<Result<void>>({
+    url: '/device/terminal/assignAgent',
+    data,
+  })
+}
+
+/**
+ * 取消分配代理商
+ */
+export function recoverAgent(data) {
+  return defHttp.post<Result<void>>({
+    url: '/device/terminal/recoverAgent',
+    data,
+  })
+}
+
+/**
  * 绑定商户和应用
  */
 export function bindMch(data) {

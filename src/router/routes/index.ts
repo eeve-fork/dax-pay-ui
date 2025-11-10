@@ -22,6 +22,9 @@ const redirectPage = () => {
   if (VITE_GLOB_APP_CLIENT === DaxPayClientEnum.ADMIN) {
     return PageEnum.ADMIN_HOME
   }
+  if (VITE_GLOB_APP_CLIENT === DaxPayClientEnum.AGENT) {
+    return PageEnum.AGENT_HOME
+  }
   return PageEnum.MERCHANT_HOME
 }
 
@@ -40,7 +43,8 @@ export const RootRoute: AppRouteRecordRaw = {
 export const LoginRoute: AppRouteRecordRaw = {
   path: '/login',
   name: 'Login',
-  component: () => import('@/views/sys/login/Login.vue'),
+  component: () => import('@/views/sys/login/LoginModern.vue'),
+  // component: () => import('@/views/sys/login/Login.vue'),
   meta: {
     title: '登录',
   },

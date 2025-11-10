@@ -9,16 +9,36 @@
       />
     </div>
     <div class="m-3 p-3 bg-white">
-      <vxe-toolbar ref="xToolbar" custom :refresh="{ queryMethod: queryPage }">
+      <vxe-toolbar ref="xToolbar" custom refresh :refresh-options="{ queryMethod: queryPage }">
         <template #buttons>
           <a-space>
-            <a-button type="primary" pre-icon="ant-design:plus-outlined" @click="add"
+            <a-button
+              type="primary"
+              pre-icon="ant-design:plus-outlined"
+              v-if="isAdmin()"
+              @click="add"
               >生成码牌</a-button
+            >
+            <a-button
+              type="primary"
+              pre-icon="ant-design:plus-outlined"
+              v-if="isMerchant()"
+              @click="bindBlank"
+              >绑定码牌</a-button
             >
             <a-dropdown v-if="batchOperateFlag">
               <a-button post-icon="ant-design:down-outlined"> 批量操作 </a-button>
               <template #overlay>
                 <a-menu>
+                  <a-menu-item>
+                    <a-link @click="batchExport()">批量导出</a-link>
+                  </a-menu-item>
+                  <a-menu-item v-if="isAdmin()">
+                    <a-link @click="assistAgent()">代理商划拨</a-link>
+                  </a-menu-item>
+                  <a-menu-item v-if="isAdmin()">
+                    <a-link @click="recoverAgentInfo()">代理商回收</a-link>
+                  </a-menu-item>
                   <a-menu-item v-if="isAgent() || isAdmin()">
                     <a-link @click="bindMchApp()">商户应用绑定</a-link>
                   </a-menu-item>
@@ -41,7 +61,7 @@
         <vxe-table
           height="auto"
           ref="xTable"
-          key-field="id"
+          :row-config="{ keyField: 'id' }"
           @checkbox-all="selectAllEvent"
           @checkbox-change="selectChangeEvent"
           :data="pagination.records"
@@ -56,14 +76,18 @@
           <vxe-column field="name" title="名称" :min-width="150">
             <template #default="{ row }"> {{ row.name || '未命名' }} </template>
           </vxe-column>
-          <vxe-column field="amount" title="类型" :min-width="130" align="center">
+          <vxe-column field="amountType" title="类型" :min-width="130" align="center">
             <template #default="{ row }">
               <a-tag :color="row.amountType === 'fixed' ? 'green' : 'blue'">
                 {{ row.amountType === 'fixed' ? '固定金额' : '任意金额' }}
               </a-tag>
             </template>
           </vxe-column>
-          <vxe-column field="amount" title="金额(元)" :min-width="150" align="center" />
+          <vxe-column field="amount" title="金额(元)" :min-width="150" align="center">
+            <template #default="{ row }">
+              {{ row.amount || '-' }}
+            </template>
+          </vxe-column>
           <vxe-column field="batchNo" title="批次号" :min-width="150" />
           <vxe-column field="enable" title="状态" align="center" :min-width="100">
             <template #default="{ row }">
@@ -72,9 +96,14 @@
               </a-tag>
             </template>
           </vxe-column>
+          <vxe-column field="readSystem" title="配置" align="center" :min-width="100">
+            <template #default="{ row }">
+              {{ row.readSystem ? '读取系统' : '自定义' }}
+            </template>
+          </vxe-column>
           <vxe-column field="agentName" title="代理商" v-if="isAdmin()" :min-width="150">
             <template #default="{ row }">
-              {{ row.agentName }}
+              {{ row.agentName || '未划拨' }}
             </template>
           </vxe-column>
           <vxe-column field="mchName" title="商户" v-if="isAdmin() || isAgent()" :min-width="150">
@@ -87,7 +116,7 @@
               {{ row.appName || '未绑定' }}
             </template>
           </vxe-column>
-          <vxe-column field="createTime" title="创建时间" :min-width="140" />
+          <vxe-column field="createTime" title="创建时间" :min-width="180" />
           <vxe-column fixed="right" :width="180" :showOverflow="false" title="操作">
             <template #default="{ row }">
               <a-link @click="edit(row)">编辑</a-link>
@@ -125,27 +154,39 @@
     </a-modal>
     <CashierCodeCreate ref="cashierCodeCreate" @ok="queryPage" />
     <CashierCodeEdit ref="cashierCodeEdit" @ok="queryPage" />
+    <AssistAgentModel ref="assistAgentModel" @ok="queryPage" />
     <BindMchAppModel ref="bindMchAppModel" @ok="queryPage" />
     <BindAppModel ref="bindAppModel" @ok="queryPage" />
+    <BindBlankModel ref="bindBlankModel" @ok="queryPage" />
   </div>
 </template>
 
 <script lang="ts" setup>
   import { computed, onMounted, ref } from 'vue'
-  import { del, getCodeLink, page, recoverAgent, unbindApp, unbindMch } from './CashierCode.api'
+  import {
+    del,
+    exportBatch,
+    getCodeLink,
+    page,
+    recoverAgent,
+    unbindApp,
+    unbindMch,
+  } from './CashierCode.api'
   import useTablePage from '@/hooks/bootx/useTablePage'
   import BQuery from '@/components/Bootx/Query/BQuery.vue'
-  import { LIST, QueryField, STRING } from '@/components/Bootx/Query/Query'
+  import { QueryField, STRING } from '@/components/Bootx/Query/Query'
   import { useMessage } from '@/hooks/web/useMessage'
   import { VxeTableInstance, VxeToolbarInstance } from 'vxe-table'
   import { FormEditType } from '@/enums/formTypeEnum'
   import CashierCodeCreate from './CashierCodeCreate.vue'
   import CashierCodeEdit from './CashierCodeEdit.vue'
   import ALink from '@/components/Link/Link.vue'
+  import AssistAgentModel from './AssistAgentModel.vue'
   import BindMchAppModel from './BindMchAppModel.vue'
   import BindAppModel from './BindAppModel.vue'
   import { isAdmin, isAgent, isMerchant } from '@/utils/env'
   import QrCode from '@/components/Qrcode/src/Qrcode.vue'
+  import BindBlankModel from './BindBlankModel.vue'
 
   // 使用hooks
   const {
@@ -188,8 +229,10 @@
   const xToolbar = ref<VxeToolbarInstance>()
   const cashierCodeCreate = ref<any>()
   const cashierCodeEdit = ref<any>()
+  const assistAgentModel = ref<any>()
   const bindMchAppModel = ref<any>()
   const bindAppModel = ref<any>()
+  const bindBlankModel = ref<any>()
 
   onMounted(() => {
     vxeBind()
@@ -197,7 +240,7 @@
   })
 
   function vxeBind() {
-    xTable.value?.connect(xToolbar.value as VxeToolbarInstance)
+    xTable.value?.connectToolbar(xToolbar.value as VxeToolbarInstance)
   }
 
   /**
@@ -225,6 +268,7 @@
     }).then(({ data }) => {
       batchOperateFlag.value = false
       pageQueryResHandel(data)
+      xTable.value?.clearCheckboxRow()
     })
     return Promise.resolve()
   }
@@ -253,12 +297,77 @@
   }
 
   /**
+   * 批量导出
+   */
+  function batchExport() {
+    createConfirm({
+      iconType: 'warning',
+      title: '警告',
+      content: '是否导出选择的码牌?',
+      onOk: () => {
+        const ids = xTable.value?.getCheckboxRecords().map((o) => o.id)
+        loading.value = true
+        exportBatch(ids)
+          .then((response) => {
+            // 创建一个临时 URL 指向这个 blob 对象
+            const url = window.URL.createObjectURL(new Blob([response.data]))
+            // 创建 a 标签进行下载
+            const link = document.createElement('a')
+            link.href = url
+            link.setAttribute('download', '码牌批量导出.xlsx') // 设置你想要的文件名
+            document.body.appendChild(link)
+            link.click()
+            // 清理资源
+            link.remove()
+            window.URL.revokeObjectURL(url)
+            createMessage.success('导出成功')
+          })
+          .finally(() => {
+            loading.value = false
+          })
+      },
+    })
+  }
+
+  /**
+   * 绑定空白码牌
+   */
+  function bindBlank() {
+    bindBlankModel.value.init()
+  }
+
+  /**
    * 查看
    */
   function show(record) {
     cashierCodeEdit.value.init(record.id, FormEditType.Show)
   }
 
+  /**
+   * 分配代理商
+   */
+  function assistAgent() {
+    const ids = xTable.value?.getCheckboxRecords().map((o) => o.id)
+    assistAgentModel.value.init(ids)
+  }
+
+  /**
+   * 回收代理商
+   */
+  function recoverAgentInfo() {
+    createConfirm({
+      iconType: 'warning',
+      title: '警告',
+      content: '是否从代理商中回收选中的码牌',
+      onOk: () => {
+        const ids = xTable.value?.getCheckboxRecords().map((o) => o.id)
+        recoverAgent({ ids }).then(() => {
+          createMessage.success('回收成功')
+          queryPage()
+        })
+      },
+    })
+  }
   /**
    * 绑定商户和应用
    */

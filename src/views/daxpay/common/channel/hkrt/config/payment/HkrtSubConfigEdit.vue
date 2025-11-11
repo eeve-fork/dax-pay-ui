@@ -31,7 +31,7 @@
         </a-form-item>
         <a-form-item label="海科商户号" name="merchNo">
           <a-select v-model:value="form.merchNo" placeholder="请选择海科进件商户" allow-clear>
-            <a-select-option v-for="item in onbMchNoList" :key="item.value">
+            <a-select-option v-for="item in onbMchNoList" :key="item.value" :value="item.value">
               {{ `${item.label || '-'}(${item.value})` }}
             </a-select-option>
           </a-select>
@@ -60,10 +60,7 @@
               v-model:checked="form.wxChannelAuth"
             />
           </a-form-item>
-          <a-form-item
-            label="微信AppId"
-            name="wxAppId"
-          >
+          <a-form-item label="微信AppId" name="wxAppId">
             <a-input
               v-model:value="form.wxAppId"
               :disabled="showable"
@@ -120,7 +117,7 @@
   import { BasicDrawer } from '@/components/Drawer'
   import { ChannelConfig } from '@/views/daxpay/common/merchant/config/ChannelConfig.api'
   import { LabeledValue } from 'ant-design-vue/lib/select'
-  import { ChannelEnum } from '@/enums/daxpay/daxpayEnum'
+  import { findByChannel } from '@/views/daxpay/common/onboarded/OnbMchInfo.api'
 
   const { handleCancel, diffForm, labelCol, wrapperCol, confirmLoading, visible, showable } =
     useFormEdit()
@@ -163,6 +160,9 @@
    * 初始化数据
    */
   function initData() {
+    findByChannel(channelConfig.value.mchNo, channelConfig.value.channel).then(({ data }) => {
+      onbMchNoList.value = data
+    })
   }
 
   /**

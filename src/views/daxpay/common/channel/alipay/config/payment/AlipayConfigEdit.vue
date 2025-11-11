@@ -22,7 +22,15 @@
           <a-input v-model:value="form.id" />
         </a-form-item>
         <a-form-item label="AppId" name="aliAppId">
-          <a-input v-model:value="form.aliAppId" placeholder="请输入支付宝商户AppId" />
+          <a-select
+            v-model:value="form.aliAppId"
+            placeholder="请选择支付宝商户AppId"
+            style="width: 100%"
+          >
+            <a-select-option v-for="item in onbMchNoList" :key="item.value" :value="item.value">
+              {{ `${item.label || '-'}(${item.value})` }}
+            </a-select-option>
+          </a-select>
         </a-form-item>
         <a-form-item label="是否启用" name="enable">
           <a-switch
@@ -185,6 +193,8 @@
   import { BasicDrawer } from '@/components/Drawer'
   import { Icon } from '@/components/Icon'
   import { ChannelConfig } from '@/views/daxpay/common/merchant/config/ChannelConfig.api'
+  import { LabeledValue } from 'ant-design-vue/lib/select'
+  import { findByChannel } from '@/views/daxpay/common/onboarded/OnbMchInfo.api'
 
   const { handleCancel, diffForm, labelCol, wrapperCol, confirmLoading, visible, showable } =
     useFormEdit()
@@ -194,6 +204,7 @@
   const formRef = ref<FormInstance>()
   const channelConfig = ref<ChannelConfig>({})
   const isIsv = ref<boolean>(false)
+  const onbMchNoList = ref<LabeledValue[]>([])
 
   const form = ref<AlipayConfig>({
     aliAppId: '',
@@ -211,7 +222,7 @@
   // 校验
   const rules = computed(() => {
     return {
-      aliAppId: [{ required: true, message: '请输入AppId' }],
+      aliAppId: [{ required: true, message: '请选择支付宝商户AppId' }],
       enable: [{ required: true, message: '请选择是否启用' }],
       authType: [{ required: true, message: '请选择认证方式' }],
       appAuthToken: [{ required: isIsv.value, message: '请输入特约商户AppAuthToken' }],
@@ -236,18 +247,28 @@
     isIsv.value = isv
     resetForm()
     visible.value = true
+    initData()
     getInfo()
+  }
+
+  /**
+   * 初始化数据
+   */
+  function initData() {
+    findByChannel(channelConfig.value.mchNo, channelConfig.value.channel).then(({ data }) => {
+      onbMchNoList.value = data
+    })
   }
   /**
    * 获取信息
    */
   function getInfo() {
-      getConfig(channelConfig.value.appId).then(({ data }) => {
-        confirmLoading.value = true
-        rawForm = { ...data }
-        form.value = data
-        confirmLoading.value = false
-      })
+    getConfig(channelConfig.value.appId).then(({ data }) => {
+      confirmLoading.value = true
+      rawForm = { ...data }
+      form.value = data
+      confirmLoading.value = false
+    })
   }
   /**
    * 更新

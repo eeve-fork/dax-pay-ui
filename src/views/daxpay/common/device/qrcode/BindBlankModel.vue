@@ -54,7 +54,7 @@
   import { LabeledValue } from 'ant-design-vue/lib/select'
   import { useMessage } from '@/hooks/web/useMessage'
   import { dropdown as mchAppDropdown } from '@/views/daxpay/common/assist/basic/MchAppQuery.api'
-  import {bindApp, bindBlank} from './CashierCode.api'
+  import { bindBlank } from './CashierCode.api'
 
   const { createConfirm, createMessage } = useMessage()
   const { handleCancel, confirmLoading, visible, showable, labelCol, wrapperCol } = useFormEdit()

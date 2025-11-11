@@ -21,6 +21,13 @@
         <a-form-item label="主键" name="id" :hidden="true">
           <a-input v-model:value="form.id" />
         </a-form-item>
+        <a-form-item label="是否启用" name="enable">
+          <a-switch
+            checked-children="启用"
+            un-checked-children="停用"
+            v-model:checked="form.enable"
+          />
+        </a-form-item>
         <a-form-item
           name="appAuthToken"
           label="应用授权Token"
@@ -31,12 +38,20 @@
             placeholder="请输入支付宝商户应用授权Token(app_auth_token)"
           />
         </a-form-item>
-        <a-form-item label="是否启用" name="enable">
-          <a-switch
-            checked-children="启用"
-            un-checked-children="停用"
-            v-model:checked="form.enable"
-          />
+        <a-form-item
+          label="应用授权令牌"
+          name="appAuthToken"
+          :rules="[{ required: true, message: '请选择支付宝应用授权令牌' }]"
+        >
+          <a-select
+            v-model:value="form.appAuthToken"
+            :disabled="showable"
+            placeholder="请选择支付宝应用授权令牌"
+          >
+            <a-select-option v-for="item in onbMchNoList" :key="item.value" :value="item.value">
+              {{ `${item.label || '-'}(${item.value})` }}
+            </a-select-option>
+          </a-select>
         </a-form-item>
         <a-form-item
           name="alipayUserId"
@@ -71,6 +86,8 @@
   import { useMessage } from '@/hooks/web/useMessage'
   import { BasicDrawer } from '@/components/Drawer'
   import { ChannelConfig } from '@/views/daxpay/common/merchant/config/ChannelConfig.api'
+  import { LabeledValue } from 'ant-design-vue/lib/select'
+  import { findByChannel } from '@/views/daxpay/common/onboarded/OnbMchInfo.api'
 
   const { handleCancel, diffForm, labelCol, wrapperCol, confirmLoading, visible, showable } =
     useFormEdit()
@@ -78,6 +95,7 @@
 
   const formRef = ref<FormInstance>()
   const channelConfig = ref<ChannelConfig>({})
+  const onbMchNoList = ref<LabeledValue[]>([])
 
   const form = ref({
     enable: true,
@@ -86,7 +104,7 @@
   // 校验
   const rules = computed(() => {
     return {
-      appAuthToken: [{ required: true, message: '应用授权Token不可为空' }],
+      appAuthToken: [{ required: true, message: '应用授权令牌不可为空' }],
       enable: [{ required: true, message: '请选择是否启用' }],
     } as Record<string, Rule[]>
   })
@@ -99,7 +117,17 @@
     channelConfig.value = config
     resetForm()
     visible.value = true
+    initData()
     getInfo()
+  }
+
+  /**
+   * 初始化数据
+   */
+  function initData() {
+    findByChannel(channelConfig.value.mchNo, channelConfig.value.channel).then(({ data }) => {
+      onbMchNoList.value = data
+    })
   }
 
   /**

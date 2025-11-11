@@ -23,7 +23,11 @@
           <a-input v-model:value="form.id" />
         </a-form-item>
         <a-form-item label="汇付应用号" name="adaPayAppId">
-          <a-input v-model:value="form.adaPayAppId" placeholder="请输入汇付AppId" />
+          <a-select v-model:value="form.adaPayAppId" placeholder="请选择汇付应用号" allow-clear>
+            <a-select-option v-for="item in onbMchNoList" :key="item.value" :value="item.value">
+              {{ `${item.label || '-'}(${item.value})` }}
+            </a-select-option>
+          </a-select>
         </a-form-item>
         <a-form-item label="是否启用" name="enable">
           <a-switch
@@ -104,6 +108,8 @@
   import { useMessage } from '@/hooks/web/useMessage'
   import { BasicDrawer } from '@/components/Drawer'
   import { ChannelConfig } from '@/views/daxpay/common/merchant/config/ChannelConfig.api'
+  import { LabeledValue } from 'ant-design-vue/lib/select'
+  import { findByChannel } from '@/views/daxpay/common/onboarded/OnbMchInfo.api'
 
   const { handleCancel, diffForm, labelCol, wrapperCol, confirmLoading, visible, showable } =
     useFormEdit()
@@ -117,15 +123,15 @@
     sandbox: false,
   })
   let rawForm: any = {}
+  const onbMchNoList = ref<LabeledValue[]>([])
   // 校验
   const rules = computed(() => {
     return {
-      adaPayAppId: [{ required: true, message: '请输入汇付AppId' }],
+      adaPayAppId: [{ required: true, message: '请选择汇付应用号' }],
       enable: [{ required: true, message: '请选择是否启用' }],
       sandbox: [{ required: true, message: '请选择是否为沙箱环境' }],
       apiKey: [{ required: true, message: '请输入汇付交易密钥' }],
       mchPrivateKey: [{ required: true, message: '请输入汇付商户RSA私钥' }],
-      // adaPayPublicKey: [{ required: true, message: '请输入汇平台RSA公钥' }],
     } as Record<string, Rule[]>
   })
   // 事件
@@ -135,9 +141,19 @@
    */
   function init(config: ChannelConfig) {
     channelConfig.value = config
+    initData()
     resetForm()
     visible.value = true
     getInfo()
+  }
+
+  /**
+   * 初始化数据
+   */
+  function initData() {
+    findByChannel(channelConfig.value.mchNo, channelConfig.value.channel).then(({ data }) => {
+      onbMchNoList.value = data
+    })
   }
 
   /**

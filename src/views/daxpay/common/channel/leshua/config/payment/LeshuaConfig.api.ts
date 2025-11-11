@@ -23,7 +23,7 @@ export function update(obj: LeshuaSubConfig) {
 }
 
 /**
- * 子商户服务商配置
+ * 乐刷支付子商户配置
  */
 export interface LeshuaSubConfig extends MchEntity {
   // 服务商号

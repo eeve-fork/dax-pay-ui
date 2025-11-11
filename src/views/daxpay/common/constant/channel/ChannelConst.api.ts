@@ -31,15 +31,6 @@ export const dropdownByIsv = () => {
   })
 }
 
-/**
- * 进件通道列表
- */
-export const dropdownByApply = () => {
-  return defHttp.get<Result<LabeledValue[]>>({
-    url: '/const/channel/dropdownByApply',
-  })
-}
-
 export interface ChannelConst extends BaseEntity {
   /** 编码 */
   code?: string

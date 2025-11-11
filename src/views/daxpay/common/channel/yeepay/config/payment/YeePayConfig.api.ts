@@ -23,7 +23,7 @@ export function update(obj: YeePaySubConfig) {
 }
 
 /**
- * 易宝子商户配置
+ * 易宝支付子商户配置
  */
 export interface YeePaySubConfig extends MchEntity {
   // 易宝商户号

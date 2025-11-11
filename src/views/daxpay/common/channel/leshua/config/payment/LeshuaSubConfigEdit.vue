@@ -38,7 +38,7 @@
           :rules="[{ required: true, message: '请选择乐刷进件商户' }]"
         >
           <a-select v-model:value="form.lsMchNo" placeholder="请选择乐刷进件商户" allow-clear>
-            <a-select-option v-for="item in onbMchNoList" :key="item.value">
+            <a-select-option v-for="item in onbMchNoList" :key="item.value" :value="item.value">
               {{ `${item.label || '-'}(${item.value})` }}
             </a-select-option>
           </a-select>
@@ -114,6 +114,7 @@
   import { BasicDrawer } from '@/components/Drawer'
   import { ChannelConfig } from '@/views/daxpay/common/merchant/config/ChannelConfig.api'
   import { LabeledValue } from 'ant-design-vue/lib/select'
+  import { findByChannel } from '@/views/daxpay/common/onboarded/OnbMchInfo.api'
 
   const { handleCancel, diffForm, labelCol, wrapperCol, confirmLoading, visible, showable } =
     useFormEdit()
@@ -144,6 +145,14 @@
     getInfo()
   }
 
+  /**
+   * 初始化数据
+   */
+  function initData() {
+    findByChannel(channelConfig.value.mchNo, channelConfig.value.channel).then(({ data }) => {
+      onbMchNoList.value = data
+    })
+  }
 
   /**
    * 获取信息

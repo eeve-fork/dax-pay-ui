@@ -30,7 +30,15 @@
           />
         </a-form-item>
         <a-form-item label="易宝商户号" name="merchantNo">
-          <a-input v-model:value="form.merchantNo" placeholder="请输入易宝商户号" />
+          <a-select
+            v-model:value="form.merchantNo"
+            :disabled="showable"
+            placeholder="请选择易宝进件商户"
+          >
+            <a-select-option v-for="item in onbMchNoList" :key="item.value" :value="item.value">
+              {{ `${item.label || '-'}(${item.value})` }}
+            </a-select-option>
+          </a-select>
         </a-form-item>
         <a-divider>微信认证配置</a-divider>
         <a-form-item
@@ -94,6 +102,8 @@
   import { useMessage } from '@/hooks/web/useMessage'
   import { BasicDrawer } from '@/components/Drawer'
   import { ChannelConfig } from '@/views/daxpay/common/merchant/config/ChannelConfig.api'
+  import { LabeledValue } from 'ant-design-vue/lib/select'
+  import { findByChannel } from '@/views/daxpay/common/onboarded/OnbMchInfo.api'
 
   const { handleCancel, diffForm, labelCol, wrapperCol, confirmLoading, visible, showable } =
     useFormEdit()
@@ -101,12 +111,16 @@
 
   const formRef = ref<FormInstance>()
   const channelConfig = ref<ChannelConfig>({})
-  const form = ref<YeePaySubConfig>({})
+  const onbMchNoList = ref<LabeledValue[]>([])
+  const form = ref<YeePaySubConfig>({
+    readSystem: true,
+  })
   let rawForm: any = {}
 
   // 校验
   const rules = computed(() => {
     return {
+      onbMchNo: [{ required: true, message: '请选择易宝进件商户' }],
       enable: [{ required: true, message: '请选择是否启用' }],
       merchantNo: [{ required: true, message: '请输入易宝商户号' }],
     } as Record<string, Rule[]>
@@ -122,7 +136,17 @@
     channelConfig.value = config
     resetForm()
     visible.value = true
+    initData()
     getInfo()
+  }
+
+  /**
+   * 初始化数据
+   */
+  function initData() {
+    findByChannel(channelConfig.value.mchNo, channelConfig.value.channel).then(({ data }) => {
+      onbMchNoList.value = data
+    })
   }
 
   /**

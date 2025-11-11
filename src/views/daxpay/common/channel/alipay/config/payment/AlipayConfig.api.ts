@@ -42,7 +42,6 @@ export function updateSub(obj: AlipaySubConfig) {
   })
 }
 
-
 /**
  * 支付宝配置
  */
@@ -80,12 +79,12 @@ export interface AlipayConfig extends MchEntity {
 }
 
 /**
- * 子商户服务商配置
+ * 支付宝子商户配置
  */
 export interface AlipaySubConfig extends MchEntity {
   // 服务商号
   isvNo?: string
-  // 应用授权Token
+  // 应用授权令牌
   appAuthToken?: string
   // 是否启用
   enable: boolean

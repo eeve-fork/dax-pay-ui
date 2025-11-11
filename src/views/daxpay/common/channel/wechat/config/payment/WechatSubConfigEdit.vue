@@ -29,12 +29,20 @@
             v-model:checked="form.enable"
           />
         </a-form-item>
-        <a-form-item label="微信子商户号" name="subMchId">
-          <a-input
+        <a-form-item
+          label="微信子商户号"
+          name="subMchId"
+          :rules="[{ required: true, message: '请选择微信子商户号' }]"
+        >
+          <a-select
             v-model:value="form.subMchId"
             :disabled="showable"
-            placeholder="请输入微信子商户号"
-          />
+            placeholder="请选择微信子商户号"
+          >
+            <a-select-option v-for="item in onbMchNoList" :key="item.value" :value="item.value">
+              {{ `${item.label || '-'}(${item.value})` }}
+            </a-select-option>
+          </a-select>
         </a-form-item>
         <a-divider>授权认证配置</a-divider>
         <a-form-item label="OpenId获取方式" name="authType">
@@ -99,11 +107,13 @@
 <script lang="ts" setup>
   import { computed, nextTick, ref } from 'vue'
   import useFormEdit from '@/hooks/bootx/useFormEdit'
-  import {getSubConfig, updateSub, WechatPaySubConfig} from './WechatPayConfig.api'
+  import { getSubConfig, updateSub, WechatPaySubConfig } from './WechatPayConfig.api'
   import { FormInstance, Rule } from 'ant-design-vue/lib/form'
   import { BasicDrawer } from '@/components/Drawer'
   import { useMessage } from '@/hooks/web/useMessage'
   import { ChannelConfig } from '@/views/daxpay/common/merchant/config/ChannelConfig.api'
+  import { LabeledValue } from 'ant-design-vue/lib/select'
+  import { findByChannel } from '@/views/daxpay/common/onboarded/OnbMchInfo.api'
 
   const { handleCancel, labelCol, wrapperCol, confirmLoading, visible, showable } = useFormEdit()
   // 文件上传
@@ -117,11 +127,12 @@
   })
 
   const channelConfig = ref<ChannelConfig>({})
+  const onbMchNoList = ref<LabeledValue[]>([])
 
   // 校验
   const rules = computed(() => {
     return {
-      subMchId: [{ required: true, message: '请输入子商户商户号' }],
+      subMchId: [{ required: true, message: '请选择微信子商户号' }],
       enable: [{ required: true, message: '请选择是否启用' }],
       authType: [{ required: true, message: '请选择OpenId获取方式' }],
     } as Record<string, Rule[]>
@@ -134,9 +145,19 @@
    */
   function init(config: ChannelConfig) {
     channelConfig.value = config
-    visible.value = true
+    initData()
     resetForm()
+    visible.value = true
     getInfo()
+  }
+
+  /**
+   * 初始化数据
+   */
+  function initData() {
+    findByChannel(channelConfig.value.mchNo, channelConfig.value.channel).then(({ data }) => {
+      onbMchNoList.value = data
+    })
   }
 
   /**

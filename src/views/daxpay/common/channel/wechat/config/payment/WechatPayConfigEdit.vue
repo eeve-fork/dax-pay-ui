@@ -22,7 +22,11 @@
           <a-input v-model:value="form.id" :disabled="showable" />
         </a-form-item>
         <a-form-item label="商户号" name="wxMchId">
-          <a-input v-model:value="form.wxMchId" :disabled="showable" placeholder="请输入商户号" />
+          <a-select v-model:value="form.wxMchId" :disabled="showable" placeholder="请选择商户号">
+            <a-select-option v-for="item in onbMchNoList" :key="item.value" :value="item.value">
+              {{ item.label }}
+            </a-select-option>
+          </a-select>
         </a-form-item>
         <a-form-item label="应用号(AppId)" name="wxAppId">
           <a-input
@@ -30,26 +34,6 @@
             :disabled="showable"
             placeholder="请输入微信应用AppId"
           />
-        </a-form-item>
-        <a-form-item label="子商户号" name="subMchId" v-if="isIsv">
-          <a-input
-            v-model:value="form.subMchId"
-            :disabled="showable"
-            placeholder="请输入子商户号"
-          />
-        </a-form-item>
-        <a-form-item label="子应用号(subAppId)" name="subAppId" v-if="isIsv">
-          <a-input
-            v-model:value="form.subAppId"
-            :disabled="showable"
-            placeholder="请输入微信子应用AppId"
-          />
-        </a-form-item>
-        <a-form-item label="OpenId获取方式" name="authType" v-if="isIsv">
-          <a-radio-group v-model:value="form.authType" button-style="solid">
-            <a-radio-button value="sp"> 服务商用户标识 </a-radio-button>
-            <a-radio-button value="sub"> 子商户应用用户标识 </a-radio-button>
-          </a-radio-group>
         </a-form-item>
         <a-form-item label="公众号AppSecret" name="appSecret">
           <a-input
@@ -251,6 +235,8 @@
   import Icon from '@/components/Icon/Icon.vue'
   import { useMessage } from '@/hooks/web/useMessage'
   import { ChannelConfig } from '@/views/daxpay/common/merchant/config/ChannelConfig.api'
+  import { LabeledValue } from 'ant-design-vue/lib/select'
+  import { findByChannel } from '@/views/daxpay/common/onboarded/OnbMchInfo.api'
 
   const { handleCancel, diffForm, labelCol, wrapperCol, confirmLoading, visible, showable } =
     useFormEdit()
@@ -269,11 +255,12 @@
   })
 
   const channelConfig = ref<ChannelConfig>({})
+  const onbMchNoList = ref<LabeledValue[]>([])
 
   // 校验
   const rules = computed(() => {
     return {
-      wxMchId: [{ required: true, message: '请输入商户号' }],
+      wxMchId: [{ required: true, message: '请选择商户号' }],
       wxAppId: [{ required: true, message: '请输入应用编号' }],
       subMchId: [{ required: isIsv.value, message: '请输入子商户号' }],
       enable: [{ required: true, message: '请选择是否启用' }],
@@ -308,7 +295,16 @@
     isIsv.value = isv
     visible.value = true
     resetForm()
+    initData()
     getInfo()
+  }
+  /**
+   * 初始化进件商户号列表
+   */
+  function initData() {
+    findByChannel(channelConfig.value.mchNo, channelConfig.value.channel).then(({ data }) => {
+      onbMchNoList.value = data
+    })
   }
   /**
    * 获取信息

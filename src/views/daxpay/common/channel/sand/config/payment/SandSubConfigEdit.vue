@@ -31,6 +31,11 @@
         </a-form-item>
         <a-form-item label="商户号" name="merchantNo">
           <a-input v-model:value="form.merchantNo" placeholder="请输入杉德支付商户号" />
+          <a-select v-model:value="form.merchantNo" placeholder="请选择杉德进件商户">
+            <a-select-option v-for="item in onbMchNoList" :key="item.value">
+              {{ `${item.label || '-'}(${item.value})` }}
+            </a-select-option>
+          </a-select>
         </a-form-item>
         <a-form-item label="门店号" name="storeId" tooltip="通常默认为100001">
           <a-input v-model:value="form.storeId" placeholder="请输入杉德支付门店号" />
@@ -56,10 +61,7 @@
               v-model:checked="form.wxChannelAuth"
             />
           </a-form-item>
-          <a-form-item
-            label="微信AppId"
-            name="wxAppId"
-          >
+          <a-form-item label="微信AppId" name="wxAppId">
             <a-input
               v-model:value="form.wxAppId"
               :disabled="showable"
@@ -115,6 +117,8 @@
   import { useMessage } from '@/hooks/web/useMessage'
   import { BasicDrawer } from '@/components/Drawer'
   import { ChannelConfig } from '@/views/daxpay/common/merchant/config/ChannelConfig.api'
+  import { LabeledValue } from 'ant-design-vue/lib/select'
+  import { findByChannel } from '@/views/daxpay/common/onboarded/OnbMchInfo.api'
 
   const { handleCancel, diffForm, labelCol, wrapperCol, confirmLoading, visible, showable } =
     useFormEdit()
@@ -124,6 +128,7 @@
   const channelConfig = ref<ChannelConfig>({
     enable: true,
   })
+  const onbMchNoList = ref<LabeledValue[]>([])
   const form = ref<SandSubConfig>({
     enable: true,
     storeId: '100001',
@@ -134,6 +139,7 @@
   // 校验
   const rules = computed(() => {
     return {
+      onbMchNo: [{ required: true, message: '请选择杉德进件商户' }],
       enable: [{ required: true, message: '请选择是否启用' }],
       merchantNo: [{ required: true, message: '请输入商户编号' }],
       storeId: [{ required: true, message: '请输入门店号' }],
@@ -148,7 +154,17 @@
     channelConfig.value = config
     resetForm()
     visible.value = true
+    initData()
     getInfo()
+  }
+
+  /**
+   * 初始化数据
+   */
+  function initData() {
+    findByChannel(channelConfig.value.mchNo, channelConfig.value.channel).then(({ data }) => {
+      onbMchNoList.value = data
+    })
   }
 
   /**

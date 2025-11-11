@@ -30,7 +30,11 @@
           />
         </a-form-item>
         <a-form-item label="商户号" name="merchantNo">
-          <a-input v-model:value="form.merchantNo" placeholder="请输入富友支付商户号" />
+          <a-select v-model:value="form.merchantNo" placeholder="请选择富友进件商户">
+            <a-select-option v-for="item in onbMchNoList" :key="item.value" :value="item.value">
+              {{ `${item.label || '-'}(${item.value})` }}
+            </a-select-option>
+          </a-select>
         </a-form-item>
         <a-form-item label="终端号" name="termNo" tooltip="没有真实终端号统一填88888888">
           <a-input v-model:value="form.termNo" placeholder="请输入富友支付终端号" />
@@ -56,10 +60,7 @@
               v-model:checked="form.wxChannelAuth"
             />
           </a-form-item>
-          <a-form-item
-            label="微信AppId"
-            name="wxAppId"
-          >
+          <a-form-item label="微信AppId" name="wxAppId">
             <a-input
               v-model:value="form.wxAppId"
               :disabled="showable"
@@ -115,6 +116,8 @@
   import { useMessage } from '@/hooks/web/useMessage'
   import { BasicDrawer } from '@/components/Drawer'
   import { ChannelConfig } from '@/views/daxpay/common/merchant/config/ChannelConfig.api'
+  import { LabeledValue } from 'ant-design-vue/lib/select'
+  import { findByChannel } from '@/views/daxpay/common/onboarded/OnbMchInfo.api'
 
   const { handleCancel, diffForm, labelCol, wrapperCol, confirmLoading, visible, showable } =
     useFormEdit()
@@ -124,6 +127,7 @@
   const channelConfig = ref<ChannelConfig>({
     enable: true,
   })
+  const onbMchNoList = ref<LabeledValue[]>([])
   const form = ref<FouyouSubConfig>({
     enable: true,
     termNo: '8888888',
@@ -148,7 +152,17 @@
     channelConfig.value = config
     resetForm()
     visible.value = true
+    initData()
     getInfo()
+  }
+
+  /**
+   * 初始化数据
+   */
+  function initData() {
+    findByChannel(channelConfig.value.mchNo, channelConfig.value.channel).then(({ data }) => {
+      onbMchNoList.value = data
+    })
   }
 
   /**

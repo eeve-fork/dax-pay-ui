@@ -12,15 +12,23 @@ export function initWebsiteConfig() {
   const websiteConfig = localStorage.getItem('websiteConfig')
   if (websiteConfig) {
     WEBSITE_CONFIG.value = JSON.parse(websiteConfig)
-    // @ts-ignore 动态更新 favicon
-    document.getElementById('favicon').href = getFavicon()
+    const favicon = document.getElementById('favicon')
+    if (favicon) {
+      console.log(123)
+      // @ts-ignore 动态更新 favicon
+      favicon.href = getFavicon()
+    }
   }
   // 然后更新配置
   getWebsite().then((res) => {
     WEBSITE_CONFIG.value = res.data
     localStorage.setItem('websiteConfig', JSON.stringify(res.data))
     // @ts-ignore 动态更新 favicon
-    document.getElementById('favicon').href = getFavicon()
+    const favicon = document.getElementById('favicon')
+    if (favicon) {
+      // @ts-ignore 动态更新 favicon
+      favicon.href = getFavicon()
+    }
   })
 }
 

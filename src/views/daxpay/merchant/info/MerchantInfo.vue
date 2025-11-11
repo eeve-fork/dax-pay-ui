@@ -31,36 +31,12 @@
           <a-col :span="12">
             <div class="action-buttons">
               <a-row :gutter="[16, 16]">
-                <a-col :span="12">
+                <a-col :span="24">
                   <a-button type="primary" size="large" block @click="showCredentialConfig">
                     <template #icon>
                       <Icon icon="ant-design:setting-outlined" />
                     </template>
                     对接配置
-                  </a-button>
-                </a-col>
-                <a-col :span="12">
-                  <a-button size="large" block @click="showMainBody">
-                    <template #icon>
-                      <Icon icon="ant-design:user-outlined" />
-                    </template>
-                    主体信息
-                  </a-button>
-                </a-col>
-                <a-col :span="12">
-                  <a-button size="large" block @click="showShopInfo">
-                    <template #icon>
-                      <Icon icon="ant-design:shop-outlined" />
-                    </template>
-                    经营信息
-                  </a-button>
-                </a-col>
-                <a-col :span="12">
-                  <a-button size="large" block @click="showSettleInfo">
-                    <template #icon>
-                      <Icon icon="ant-design:bank-outlined" />
-                    </template>
-                    结算信息
                   </a-button>
                 </a-col>
               </a-row>

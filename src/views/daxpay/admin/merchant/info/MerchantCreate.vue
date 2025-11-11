@@ -19,7 +19,7 @@
         :wrapper-col="wrapperCol"
       >
         <template v-if="isAdmin()">
-          <a-form-item label="服务商" name="providerNo">
+          <a-form-item label="服务商" name="isvNo">
             <a-select
               style="width: 100%"
               v-model:value="form.isvNo"

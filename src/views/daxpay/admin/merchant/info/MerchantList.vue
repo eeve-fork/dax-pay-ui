@@ -39,17 +39,6 @@
               <span v-else color="red">禁用</span>
             </template>
           </vxe-column>
-          <vxe-column field="profileAuth" title="主体信息认证" :min-width="120" align="center">
-            <template #default="{ row }">
-              <a-tag v-if="row.profileAuth === 'success'" color="green">已认证</a-tag>
-              <a-tooltip v-else-if="row.profileAuth === 'failed'" placement="top">
-                <template #title>{{ row.profileAuthErrorMsg }}</template>
-                <a-tag color="red">认证失败</a-tag>
-              </a-tooltip>
-              <a-tag v-else-if="row.profileAuth === 'waiting'" color="orange">待认证</a-tag>
-              <a-tag v-else>未认证</a-tag>
-            </template>
-          </vxe-column>
           <vxe-column field="isvName" title="服务商名称" :min-width="150" />
           <vxe-column field="createTime" title="创建时间" :min-width="140" />
           <vxe-column fixed="right" :width="120" :showOverflow="false" title="操作" align="center">

@@ -14,7 +14,8 @@
       <a-form-item label="商户" name="mchNo">
         <a-select
           style="width: 320px"
-          :filter-option="search"
+          show-search
+            :filter-option="search"
           :options="merchantList"
           v-model:value="form.mchNo"
           placeholder="请选择商户"
@@ -23,7 +24,8 @@
       </a-form-item>
       <a-form-item label="商户应用" name="appId" v-show="form.mchNo">
         <a-select
-          :filter-option="search"
+          show-search
+            :filter-option="search"
           :options="mchAppList"
           v-model:value="form.appId"
           placeholder="请选择商户应用"

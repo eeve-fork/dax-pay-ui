@@ -23,6 +23,7 @@
         </a-form-item>
         <a-form-item label="所属商户" v-if="addable" name="mchNo">
           <a-select
+            show-search
             :filter-option="search"
             v-model:value="form.mchNo"
             :disabled="!addable"

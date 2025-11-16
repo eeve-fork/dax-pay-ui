@@ -23,6 +23,7 @@
         </a-form-item>
         <a-form-item label="商户" name="mchNo">
           <a-select
+            show-search
             :filter-option="search"
             v-model:value="form.mchNo"
             placeholder="请选择商户"

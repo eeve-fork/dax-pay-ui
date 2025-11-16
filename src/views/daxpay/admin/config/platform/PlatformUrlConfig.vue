@@ -18,21 +18,6 @@
               </a-form-item>
             </a-col>
             <a-col :span="12">
-              <a-form-item label="代理商端网址">
-                <a-input-group compact>
-                  <a-input
-                    :disabled="!edit"
-                    style="width: calc(100% - 60px)"
-                    v-model:value="form.agentWebUrl"
-                    placeholder="请输入代理商端网址"
-                  />
-                  <a-button type="primary" :disabled="!edit" @click="checkAgentUrl">检查</a-button>
-                </a-input-group>
-              </a-form-item>
-            </a-col>
-          </a-row>
-          <a-row :gutter="[128, 24]">
-            <a-col :span="12">
               <a-form-item label="运营端网址">
                 <a-input-group compact>
                   <a-input
@@ -60,8 +45,6 @@
                 </a-input-group>
               </a-form-item>
             </a-col>
-          </a-row>
-          <a-row :gutter="[128, 24]">
             <a-col :span="12">
               <a-form-item label="网关H5端地址">
                 <a-input-group compact>
@@ -139,13 +122,6 @@
    */
   function checkMchUrl() {
     checkUrl(`${removeTrailingSlash(form.value.mchWebUrl)}/server/echo`, '商户端地址')
-  }
-
-  /**
-   * 检查代理端地址
-   */
-  function checkAgentUrl() {
-    checkUrl(`${removeTrailingSlash(form.value.agentWebUrl)}/server/echo`, '代理端地址')
   }
 
   /**

@@ -76,7 +76,10 @@ export default function () {
    * 搜索，供select下拉框组件进行筛选时使用(:filter-option="search")
    */
   function search(input: string, option) {
-    return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
+    return (
+      option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0 ||
+      option.value.toLowerCase().indexOf(input.toLowerCase()) >= 0
+    )
   }
 
   /**

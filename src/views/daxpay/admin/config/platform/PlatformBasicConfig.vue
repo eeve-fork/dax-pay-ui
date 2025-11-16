@@ -56,7 +56,7 @@
               </a-form-item>
             </a-col>
             <a-col :span="12">
-              <a-form-item label="默认服务商" tooltip="注册代理商时，默认的服务商">
+              <a-form-item label="默认服务商" tooltip="注册商户时，默认的服务商">
                 <a-select
                   style="width: 100%"
                   v-model:value="form.defaultIsvNo"

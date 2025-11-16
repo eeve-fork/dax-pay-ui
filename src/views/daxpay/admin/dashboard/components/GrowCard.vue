@@ -134,22 +134,9 @@
                 </div>
               </div>
               <div class="bus_item">
-                <div class="title">代理商</div>
-                <div class="number">
-                  <CountTo :startVal="0" :endVal="mchData.normalAppCount || 0" />
-                </div>
-              </div>
-              <div class="bus_item">
-                <div class="title">商户应用</div>
+                <div class="title">应用</div>
                 <div class="number">
                   <CountTo :startVal="0" :endVal="mchData.partnerCount || 0" />
-                </div>
-              </div>
-
-              <div class="bus_item">
-                <div class="title">*</div>
-                <div class="number">
-                  <CountTo :startVal="0" :endVal="mchData.partnerAppCount || 0" />
                 </div>
               </div>
             </div>

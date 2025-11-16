@@ -20,6 +20,7 @@
       >
         <a-form-item label="应用" name="appId">
           <a-select
+            show-search
             :filter-option="search"
             :options="mchAppOptions"
             v-model:value="form.appId"

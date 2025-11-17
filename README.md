@@ -14,10 +14,14 @@ vite5 + vue3.4 + vben admin2 + antd vue4 搭建
 ```shell
 # 安装项目依赖
 pnpm install
-# 启动项目
-pnpm run dev
-# 构建打包
-pnpm build
+# 启动项目(运营端)
+pnpm run dev:admin
+# 启动项目(商户端)
+pnpm run dev:merchant
+# 构建打包(运营端)
+pnpm build:admin
+# 构建打包(商户端)
+pnpm build:merchant
 ```
 
 ## License

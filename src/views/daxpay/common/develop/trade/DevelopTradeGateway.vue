@@ -10,7 +10,15 @@
         :wrapperCol="{ span: 18 }"
         :validate-trigger="['blur', 'change']"
       >
-        <a-form-item label="商户号" name="mchNo">
+        <a-form-item label="商户私钥" required>
+          <a-space>
+            <a-button size="small" @click="showPrivateKeyModal" type="primary">设置私钥</a-button>
+            <a-button size="small" v-if="privateKey" @click="clearPrivateKey" danger
+              >清除私钥</a-button
+            >
+          </a-space>
+        </a-form-item>
+        <a-form-item label="商户" name="mchNo">
           <a-select
             show-search
             :filter-option="search"
@@ -20,7 +28,7 @@
             @change="merchantChange"
           />
         </a-form-item>
-        <a-form-item label="应用号" name="appId">
+        <a-form-item label="应用" name="appId">
           <a-select
             show-search
             :filter-option="search"
@@ -125,12 +133,27 @@
         </a-space>
       </a-form>
     </a-spin>
+
+    <!-- 设置私钥弹窗 -->
+    <a-modal
+      v-model:visible="privateKeyVisible"
+      title="设置商户私钥"
+      @ok="savePrivateKey"
+      :maskClosable="false"
+    >
+      <a-textarea
+        v-model:value="privateKeyInput"
+        placeholder="请输入商户私钥"
+        :rows="6"
+        allow-clear
+      />
+    </a-modal>
   </div>
 </template>
 <script setup lang="ts">
   import { computed, onMounted, reactive, ref } from 'vue'
   import { FormInstance, Rule } from 'ant-design-vue/lib/form'
-  import { Modal } from 'ant-design-vue'
+  import { Modal, message } from 'ant-design-vue'
   import { GatewayPayParam, gatewaySign, gateway } from './DevelopTrade.api'
   import { LabeledValue } from 'ant-design-vue/lib/select'
   import useFormEdit from '@/hooks/bootx/useFormEdit'
@@ -144,6 +167,9 @@
   const { search } = useFormEdit()
   const { dictDropDown } = useDict()
 
+  // 商户私钥存储在localStorage中的键名
+  const PRIVATE_KEY_STORAGE_KEY = 'daxpay_gateway_private_key'
+
   const confirmLoading = ref(false)
   const formRef = ref<FormInstance>()
   const form = reactive<GatewayPayParam>({
@@ -151,10 +177,16 @@
     clientIp: '127.0.0.1',
     amount: 0.1,
   })
+
+  // 商户私钥相关状态
+  const privateKey = ref<string>('')
+  const privateKeyVisible = ref<boolean>(false)
+  const privateKeyInput = ref<string>('')
+
   const rules = computed(() => {
     return {
-      mchNo: [{ required: true, message: '商户号不可为空' }],
-      appId: [{ required: true, message: '应用号不可为空' }],
+      mchNo: [{ required: true, message: '商户不可为空' }],
+      appId: [{ required: true, message: '应用不可为空' }],
       gatewayPayType: [{ required: true, message: '网关支付方式不可为空' }],
       bizOrderNo: [{ required: true, message: '订单号不可为空' }],
       title: [{ required: true, message: '支付标题不可为空' }],
@@ -170,6 +202,11 @@
   const gatewayTypeOptions = ref<LabeledValue[]>([])
 
   onMounted(() => {
+    // 从localStorage中读取私钥
+    const savedPrivateKey = localStorage.getItem(PRIVATE_KEY_STORAGE_KEY)
+    if (savedPrivateKey) {
+      privateKey.value = savedPrivateKey
+    }
     initData()
   })
 
@@ -227,10 +264,43 @@
    */
   function getSign() {
     formRef.value?.validate().then(() => {
-      gatewaySign(form).then(({ data }) => {
+      gatewaySign(form, privateKey.value).then(({ data }) => {
         form.sign = data
       })
     })
+  }
+
+  /**
+   * 显示设置私钥弹窗
+   */
+  function showPrivateKeyModal() {
+    privateKeyInput.value = privateKey.value || ''
+    privateKeyVisible.value = true
+  }
+
+  /**
+   * 保存私钥
+   */
+  function savePrivateKey() {
+    privateKey.value = privateKeyInput.value
+    // 保存到localStorage
+    if (privateKey.value) {
+      localStorage.setItem(PRIVATE_KEY_STORAGE_KEY, privateKey.value)
+    } else {
+      localStorage.removeItem(PRIVATE_KEY_STORAGE_KEY)
+    }
+    privateKeyVisible.value = false
+    message.success('私钥保存成功')
+  }
+
+  /**
+   * 清除私钥
+   */
+  function clearPrivateKey() {
+    privateKey.value = ''
+    // 从localStorage中移除
+    localStorage.removeItem(PRIVATE_KEY_STORAGE_KEY)
+    message.success('私钥已清除')
   }
 
   /**
@@ -247,7 +317,7 @@
   function handleSubmit() {
     formRef.value?.validate().then(() => {
       confirmLoading.value = true
-      gateway(form)
+      gateway(form, privateKey.value)
         .then(({ data }) => {
           Modal.info({
             title: '响应结果',

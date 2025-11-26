@@ -29,6 +29,7 @@
     ref="dougongSub"
     @ok="ok"
   />
+  <ums-pay-config-edit v-if="record.channel === ChannelEnum.UMS_PAY" ref="umsPay" @ok="ok" />
 </template>
 <script setup lang="ts">
   import { nextTick, ref } from 'vue'
@@ -49,6 +50,7 @@
   import SandSubConfigEdit from '@/views/daxpay/common/channel/sand/config/payment/SandSubConfigEdit.vue'
   import YeePaySubConfigEdit from '@/views/daxpay/common/channel/yeepay/config/payment/YeePaySubConfigEdit.vue'
   import DougongSubConfigEdit from '@/views/daxpay/common/channel/dougong/config/payment/DougongSubConfigEdit.vue'
+  import UmsPayConfigEdit from '@/views/daxpay/common/channel/ums/config/UmsPayConfigEdit.vue'
 
   const { createMessage } = useMessage()
 
@@ -67,6 +69,7 @@
   const sandSub = ref<any>()
   const yeePaySub = ref<any>()
   const dougongSub = ref<any>()
+  const umsPay = ref<any>()
 
   // 事件
   const emits = defineEmits(['ok'])
@@ -131,6 +134,10 @@
         }
         case ChannelEnum.DOUGONG_PAY: {
           dougongSub.value.init(record.value)
+          break
+        }
+        case ChannelEnum.UMS_PAY: {
+          umsPay.value.init(record.value)
           break
         }
         default: {

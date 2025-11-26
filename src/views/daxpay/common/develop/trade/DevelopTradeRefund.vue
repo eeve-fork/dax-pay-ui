@@ -13,12 +13,12 @@
         <a-form-item label="商户私钥" required>
           <a-space>
             <a-button size="small" @click="showPrivateKeyModal" type="primary">设置私钥</a-button>
-            <a-button size="small" v-if="privateKey" @click="privateKey = ''" danger
+            <a-button size="small" v-if="privateKey" @click="clearPrivateKey" danger
               >清除私钥</a-button
             >
           </a-space>
         </a-form-item>
-        <a-form-item label="商户号" name="mchNo">
+        <a-form-item label="商户" name="mchNo">
           <a-select
             show-search
             :filter-option="search"
@@ -28,7 +28,7 @@
             @change="merchantChange"
           />
         </a-form-item>
-        <a-form-item label="应用号" name="appId">
+        <a-form-item label="应用" name="appId">
           <a-select
             show-search
             :filter-option="search"
@@ -128,7 +128,7 @@
 <script setup lang="ts">
   import { computed, onMounted, reactive, ref } from 'vue'
   import { FormInstance, Rule } from 'ant-design-vue/lib/form'
-  import { Modal } from 'ant-design-vue'
+  import { Modal, message } from 'ant-design-vue'
   import { refundSign, RefundParam, tradeRefund } from './DevelopTrade.api'
   import { LabeledValue } from 'ant-design-vue/lib/select'
   import { dropdownByEnable as dropdownByEnable } from '@/views/daxpay/common/assist/basic/MerchantQuery.api'
@@ -138,6 +138,9 @@
   import { buildShortUUID, buildUUID } from '@/utils/uuid'
 
   const { search } = useFormEdit()
+
+  // 商户私钥存储在localStorage中的键名
+  const PRIVATE_KEY_STORAGE_KEY = 'daxpay_refund_private_key'
 
   // 添加商户私钥相关状态
   const privateKey = ref<string>('')
@@ -152,8 +155,8 @@
   })
   const rules = computed(() => {
     return {
-      mchNo: [{ required: true, message: '商户号不可为空' }],
-      appId: [{ required: true, message: '应用号不可为空' }],
+      mchNo: [{ required: true, message: '商户不可为空' }],
+      appId: [{ required: true, message: '应用不可为空' }],
       bizRefundNo: [{ required: true, message: '商户退款号不可为空' }],
       title: [{ required: true, message: '退款标题不可为空' }],
       amount: [{ required: true, message: '退款金额不可为空' }],
@@ -167,6 +170,11 @@
   const mchAppOptions = ref<LabeledValue[]>([])
 
   onMounted(() => {
+    // 从localStorage中读取私钥
+    const savedPrivateKey = localStorage.getItem(PRIVATE_KEY_STORAGE_KEY)
+    if (savedPrivateKey) {
+      privateKey.value = savedPrivateKey
+    }
     initData()
   })
 
@@ -238,7 +246,24 @@
    */
   function savePrivateKey() {
     privateKey.value = privateKeyInput.value
+    // 保存到localStorage
+    if (privateKey.value) {
+      localStorage.setItem(PRIVATE_KEY_STORAGE_KEY, privateKey.value)
+    } else {
+      localStorage.removeItem(PRIVATE_KEY_STORAGE_KEY)
+    }
     privateKeyVisible.value = false
+    message.success('私钥保存成功')
+  }
+
+  /**
+   * 清除私钥
+   */
+  function clearPrivateKey() {
+    privateKey.value = ''
+    // 从localStorage中移除
+    localStorage.removeItem(PRIVATE_KEY_STORAGE_KEY)
+    message.success('私钥已清除')
   }
 
   /**

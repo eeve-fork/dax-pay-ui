@@ -106,7 +106,7 @@
   import { useMessage } from '@/hooks/web/useMessage'
   import { BasicDrawer } from '@/components/Drawer'
   import { ChannelConfig } from '@/views/daxpay/common/merchant/config/ChannelConfig.api'
-  import { dropdownByMchAndChannel } from '@/views/daxpay/common/onboarded/mch/OnbMchInfo.api'
+  import { findByChannel } from '@/views/daxpay/common/onboarded/OnbMchInfo.api'
   import { LabeledValue } from 'ant-design-vue/lib/select'
 
   const { handleCancel, diffForm, labelCol, wrapperCol, confirmLoading, visible, showable } =
@@ -152,11 +152,9 @@
    * 初始化数据
    */
   function initData() {
-    dropdownByMchAndChannel(channelConfig.value.mchNo, channelConfig.value.channel).then(
-      ({ data }) => {
-        umsAppIdList.value = data
-      },
-    )
+    findByChannel(channelConfig.value.mchNo, channelConfig.value.channel).then(({ data }) => {
+      umsAppIdList.value = data
+    })
   }
 
   /**

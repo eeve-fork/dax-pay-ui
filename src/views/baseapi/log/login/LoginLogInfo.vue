@@ -18,7 +18,7 @@
   import { Description, DescItem } from '@/components/Description'
   import { get, LoginLog } from './LoginLog.api'
 
-  import BasicModal from '@/components/Modal/src/BasicModal.vue'
+  import { BasicModal } from '@/components/Modal'
   import { findOneByField } from '@/utils/dataUtil'
   import { Client, findAll } from '@/views/iam/client/Client.api'
   import { onMounted, ref } from 'vue'

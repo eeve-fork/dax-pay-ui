@@ -16,7 +16,7 @@
 </template>
 
 <script setup lang="ts">
-  import BasicModal from '/@/components/Modal/src/BasicModal.vue'
+  import { BasicModal } from '@/components/Modal'
   import { DescItem, Description } from '@/components/Description'
   import { downloadFile, get, UpdateFileInfo } from './FileUpload.api'
   import { ref } from 'vue'

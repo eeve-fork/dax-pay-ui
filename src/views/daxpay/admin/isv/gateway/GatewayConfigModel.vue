@@ -37,7 +37,7 @@
   import AggregateQrConfigForm from './aggregate/AggregateQrConfigForm.vue'
   import AggregateBarConfigForm from './aggregate/AggregateBarConfigForm.vue'
   import MiniQuicklyConfigForm from './quickly/MiniQuicklyConfigForm.vue'
-  import BasicModal from '@/components/Modal/src/BasicModal.vue'
+  import { BasicModal } from '@/components/Modal'
   import GatewayConfigEdit from './common/GatewayConfigEdit.vue'
 
   const visible = ref(false)

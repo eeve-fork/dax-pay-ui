@@ -51,7 +51,7 @@
 <script lang="ts" setup>
   import useFormEdit from '@/hooks/bootx/useFormEdit'
   import { refund } from '../refund/RefundOrder.api'
-  import BasicModal from '@/components/Modal/src/BasicModal.vue'
+  import { BasicModal } from '@/components/Modal'
   import { FormInstance } from 'ant-design-vue/lib/form'
   import { useMessage } from '@/hooks/web/useMessage'
   import { nextTick, ref } from 'vue'

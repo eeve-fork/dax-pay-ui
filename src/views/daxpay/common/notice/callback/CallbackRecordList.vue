@@ -62,7 +62,7 @@
   import { nextTick, ref } from 'vue'
   import useTablePage from '@/hooks/bootx/useTablePage'
   import { VxeTableInstance, VxeToolbarInstance } from 'vxe-table'
-  import BasicDrawer from '/@/components/Drawer/src/BasicDrawer.vue'
+  import { BasicDrawer } from '@/components/Drawer'
   import { useDict } from '@/hooks/bootx/useDict'
   import { pageRecord, CallbackRecord } from './CallbackTask.api'
   import CallbackRecordInfo from './CallbackRecordInfo.vue'

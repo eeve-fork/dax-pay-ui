@@ -62,7 +62,7 @@
   import { FormInstance, Rule } from 'ant-design-vue/lib/form'
   import { FormEditType } from '@/enums/formTypeEnum'
   import { useValidate } from '@/hooks/bootx/useValidate'
-  import BasicModal from '@/components/Modal/src/BasicModal.vue'
+  import { BasicModal } from '@/components/Modal'
 
   const {
     initFormEditType,

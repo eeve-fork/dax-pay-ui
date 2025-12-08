@@ -71,7 +71,7 @@
   import { FormInstance, Rule } from 'ant-design-vue/lib/form'
   import { FormEditType } from '@/enums/formTypeEnum'
   import { MchApp } from '@/views/daxpay/admin/merchant/app/MchAppAdmin.api'
-  import BasicDrawer from '@/components/Drawer/src/BasicDrawer.vue'
+  import { BasicDrawer } from '@/components/Drawer'
 
   const {
     initFormEditType,

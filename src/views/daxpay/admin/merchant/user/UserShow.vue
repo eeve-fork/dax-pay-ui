@@ -45,7 +45,7 @@
 
 <script lang="ts" setup>
   import useFormEdit from '@/hooks/bootx/useFormEdit'
-  import BasicDrawer from '/@/components/Drawer/src/BasicDrawer.vue'
+  import { BasicDrawer } from '@/components/Drawer'
   import { get } from './MerchantUser.api'
   import { useDict } from '@/hooks/bootx/useDict'
   import { ref } from 'vue'

@@ -79,7 +79,7 @@
   import { add, get, OnbMchInfo, update, existsByOnbMchNo } from './OnbMchInfo.api'
   import { FormInstance, Rule } from 'ant-design-vue/lib/form'
   import { FormEditType } from '@/enums/formTypeEnum'
-  import BasicModal from '@/components/Modal/src/BasicModal.vue'
+  import { BasicModal } from '@/components/Modal'
   import { useMessage } from '@/hooks/web/useMessage'
   import { LabeledValue } from 'ant-design-vue/lib/select'
   import { dropdown as merchantDropdown } from '@/views/daxpay/common/assist/basic/MerchantQuery.api'

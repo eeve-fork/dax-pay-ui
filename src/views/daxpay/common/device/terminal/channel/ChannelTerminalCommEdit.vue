@@ -66,7 +66,7 @@
 
 <script setup lang="ts">
   import { computed, nextTick, ref } from 'vue'
-  import BasicDrawer from '@/components/Drawer/src/BasicDrawer.vue'
+  import { BasicDrawer } from '@/components/Drawer'
   import useFormEdit from '@/hooks/bootx/useFormEdit'
   import { Rule } from 'ant-design-vue/lib/form'
   import { ChannelTerminal, update, get } from './ChannelTerminal.api'

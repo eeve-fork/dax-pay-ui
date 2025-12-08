@@ -61,7 +61,7 @@
   import { add, get, IsvInfo, update } from './IsvInfo.api'
   import { FormInstance, Rule } from 'ant-design-vue/lib/form'
   import { FormEditType } from '@/enums/formTypeEnum'
-  import BasicModal from '@/components/Modal/src/BasicModal.vue'
+  import { BasicModal } from '@/components/Modal'
 
   const {
     initFormEditType,

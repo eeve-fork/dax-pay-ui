@@ -26,7 +26,7 @@
   </basic-modal>
 </template>
 <script setup lang="ts">
-  import BasicModal from '@/components/Modal/src/BasicModal.vue'
+  import { BasicModal } from '@/components/Modal'
   import useFormEdit from '@/hooks/bootx/useFormEdit'
   import { restartPassword, restartPasswordBatch } from './User.api'
   import { useMessage } from '@/hooks/web/useMessage'

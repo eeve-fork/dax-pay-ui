@@ -64,7 +64,7 @@
   import { nextTick, ref } from 'vue'
   import { FormInstance } from 'ant-design-vue'
   import { findByMchNo, update, MerchantCredential } from './MerchantCredential.api'
-  import BasicDrawer from '@/components/Drawer/src/BasicDrawer.vue'
+  import { BasicDrawer } from '@/components/Drawer'
   import useFormEdit from '@/hooks/bootx/useFormEdit'
   import { useMessage } from '@/hooks/web/useMessage'
   import { buildUUID } from '@/utils/uuid'

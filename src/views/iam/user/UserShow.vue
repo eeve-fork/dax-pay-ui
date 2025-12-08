@@ -49,7 +49,7 @@
 
 <script lang="ts" setup>
   import useFormEdit from '@/hooks/bootx/useFormEdit'
-  import BasicDrawer from '/@/components/Drawer/src/BasicDrawer.vue'
+  import { BasicDrawer } from '@/components/Drawer'
   import { get, UserInfo } from './User.api'
   import { getRoles } from './UserAssign.api'
   import { useDict } from '@/hooks/bootx/useDict'

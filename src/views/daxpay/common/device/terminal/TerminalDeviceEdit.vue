@@ -128,7 +128,7 @@
   import { FormEditType } from '@/enums/formTypeEnum'
   import { LabeledValue } from 'ant-design-vue/lib/select'
   import { useDict } from '@/hooks/bootx/useDict'
-  import BasicDrawer from '@/components/Drawer/src/BasicDrawer.vue'
+  import { BasicDrawer } from '@/components/Drawer'
   import { Cascader } from 'ant-design-vue'
   import { findAllProvinceAndCityAndArea, Region } from '@/api/common/ChinaRegion.api'
   import { cloneDeep } from 'lodash-es'

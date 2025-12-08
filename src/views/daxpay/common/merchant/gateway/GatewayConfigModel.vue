@@ -47,7 +47,7 @@
   import AggregateBarConfigForm from './aggregate/AggregateBarConfigForm.vue'
   import CashierCodeConfigForm from './cashier/CashierCodeConfigForm.vue'
   import CheckoutCounterConfigList from './checkout/CheckoutCounterConfigList.vue'
-  import BasicModal from '@/components/Modal/src/BasicModal.vue'
+  import { BasicModal } from '@/components/Modal'
   import { MchApp } from '@/views/daxpay/admin/merchant/app/MchAppAdmin.api'
   import { GatewayPayReadConfig } from './common/GatewayPayConfig.api'
   import GatewayPayReadConfigForm from './common/GatewayPayReadConfigForm.vue'

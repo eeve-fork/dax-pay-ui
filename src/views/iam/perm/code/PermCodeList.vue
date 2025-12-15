@@ -43,23 +43,26 @@
           <vxe-column field="code" title="权限码" />
           <vxe-column title="操作" fixed="right" width="220" :showOverflow="false">
             <template #default="{ row }">
-              <a href="javascript:" @click="show(row)">查看</a>
-              <a-divider type="vertical" />
-              <a href="javascript:" @click="edit(row)">编辑</a>
-              <a-divider type="vertical" />
-              <a-dropdown>
-                <a> 更多 <icon icon="ant-design:down-outlined" :size="12" /> </a>
-                <template #overlay>
-                  <a-menu>
-                    <a-menu-item v-if="!row.leaf">
-                      <a-link @click="addChildren(row)">添加下级</a-link>
-                    </a-menu-item>
-                    <a-menu-item>
-                      <a-link href="javascript:" danger @click="remove(row)">删除</a-link>
-                    </a-menu-item>
-                  </a-menu>
+              <a-space :size="2">
+                <template #split>
+                  <a-divider type="vertical" />
                 </template>
-              </a-dropdown>
+                <a href="javascript:" @click="show(row)">查看</a>
+                <a href="javascript:" @click="edit(row)">编辑</a>
+                <a-dropdown>
+                  <a> 更多 <icon icon="ant-design:down-outlined" :size="12" /> </a>
+                  <template #overlay>
+                    <a-menu>
+                      <a-menu-item v-if="!row.leaf">
+                        <a-link @click="addChildren(row)">添加下级</a-link>
+                      </a-menu-item>
+                      <a-menu-item>
+                        <a-link href="javascript:" danger @click="remove(row)">删除</a-link>
+                      </a-menu-item>
+                    </a-menu>
+                  </template>
+                </a-dropdown>
+              </a-space>
             </template>
           </vxe-column>
         </vxe-table>

@@ -36,17 +36,20 @@
         <vxe-column field="createTime" title="创建时间" :min-width="140" />
         <vxe-column fixed="right" :width="150" :showOverflow="false" title="操作">
           <template #default="{ row }">
-            <span>
-              <a href="javascript:" @click="show(row)">查看</a>
-            </span>
-            <a-divider type="vertical" />
-            <span>
-              <a href="javascript:" @click="edit(row)">编辑</a>
-            </span>
-            <a-divider type="vertical" />
-            <a-popconfirm title="是否删除" @confirm="remove(row)" okText="是" cancelText="否">
-              <a href="javascript:" style="color: red">删除</a>
-            </a-popconfirm>
+            <a-space :size="2">
+              <template #split>
+                <a-divider type="vertical" />
+              </template>
+              <span>
+                <a href="javascript:" @click="show(row)">查看</a>
+              </span>
+              <span>
+                <a href="javascript:" @click="edit(row)">编辑</a>
+              </span>
+              <a-popconfirm title="是否删除" @confirm="remove(row)" okText="是" cancelText="否">
+                <a href="javascript:" style="color: red">删除</a>
+              </a-popconfirm>
+            </a-space>
           </template>
         </vxe-column>
       </vxe-table>

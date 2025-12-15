@@ -43,20 +43,22 @@
           <vxe-column field="errorMsg" title="错误信息" :min-width="220" />
           <vxe-column fixed="right" width="220" :showOverflow="false" title="操作">
             <template #default="{ row }">
-              <template v-if="['wait', 'logged'].includes(row.status)">
-                <a-link danger @click="submitInfo(row)">报送</a-link>
-                <a-divider type="vertical" />
-              </template>
-              <template v-if="row.status === 'submit'">
-                <a-link danger @click="cancelInfo(row)">注销</a-link>
-                <a-divider type="vertical" />
-              </template>
-              <a-link v-if="!row.id" @click="genData(row)">生成配置</a-link>
-              <template v-if="row.id">
-                <a-link @click="edit(row)">信息修改</a-link>
-                <a-divider type="vertical" />
-                <a-link @click="syncInfo(row)">信息同步</a-link>
-              </template>
+              <a-space :size="2">
+                <template #split>
+                  <a-divider type="vertical" />
+                </template>
+                <template v-if="['wait', 'logged'].includes(row.status)">
+                  <a-link danger @click="submitInfo(row)">报送</a-link>
+                </template>
+                <template v-if="row.status === 'submit'">
+                  <a-link danger @click="cancelInfo(row)">注销</a-link>
+                </template>
+                <a-link v-if="!row.id" @click="genData(row)">生成配置</a-link>
+                <template v-if="row.id">
+                  <a-link @click="edit(row)">信息修改</a-link>
+                  <a-link @click="syncInfo(row)">信息同步</a-link>
+                </template>
+              </a-space>
             </template>
           </vxe-column>
         </vxe-table>

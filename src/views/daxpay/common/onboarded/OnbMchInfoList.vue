@@ -44,16 +44,20 @@
           <vxe-column field="createTime" title="创建时间" :min-width="140" />
           <vxe-column fixed="right" :width="160" :showOverflow="false" title="操作">
             <template #default="{ row }">
-              <a-link @click="edit(row)">编辑</a-link>
-              <a-divider type="vertical" />
-              <a-popconfirm
-                title="是否删除该进件商户信息？"
-                @confirm="deleteRecord(row)"
-                ok-text="确认"
-                cancel-text="取消"
-              >
-                <a-link danger>删除</a-link>
-              </a-popconfirm>
+              <a-space :size="2">
+                <template #split>
+                  <a-divider type="vertical" />
+                </template>
+                <a-link @click="edit(row)">编辑</a-link>
+                <a-popconfirm
+                  title="是否删除该进件商户信息？"
+                  @confirm="deleteRecord(row)"
+                  ok-text="确认"
+                  cancel-text="取消"
+                >
+                  <a-link danger>删除</a-link>
+                </a-popconfirm>
+              </a-space>
             </template>
           </vxe-column>
         </vxe-table>

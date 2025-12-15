@@ -47,11 +47,14 @@
           <vxe-column field="createTime" title="创建时间" :min-width="140" />
           <vxe-column fixed="right" :width="170" :showOverflow="false" title="操作">
             <template #default="{ row }">
-              <a href="javascript:" @click="show(row)">查看</a>
-              <a-divider type="vertical" />
-              <a href="javascript:" @click="down(row)">下载</a>
-              <a-divider type="vertical" />
-              <a-link danger @click="remove(row)">删除</a-link>
+              <a-space :size="2">
+                <template #split>
+                  <a-divider type="vertical" />
+                </template>
+                <a href="javascript:" @click="show(row)">查看</a>
+                <a href="javascript:" @click="down(row)">下载</a>
+                <a-link danger @click="remove(row)">删除</a-link>
+              </a-space>
             </template>
           </vxe-column>
         </vxe-table>
@@ -80,10 +83,8 @@
   import { useUpload } from '@/hooks/bootx/useUpload'
   import FileUploadInfo from './FileUploadInfo.vue'
   import BQuery from '@/components/Bootx/Query/BQuery.vue'
-  import { useFilePlatform } from '@/hooks/bootx/useFilePlatform'
   import ALink from '@/components/Link/Link.vue'
   import { UploadProps } from 'ant-design-vue'
-  import { FilePlatform } from '#/store'
   // 使用hooks
   const {
     handleTableChange,
@@ -96,11 +97,8 @@
   } = useTablePage(queryPage)
   const { createMessage, createConfirm } = useMessage()
 
-  const { getFileUrl, getUploadPlatform } = useFilePlatform()
-  const { uploadFileToOss } = useUpload()
+  const { uploadFileToOss, getFileUrl } = useUpload()
 
-  // 文件存储平台
-  const filePlatform = ref<FilePlatform>()
   const uploadUrl = ref<string>()
   const uploadHeader = ref<Map<string, string>>()
   const uploadAttachName = ref<string>()
@@ -126,19 +124,11 @@
   const fileUploadInfo = ref<any>()
 
   onMounted(() => {
-    initData()
     vxeBind()
     queryPage()
   })
   function vxeBind() {
     xTable.value?.connectToolbar(xToolbar.value as VxeToolbarInstance)
-  }
-
-  /**
-   * 初始化数据
-   */
-  async function initData() {
-    filePlatform.value = await getUploadPlatform()
   }
 
   /**
@@ -220,7 +210,7 @@
    * 下载
    */
   function down(record: UpdateFileInfo) {
-    const url = getFileUrl(record.url, record.platform)
+    const url = getFileUrl(record.url)
     window.open(url)
   }
 

@@ -68,7 +68,6 @@
   import { FormEditType } from '@/enums/formTypeEnum'
   import { BasicModal } from '@/components/Modal'
   import { Dict } from './Dict.api'
-  import { useValidate } from '@/hooks/bootx/useValidate'
 
   const {
     initFormEditType,

@@ -65,36 +65,38 @@
           </vxe-column>
           <vxe-column title="操作" fixed="right" width="220" :showOverflow="false">
             <template #default="{ row }">
-              <a href="javascript:" @click="show(row)">查看</a>
-              <template v-if="String(row.menuType) !== '2'">
-                <a-divider type="vertical" />
-                <a href="javascript:" v-if="!row.internal" @click="edit(row)">编辑</a>
-                <a href="javascript:" v-else disabled>编辑</a>
-                <a-divider type="vertical" />
-                <a-dropdown>
-                  <a> 更多 <icon icon="ant-design:down-outlined" :size="12" /> </a>
-                  <template #overlay>
-                    <a-menu>
-                      <a-menu-item>
-                        <a @click="addChildren(row)">添加下级</a>
-                      </a-menu-item>
-                      <a-menu-item>
-                        <a @click="copy(row.id)">复制</a>
-                      </a-menu-item>
-                      <a-menu-item>
-                        <a
-                          href="javascript:"
-                          v-if="!row.internal"
-                          @click="remove(row)"
-                          style="color: red"
-                          >删除</a
-                        >
-                        <a href="javascript:" v-else disabled>删除</a>
-                      </a-menu-item>
-                    </a-menu>
-                  </template>
-                </a-dropdown>
-              </template>
+              <a-space :size="2">
+                <template #split>
+                  <a-divider type="vertical" />
+                </template>
+                <a href="javascript:" @click="show(row)">查看</a>
+                <template v-if="String(row.menuType) !== '2'">
+                  <a href="javascript:" v-if="!row.internal" @click="edit(row)">编辑</a>
+                  <a href="javascript:" v-else disabled>编辑</a>
+                  <a-dropdown>
+                    <a> 更多 <icon icon="ant-design:down-outlined" :size="12" /> </a>
+                    <template #overlay>
+                      <a-menu>
+                        <a-menu-item>
+                          <a @click="addChildren(row)">添加下级</a>
+                        </a-menu-item>
+                        <a-menu-item>
+                          <a @click="copy(row.id)">复制</a>
+                        </a-menu-item>
+                        <a-menu-item>
+                          <a
+                            href="javascript:"
+                            v-if="!row.internal"
+                            @click="remove(row)"
+                            style="color: red"
+                          >删除</a>
+                          <a href="javascript:" v-else disabled>删除</a>
+                        </a-menu-item>
+                      </a-menu>
+                    </template>
+                  </a-dropdown>
+                </template>
+              </a-space>
             </template>
           </vxe-column>
         </vxe-table>

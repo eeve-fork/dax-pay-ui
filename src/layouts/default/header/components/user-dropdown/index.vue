@@ -18,7 +18,7 @@
   <modify-password-model ref="mpm" />
 </template>
 <script lang="ts" setup>
-  import { Dropdown, } from 'ant-design-vue'
+  import { Dropdown } from 'ant-design-vue'
   import type { MenuInfo } from 'ant-design-vue/lib/menu/src/interface'
   import { computed, ref, reactive } from 'vue'
   import { DOC_URL } from '@/settings/siteSetting'
@@ -28,8 +28,8 @@
   import { propTypes } from '@/utils/propTypes'
   import { openWindow } from '@/utils'
   import { createAsyncComponent } from '@/utils/factory/createAsyncComponent'
-  import { useFilePlatform } from '@/hooks/bootx/useFilePlatform'
   import ModifyPasswordModel from '@/layouts/default/header/components/ModifyPasswordModel.vue'
+  import { useUpload } from '@/hooks/bootx/useUpload'
 
   type MenuEvent = 'logout' | 'doc' | 'lock' | 'api' | 'modifyPassword'
 
@@ -44,8 +44,7 @@
 
   const { prefixCls } = useDesign('header-user-dropdown')
   const userStore = useUserStore()
-  const { getFileUrl } = useFilePlatform()
-  const emit = defineEmits(['modifyPassword'])
+  const { getFileUrl } = useUpload()
 
   const getUserInfo = computed(() => {
     let { name = '', avatar } = userStore.getUserInfo || {}
@@ -57,7 +56,6 @@
   function handleLoginOut() {
     userStore.confirmLoginOut()
   }
-
 
   function openMOdel() {
     mpm.value.show()

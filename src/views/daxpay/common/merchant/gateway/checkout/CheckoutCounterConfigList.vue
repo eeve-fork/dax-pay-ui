@@ -45,9 +45,13 @@
       </vxe-column>
       <vxe-column fixed="right" :width="120" :showOverflow="false" title="操作">
         <template #default="{ row }">
-          <a-link @click="edit(row)">编辑</a-link>
-          <a-divider type="vertical" />
-          <a-link danger @click="del(row)">删除</a-link>
+          <a-space :size="2">
+            <template #split>
+              <a-divider type="vertical" />
+            </template>
+            <a-link @click="edit(row)">编辑</a-link>
+            <a-link danger @click="del(row)">删除</a-link>
+          </a-space>
         </template>
       </vxe-column>
     </vxe-table>

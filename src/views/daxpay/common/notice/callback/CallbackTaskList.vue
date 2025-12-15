@@ -54,11 +54,14 @@
           <vxe-column field="appName" title="应用" :min-width="150" />
           <vxe-column fixed="right" width="180" :showOverflow="false" title="操作">
             <template #default="{ row }">
-              <a-link @click="show(row)">查看</a-link>
-              <a-divider type="vertical" />
-              <a-link @click="showRecord(row)">记录列表</a-link>
-              <a-divider type="vertical" />
-              <a-link @click="resetSend(row)">重发</a-link>
+              <a-space :size="2">
+                <template #split>
+                  <a-divider type="vertical" />
+                </template>
+                <a-link @click="show(row)">查看</a-link>
+                <a-link @click="showRecord(row)">记录列表</a-link>
+                <a-link @click="resetSend(row)">重发</a-link>
+              </a-space>
             </template>
           </vxe-column>
         </vxe-table>

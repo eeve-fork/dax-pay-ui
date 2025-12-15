@@ -108,11 +108,14 @@
           <vxe-column field="createTime" title="创建时间" :min-width="180" />
           <vxe-column fixed="right" :width="180" :showOverflow="false" title="操作">
             <template #default="{ row }">
-              <a-link @click="edit(row)">编辑</a-link>
-              <a-divider type="vertical" />
-              <a-link @click="genCodePreview(row)">预览</a-link>
-              <a-divider type="vertical" />
-              <a-link danger @click="remove(row)">删除</a-link>
+              <a-space :size="2">
+                <template #split>
+                  <a-divider type="vertical" />
+                </template>
+                <a-link @click="edit(row)">编辑</a-link>
+                <a-link @click="genCodePreview(row)">预览</a-link>
+                <a-link danger @click="remove(row)">删除</a-link>
+              </a-space>
             </template>
           </vxe-column>
         </vxe-table>

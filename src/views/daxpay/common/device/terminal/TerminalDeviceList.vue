@@ -84,11 +84,14 @@
           <vxe-column field="createTime" title="创建时间" sortable :min-width="140" />
           <vxe-column fixed="right" width="220" :showOverflow="false" title="操作">
             <template #default="{ row }">
-              <a-link @click="edit(row)">编辑</a-link>
-              <a-divider type="vertical" />
-              <a-link @click="showChannels(row)" :disabled="!row.appId">通道报送</a-link>
-              <a-divider type="vertical" />
-              <a-link danger @click="del(row)">删除</a-link>
+              <a-space :size="2">
+                <template #split>
+                  <a-divider type="vertical" />
+                </template>
+                <a-link @click="edit(row)">编辑</a-link>
+                <a-link @click="showChannels(row)" :disabled="!row.appId">通道报送</a-link>
+                <a-link danger @click="del(row)">删除</a-link>
+              </a-space>
             </template>
           </vxe-column>
         </vxe-table>
